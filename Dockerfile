@@ -20,15 +20,14 @@ RUN yum -y install mysql php-mysqlnd        # 安装mysql客户端 与 php-mysql
 # 创建必要目录  
 RUN mkdir -p  /var/log/httpd \           		
 RUN mkdir -p  /var/www/ \      
-RUN mkdir -p  /var/www/html/ \  
-RUN cd /var
+RUN mkdir -p  /var/www/html/ \ 
 
 # 导出apache 80端口  
 EXPOSE 80               	
 
-COPY run.sh ./run.sh     # 添加启动脚本  
+COPY run.sh  /root/run.sh     # 添加启动脚本  
 
 RUN chmod +x run.sh  
 
-CMD ["run.sh"]
+CMD ["/a/run.sh"]
 
