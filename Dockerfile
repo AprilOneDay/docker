@@ -1,32 +1,27 @@
 # name:SERVER + PHP + APACHE  
 # use:store  
 # date:2017-09-04  
-
+  
 FROM centos  
 
-MAINTAINER siyue 350375092@qq.com 
+MAINTAINER siyue 350375092@qq.com  
 
-# 安装wget
-RUN yum install -y wget
+WORKDIR /root/ 
 
-WORKDIR /usr/local/src
+RUN yum -y install httpd php || true        # 安装apache，php  ||true 保证整个命令返回true  
+RUN yum -y install mysql php-mysqlnd        # 安装mysql客户端 与 php-mysqlnd  
+RUN mkdir /var/log/httpd1           		# 创建必要目录  
+RUN mkdir /var/www/      
+RUN mkdir /var/www/html/  
 
-# 下载并解压源码包
-RUN wget http://apache.fayea.com/httpd/httpd-2.4.17.tar.gz
-RUN tar -zxvf httpd-2.4.17.tar.gz
+ENV MYSQL_ADDR 172.17.0.36:3306     		# 定义远程mysql地址、用户名和密码 ip为docker ip  
+ENV MYSQL_USRR test  
+ENV MYSQL_PASS password  
+ENV TERM linux  
+ENV LC_ALL en_US.UTF-8  
+ADD test.php /var/www/html/test.php # 添加测试文件  
+EXPOSE 80               # 导出apache 80端口  
+ADD run.sh /root/run.sh     # 添加启动脚本  
+RUN chmod u+x /root/run.sh  
+CMD /root/run.sh  
 
-WORKDIR httpd-2.4.17
-
-# 编译安装apache
-RUN yum install -y gcc make apr-devel apr apr-util apr-util-devel pcre-devel 
-RUN ./configure --prefix=/usr/local/apache2 --enable-mods-shared=most --enable-so
-RUN make
-RUN make install
-RUN sed -i 's/#ServerName www.example.com:80/ServerName localhost:80/g' /usr/local/apache2/conf/httpd.conf # 修改apache配置文件
-RUN /usr/local/apache2/bin/httpd # 启动apache服务
-
-ADD run.sh /usr/local/sbin/run.sh # 复制服务启动脚本并设置权限
-RUN chmod 755 /usr/local/sbin/run.sh
-
-EXPOSE 80 # 导出apache 80端口  
-CMD ["/usr/local/sbin/run.sh"]
