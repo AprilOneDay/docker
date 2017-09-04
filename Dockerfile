@@ -30,5 +30,5 @@ ADD run.sh  /root/
 
 RUN chmod +x run.sh  
 
-CMD ["/a/run.sh"]
+CMD ["run.sh"]
 
