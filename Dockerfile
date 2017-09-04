@@ -6,7 +6,7 @@ FROM centos
 
 MAINTAINER siyue 350375092@qq.com  
 
-ENV MYSQL_ADDR 172.17.0.36:3306     		# 定义远程mysql地址、用户名和密码 ip为docker ip  
+ENV MYSQL_ADDR 127.0.0.1:3306     		# 定义远程mysql地址、用户名和密码 ip为docker ip  
 ENV MYSQL_USRR root  
 ENV MYSQL_PASS 1q2w3e4r  
 ENV TERM linux  
