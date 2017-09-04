@@ -23,9 +23,9 @@ RUN mkdir -p /var/www/html/
 # 导出apache 80端口  
 EXPOSE 80               	
 
-ADD raw.githubusercontent.com/AprilOneDay/docker/master/www/run.sh /root/run.sh     # 添加启动脚本  
+ADD run.sh /usr/local/bin/     # 添加启动脚本  
 
 RUN chmod u+x run.sh  
 
-CMD ~/var/run.sh  
+CMD ["run.sh"]
 
