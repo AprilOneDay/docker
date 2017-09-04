@@ -23,7 +23,7 @@ RUN mkdir -p /var/www/html/
 # 导出apache 80端口  
 EXPOSE 80               	
 
-COPY ~/www/server/run.sh /usr/local/bin/     # 添加启动脚本  
+COPY /www/server/run.sh /usr/local/bin/     # 添加启动脚本  
 
 RUN chmod +x run.sh  
 
