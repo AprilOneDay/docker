@@ -23,9 +23,9 @@ RUN mkdir -p /var/www/html/
 # 导出apache 80端口  
 EXPOSE 80               	
 
-ADD run.sh /root/run.sh     # 添加启动脚本  
+ADD run.sh run.sh     # 添加启动脚本  
 
-RUN chmod u+x /root/run.sh  
+RUN chmod u+x run.sh  
 
 CMD /root/run.sh  
 
