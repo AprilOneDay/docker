@@ -25,7 +25,7 @@ EXPOSE 80
 
 WORKDIR ~
 
-COPY ~/www/server/run.sh /usr/local/bin/     # 添加启动脚本  
+COPY run.sh /usr/local/bin/     # 添加启动脚本  
 
 RUN chmod +x run.sh  
 
