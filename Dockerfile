@@ -16,10 +16,12 @@ WORKDIR /root/
 
 RUN yum -y install httpd php || true        # 安装apache，php  ||true 保证整个命令返回true  
 RUN yum -y install mysql php-mysqlnd        # 安装mysql客户端 与 php-mysqlnd  
-RUN mkdir -p /var/log/httpd           		# 创建必要目录  
-RUN mkdir -p /var/www/      
-RUN mkdir -p /var/www/html/  
 
+# 创建必要目录  
+RUN mkdir -p /var/log/httpd           		
+	&& mkdir -p /var/www/      
+	&& mkdir -p /var/www/html/  
+	&& cd /var
 # 导出apache 80端口  
 EXPOSE 80               	
 
