@@ -22,7 +22,6 @@ RUN mkdir -p /var/www/html/
 
 EXPOSE 80               	# 导出apache 80端口  
 
-# ADD test.php /var/www/html/test.php # 添加测试文件  
 
 ADD run.sh /root/run.sh     # 添加启动脚本  
 
