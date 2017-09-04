@@ -26,7 +26,7 @@ RUN mkdir -p  /var/www/html/ \
 EXPOSE 80               	
 
  # 添加启动脚本  
-ADD run.sh  /root/run.sh    
+ADD run.sh  /root/   
 
 RUN chmod +x run.sh  
 
