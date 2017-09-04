@@ -20,8 +20,7 @@ RUN mkdir -p /var/log/httpd           		# 创建必要目录
 RUN mkdir -p /var/www/      
 RUN mkdir -p /var/www/html/  
 
-EXPOSE 80               	# 导出apache 80端口  
-
+EXPOSE 80               	#导出apache 80端口  
 
 ADD run.sh /root/run.sh     # 添加启动脚本  
 
