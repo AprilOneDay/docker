@@ -21,6 +21,7 @@ RUN yum -y install mysql php-mysqlnd        # 安装mysql客户端 与 php-mysql
 RUN mkdir -p  /var/log/httpd \           		
 RUN mkdir -p  /var/www/ \      
 RUN mkdir -p  /var/www/html/ \  
+RUN cd /var
 
 # 导出apache 80端口  
 EXPOSE 80               	
