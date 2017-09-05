@@ -12,7 +12,8 @@
             - ./mysql/log/:/var/log/mysql/:rw
         environment:
             MYSQL_ROOT_PASSWORD: "1q2w3e4r"
-        container_name: mysql
+        # container_name: mysql
+
 
     php:
         # depends_on:
@@ -28,7 +29,7 @@
         links:
             - mysql:mysql
         container_name: php
-        
+
     httpd:
         # 前置需要
         # depends_on:
