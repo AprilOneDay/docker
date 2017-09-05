@@ -40,7 +40,7 @@
         # 端口映射 本地prot ： 容器prot
         ports:
             - "80:80"
-            - "443:443"
+            # - "443:443"
         # 挂载数据卷 本地path：容器path ： 权限 | ro不可创建文件 rw可读写
         volumes:
             - ./src/:/usr/local/apache2/htdocs/:rw
