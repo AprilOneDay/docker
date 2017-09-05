@@ -34,6 +34,9 @@ docker rmi $(docker images -q)
 
 docker rm $(docker ps -a -q)
 
+关闭所有正在运行容器
+docker ps | awk  '{print $1}' | xargs docker stop
+
 docker stop test_apache-php
 docker rm test_apache-php
 docker port  test_apache-php 80
