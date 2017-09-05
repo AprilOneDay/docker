@@ -1,61 +1,25 @@
-version: '3'
-# 定义三个服务nginx,php,mysql
-services:
-    nginx:
-        # 依赖php服务，意味着在启动nginx之前先启动php
-        depends_on:
-            - php
-        # nginx镜像的路径
-        image: registry.cn-hangzhou.aliyuncs.com/centos-bz/nginx
-        # 容器的/home/docker/nginx目录挂载主机中的/home/docker/nginx目录，
-        # 这样使nginx容器把网站文件和目录存放到主机目录中，持久化和方便管理
-        volumes:
-            - /home/docker/nginx:/home/docker/nginx
-        # nginx意外退出时自动重启
-        restart: always
-
-        # 映射80和443端口
-        ports:
-            - "80:80"
-            - "443:443"
-
-        # 容器名称
-        container_name: nginx    
-    php:
-        depends_on:
-            - mysql
-        image: registry.cn-hangzhou.aliyuncs.com/centos-bz/php-fpm
-        restart: always
-        volumes:
-            - /home/docker/nginx/www:/home/docker/nginx/www
-            - /home/docker/php:/home/docker/php
-        container_name: php   
-
-    mysql:
-        image: registry.cn-hangzhou.aliyuncs.com/centos-bz/mysql
-        volumes:
-            - /home/docker/mysql:/home/docker/mysql
-        restart: always
-        # 设置MYSQL_ROOT_PASSWORD环境变量，这里是设置mysql的root密码。这里为root。
-        environment:
-            MYSQL_ROOT_PASSWORD: root
-        container_name: mysql
-
 apache:
+    # 容器名称
     image: httpd:latest
+    # 意外停止自动重启
     restart: always
+    # 前置需要
     depends_on:
         - php
+    # 端口映射 本地prot ： 容器prot
     ports:
         - "80:80"
         - "443:443"
+    # 挂载数据卷 本地path：容器path ： 权限 | ro不可创建文件 rw可读写
     volumes:
         - ./src/:/usr/local/apache2/htdocs/:rw
         - ./apache/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
         - ./apache/conf/extra/httpd-vhosts.conf:/usr/local/apache2/extra/httpd-vhosts.conf:ro
-        - ./log/nginx/:/var/log/nginx/:rw
+        - ./apache/log/:/usr/local/apache2/logs/:rw
+    # 链接容器
     links:
         - php
+    # 容器名称
     container_name: apache
 php:
     image: github.com/AprilOneDay/docker_php
@@ -66,7 +30,7 @@ php:
         - "9000"
     volumes:
         - ./src/:/var/www/html/:rw
-        - ./php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
+        - ./php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
         - ./php/log/:/var/log/php-fpm/:rw
     links:
         - mysql:mysql
