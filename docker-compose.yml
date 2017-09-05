@@ -1,7 +1,7 @@
 # version: '3'
 # 定义三个服务apache,php,mysql
 # services:
-     mysql:
+    mysql:
         image: mysql:5.7
         restart: always
         ports:
