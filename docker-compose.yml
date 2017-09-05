@@ -1,6 +1,6 @@
-# version: '3'
+version: '3'
 # 定义三个服务apache,php,mysql
-# services:
+services:
     mysql:
         image: mysql:5.7
         restart: always
@@ -15,8 +15,8 @@
         container_name: mysql
 
     php:
-        # depends_on:
-        #    - mysql
+        depends_on:
+            - mysql
         build: ./php/
         restart: always
         expose:
@@ -31,8 +31,8 @@
 
     httpd:
         # 前置需要
-        # depends_on:
-        #     - php
+        depends_on:
+            - php
         # 容器名称
         image: httpd:latest
         # 意外停止自动重启
@@ -49,7 +49,7 @@
             - ./apache/log/:/usr/local/apache2/logs/:rw
         # 链接容器
         links:
-            - php
+            - php:php
         # 容器名称
         container_name: httpd
             
