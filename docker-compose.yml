@@ -1,4 +1,6 @@
 version: '3'
+# 定义三个服务apache,php,mysql
+services:
     apache:
         # 容器名称
         image: httpd:latest
