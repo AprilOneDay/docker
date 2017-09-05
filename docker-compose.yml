@@ -1,34 +1,6 @@
 # version: '3'
 # 定义三个服务apache,php,mysql
 # services:
-    mysql:
-        image: mysql:5.7
-        restart: always
-        ports:
-            - "3306:3306"
-        volumes:
-            - ./mysql/conf.d/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
-            - ./mysql/data/:/var/lib/mysql/:rw
-            - ./mysql/log/:/var/log/mysql/:rw
-        environment:
-            MYSQL_ROOT_PASSWORD: "1q2w3e4r"
-        container_name: mysql
-
-    php:
-        # depends_on:
-        #    - mysql
-        build: ./php/
-        restart: always
-        expose:
-            - "9000"
-        volumes:
-            - ./src/:/var/www/html/:rw
-            - ./php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
-            - ./php/log/:/var/log/php-fpm/:rw
-        links:
-            - mysql:mysql
-        container_name: php
-
     httpd:
         # 前置需要
         # depends_on:
@@ -52,4 +24,34 @@
             - php:php
         # 容器名称
         container_name: httpd
+
+    php:
+        # depends_on:
+        #    - mysql
+        build: ./php/
+        restart: always
+        expose:
+            - "9000"
+        volumes:
+            - ./src/:/var/www/html/:rw
+            - ./php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+            - ./php/log/:/var/log/php-fpm/:rw
+        links:
+            - mysql:mysql
+        container_name: php
+
+    mysql:
+        image: mysql:5.7
+        restart: always
+        ports:
+            - "3306:3306"
+        volumes:
+            - ./mysql/conf.d/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+            - ./mysql/data/:/var/lib/mysql/:rw
+            - ./mysql/log/:/var/log/mysql/:rw
+        environment:
+            MYSQL_ROOT_PASSWORD: "1q2w3e4r"
+        container_name: mysql
+
+    
             

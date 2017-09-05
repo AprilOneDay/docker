@@ -71,8 +71,8 @@ chmod  +x /usr/local/bin/docker-compose
 docker-compose version
 
 
- git clone https://github.com/AprilOneDay/docker.git
+git clone https://github.com/AprilOneDay/docker.git
 
- cd docker
+cd docker
 
- docker-compose up
+docker-compose up
