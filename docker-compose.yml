@@ -37,14 +37,14 @@ php:
     container_name: php        
 
 mysql:
-    image: mysql:latest
+    image: mysql:5.7
     restart: always
     ports:
         - "3306:3306"
     volumes:
-        - ./conf/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
-        - ./mysql/:/var/lib/mysql/:rw
-        - ./log/mysql/:/var/log/mysql/:rw
+        - ./mysql/conf.d/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+        - ./mysql/data/:/var/lib/mysql/:rw
+        - ./mysql/log/:/var/log/mysql/:rw
     environment:
         MYSQL_ROOT_PASSWORD: "1q2w3e4r"
     container_name: mysql

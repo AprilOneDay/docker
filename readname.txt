@@ -39,6 +39,7 @@ docker port  test_apache-php 80
 docker exec -it test_apache-php /bin/bash
 docker exec -it php /bin/bash
 docker exec -it apache /bin/bash
+docker exec -it mysql /bin/bash
 
 cd /
 cd var/www/html
@@ -48,8 +49,12 @@ docker cp apache2:/root/etc//local/apache2/conf/httpd.conf ~/www/apache2/conf/ht
 docker cp apache2:/usr/local/apache2/logs/ ~/www/apache2/logs
 docker cp apache2:/usr/local/apache2/htdocs/ ~/www/src
 
-docker cp apache:/root/etc//local/apache ~/www/src
+docker cp php:/usr/local/php ~/www/src
 docker cp apache:/usr/local/apache2/ ~/www/
+docker cp mysql:/etc/mysql/ ~/www/
+docker cp mysql:/var/lib/mysql ~/www/data/
+
+docker run -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7
 
 #查看Linux系统版本的命令
 cat /etc/issue
