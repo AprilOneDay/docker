@@ -1,14 +1,14 @@
-# version: '3'
+version: '2'
 # 定义三个服务apache,php,mysql
 services:
     apache:
+        # 前置需要
+        depends_on:
+            - php
         # 容器名称
         image: httpd:latest
         # 意外停止自动重启
         restart: always
-        # 前置需要
-        depends_on:
-            - php
         # 端口映射 本地prot ： 容器prot
         ports:
             - "80:80"
@@ -25,10 +25,10 @@ services:
         # 容器名称
         container_name: apache
     php:
-        image: github.com/AprilOneDay/docker_php
-        restart: always
         depends_on:
             - mysql
+        image: github.com/AprilOneDay/docker_php
+        restart: always
         expose:
             - "9000"
         volumes:
