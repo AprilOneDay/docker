@@ -13,7 +13,7 @@
         environment:
             MYSQL_ROOT_PASSWORD: "1q2w3e4r"
         container_name: mysql
-    apache:
+    httpd:
         # 前置需要
         # depends_on:
         #     - php
@@ -35,7 +35,7 @@
         links:
             - php
         # 容器名称
-        container_name: apache
+        container_name: httpd
     php:
         # depends_on:
         #    - mysql
