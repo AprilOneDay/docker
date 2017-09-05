@@ -30,6 +30,7 @@ docker run -d --name test_apache-php  -e MYSQL_ADDR=74.121.150.93:3306 -p 80:80 
 想要删除untagged images，也就是那些id为<None>的image的话可以用
 
 docker rmi $(docker images | grep "^<none>" | awk "{print $3}")
+docker rmi $(docker images -q)
 
 docker rm $(docker ps -a -q)
 
@@ -59,3 +60,19 @@ docker run -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7
 #查看Linux系统版本的命令
 cat /etc/issue
 uname -a
+
+
+安装Docker Compose
+
+curl -L https://github.com/docker/compose/releases/download/1.4.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+chmod  +x /usr/local/bin/docker-compose
+
+#docker-compose版本
+docker-compose version
+
+
+ git clone https://github.com/AprilOneDay/docker.git
+
+ cd docker
+
+ docker-compose up

@@ -1,50 +1,51 @@
-apache:
-    # 容器名称
-    image: httpd:latest
-    # 意外停止自动重启
-    restart: always
-    # 前置需要
-    depends_on:
-        - php
-    # 端口映射 本地prot ： 容器prot
-    ports:
-        - "80:80"
-        - "443:443"
-    # 挂载数据卷 本地path：容器path ： 权限 | ro不可创建文件 rw可读写
-    volumes:
-        - ./src/:/usr/local/apache2/htdocs/:rw
-        - ./apache/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
-        - ./apache/conf/extra/httpd-vhosts.conf:/usr/local/apache2/extra/httpd-vhosts.conf:ro
-        - ./apache/log/:/usr/local/apache2/logs/:rw
-    # 链接容器
-    links:
-        - php
-    # 容器名称
-    container_name: apache
-php:
-    image: github.com/AprilOneDay/docker_php
-    restart: always
-    depends_on:
-        - mysql
-    expose:
-        - "9000"
-    volumes:
-        - ./src/:/var/www/html/:rw
-        - ./php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
-        - ./php/log/:/var/log/php-fpm/:rw
-    links:
-        - mysql:mysql
-    container_name: php        
+version: '3'
+    apache:
+        # 容器名称
+        image: httpd:latest
+        # 意外停止自动重启
+        restart: always
+        # 前置需要
+        depends_on:
+            - php
+        # 端口映射 本地prot ： 容器prot
+        ports:
+            - "80:80"
+            - "443:443"
+        # 挂载数据卷 本地path：容器path ： 权限 | ro不可创建文件 rw可读写
+        volumes:
+            - ./src/:/usr/local/apache2/htdocs/:rw
+            - ./apache/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+            - ./apache/conf/extra/httpd-vhosts.conf:/usr/local/apache2/extra/httpd-vhosts.conf:ro
+            - ./apache/log/:/usr/local/apache2/logs/:rw
+        # 链接容器
+        links:
+            - php
+        # 容器名称
+        container_name: apache
+    php:
+        image: github.com/AprilOneDay/docker_php
+        restart: always
+        depends_on:
+            - mysql
+        expose:
+            - "9000"
+        volumes:
+            - ./src/:/var/www/html/:rw
+            - ./php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+            - ./php/log/:/var/log/php-fpm/:rw
+        links:
+            - mysql:mysql
+        container_name: php        
 
-mysql:
-    image: mysql:5.7
-    restart: always
-    ports:
-        - "3306:3306"
-    volumes:
-        - ./mysql/conf.d/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
-        - ./mysql/data/:/var/lib/mysql/:rw
-        - ./mysql/log/:/var/log/mysql/:rw
-    environment:
-        MYSQL_ROOT_PASSWORD: "1q2w3e4r"
-    container_name: mysql
+    mysql:
+        image: mysql:5.7
+        restart: always
+        ports:
+            - "3306:3306"
+        volumes:
+            - ./mysql/conf.d/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+            - ./mysql/data/:/var/lib/mysql/:rw
+            - ./mysql/log/:/var/log/mysql/:rw
+        environment:
+            MYSQL_ROOT_PASSWORD: "1q2w3e4r"
+        container_name: mysql
