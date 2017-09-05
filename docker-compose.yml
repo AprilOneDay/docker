@@ -17,7 +17,7 @@
     php:
         # depends_on:
         #    - mysql
-        build: github.com/AprilOneDay/docker_php
+        image: github.com/AprilOneDay/docker_php
         restart: always
         expose:
             - "9000"
