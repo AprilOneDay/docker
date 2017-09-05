@@ -23,6 +23,8 @@ rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
 
 docker build -t server:v2 github.com/AprilOneDay/docker_php
 
+docker build -t php:v1 github.com/AprilOneDay/docker_php
+
 docker run -d --name test_apache-php  -e MYSQL_ADDR=74.121.150.93:3306 -p 80:80 server:v1
 
 想要删除untagged images，也就是那些id为<None>的image的话可以用
@@ -35,7 +37,7 @@ docker stop test_apache-php
 docker rm test_apache-php
 docker port  test_apache-php 80
 docker exec -it test_apache-php /bin/bash
-docker exec -it php-fpm /bin/bash
+docker exec -it php /bin/bash
 docker exec -it apache /bin/bash
 
 cd /
@@ -45,6 +47,9 @@ vi index.php
 docker cp apache2:/root/etc//local/apache2/conf/httpd.conf ~/www/apache2/conf/httpd.conf
 docker cp apache2:/usr/local/apache2/logs/ ~/www/apache2/logs
 docker cp apache2:/usr/local/apache2/htdocs/ ~/www/src
+
+docker cp apache:/root/etc//local/apache ~/www/src
+docker cp apache:/usr/local/apache2/ ~/www/
 
 #查看Linux系统版本的命令
 cat /etc/issue
