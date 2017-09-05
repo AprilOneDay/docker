@@ -14,13 +14,13 @@
         container_name: mysql
 
     php:
-        depends_on:
-            - mysql
+        #depends_on:
+        #    - mysql
         build: ./php/
         container_name: php
         restart: always
         links:
-            - mysql:mysql
+            - mysql:mysql2
         volumes:
             - ./src/:/var/www/html/:rw
             - ./php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
