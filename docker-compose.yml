@@ -26,7 +26,7 @@
             - ./php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
             - ./php/log/:/var/log/php-fpm/:rw
         expose:
-            - "9000"        
+            - "9000:9000"        
 
     httpd:
         # 前置需要
