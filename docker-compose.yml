@@ -42,7 +42,7 @@
         volumes:
             - ./src/:/usr/local/apache2/htdocs/:rw
             - ./apache/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
-            - ./apache/conf/extra/httpd-vhosts.conf:/usr/local/apache2/extra/httpd-vhosts.conf:ro
+            - ./apache/conf/extra/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf:ro
             - ./apache/log/:/usr/local/apache2/logs/:rw
         # 链接容器
         links:

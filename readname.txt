@@ -42,7 +42,7 @@ docker rm test_apache-php
 docker port  test_apache-php 80
 docker exec -it test_apache-php /bin/bash
 docker exec -it php /bin/bash
-docker exec -it httpd /bin/bash
+docker exec -it 8fa00a6ad2ee_httpd /bin/bash
 docker exec -it mysql /bin/bash
 
 cd /
