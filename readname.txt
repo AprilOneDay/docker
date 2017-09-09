@@ -42,8 +42,9 @@ docker rm test_apache-php
 docker port  test_apache-php 80
 docker exec -it test_apache-php /bin/bash
 docker exec -it php /bin/bash
-docker exec -it 8fa00a6ad2ee_httpd /bin/bash
+docker exec -it httpd /bin/bash
 docker exec -it mysql /bin/bash
+docker exec -it nginx /bin/bash
 
 cd /
 cd var/www/html
@@ -57,6 +58,7 @@ docker cp php:/usr/local/php ~/www/src
 docker cp apache:/usr/local/apache2/ ~/www/
 docker cp mysql:/etc/mysql/ ~/www/
 docker cp mysql:/var/lib/mysql ~/www/data/
+docker cp nginx:/etc/nginx ~/docker/nginx/
 
 docker run -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7
 

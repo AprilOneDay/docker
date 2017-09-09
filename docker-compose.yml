@@ -27,29 +27,41 @@
             - ./php/log/:/var/log/php-fpm/:rw
         expose:
             - "9000"        
-
-    httpd:
+    nginx:
+        build: ./nginx/
+        container_name: nginx
+        restart: always
+        links:
+            - php:php
+        volumes:
+            - ./src/:/usr/share/nginx/html/:rw
+            - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+            - ./nginx/conf/conf.d/vhosts.conf:/etc/nginx/conf.d/vhosts.conf:ro
+            - ./nginx/log/:/var/log/nginx/error.log:rw
+        ports:
+            - "80:80"
+    # httpd:
         # 前置需要
         # depends_on:
         #     - php
         # 容器名称
-        image: httpd:latest
+        # image: httpd:latest
         # 容器名称
-        container_name: httpd
+        # container_name: httpd
         # 意外停止自动重启
-        restart: always
+        # restart: always
         # 挂载数据卷 本地path：容器path ： 权限 | ro不可创建文件 rw可读写
-        volumes:
-            - ./src/:/usr/local/apache2/htdocs/:rw
-            - ./apache/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
-            - ./apache/conf/extra/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf:ro
-            - ./apache/log/:/usr/local/apache2/logs/:rw
+        # volumes:
+        #     - ./src/:/usr/local/apache2/htdocs/:rw
+        #     - ./apache/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+        #     - ./apache/conf/extra/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf:ro
+        #     - ./apache/log/:/usr/local/apache2/logs/:rw
         # 链接容器
-        links:
-            - php:php
+        # links:
+        #    - php:php
          # 端口映射 本地prot ： 容器prot
-        ports:
-            - "80:80"
+        # ports:
+        #    - "80:80"
             # - "443:443"
 
     
