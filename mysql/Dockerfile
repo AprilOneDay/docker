@@ -1,4 +1,3 @@
-Dockerfile
 # name:docker_mysql
 # use:store  
 # date:2017-09-04  
@@ -26,7 +25,7 @@ RUN mkdir -p $WORK_PATH
 COPY ./backup/$FILE_1 $WORK_PATH/
 
 #把要执行的shell文件放到/docker-entrypoint-initdb.d/目录下，容器会自动执行这个shell
-COPY ./$INSTALL_DATA_SHELL $AUTO_RUN_DIR/
+COPY ./shell/$INSTALL_DATA_SHELL $AUTO_RUN_DIR/
 
 #给执行文件增加可执行权限
 RUN chmod a+x $AUTO_RUN_DIR/$INSTALL_DATA_SHELL
