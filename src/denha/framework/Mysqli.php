@@ -326,9 +326,9 @@ class Mysqli
         $sql .= $this->limit;
 
         $result = $this->query($sql);
-        $data   = mysqli_fetch_array($result, MYSQL_ASSOC);
+        $data   = mysqli_fetch_array($result, MYSQLI_NUM);
 
-        return $data[$field];
+        return $data[0];
     }
 
     /**
