@@ -1,0 +1,22 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews
+    </IfModule>
+    RewriteEngine On
+
+    # Handle Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+
+    RewriteCond %{HTTP_HOST} ^denha.loc [NC]
+    RewriteCond %{REQUEST_URI} !^(\/vendor|\/ststic|\/uploadfile)(.*)$ [NC]
+    RewriteRule ^ pc.host.php
+
+    RewriteCond %{HTTP_HOST} ^console.denha.loc [NC]
+    RewriteCond %{REQUEST_URI} !^(\/vendor|\/ststic|\/uploadfile)(.*)$ [NC]
+    RewriteRule ^ console.host.php [L]
+
+    RewriteCond %{HTTP_HOST} ^blog.denha.loc [NC]
+    RewriteCond %{REQUEST_URI} !^(\/vendor|\/ststic|\/uploadfile)(.*)$ [NC]
+    RewriteRule ^ blog.host.php [L]
+</IfModule>

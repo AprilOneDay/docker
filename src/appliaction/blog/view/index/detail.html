@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>个人博客 - {$data['title']}</title>
+	<meta name="keywords" content=""/>
+	<meta name="description" content="{$data['description']}"/>
+	<meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+	<link rel="stylesheet" href="{F:getConfig('config','vendor')}/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="{F:getConfig('config','vendor')}/bootstrap/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="{F:getConfig('config','vendor')}/pace/themes/blue/pace-theme-minimal.css" />
+	<link rel="stylesheet" href="{F:getConfig('config','ststic')}/blog/css/common.css" />
+	<link rel="stylesheet" href="{F:getConfig('config','ststic')}/blog/css/css.css" />
+</head>
+<body>
+	<div class="wapper w14">
+		<div class="top w" >
+			<div class="location">
+				<i class="fa fa-volume-up"></i>
+				<a hefr="javascript:;">站点通知公告</a>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+		<div class="index-content container-fluid">
+			<div class="left col-md-9 col-xs-12">
+				<div class="news-content">
+					<h2>{$data['title']}</h2>
+					<div class="content">
+						{$data['content']}
+					</div>
+				</div>
+			</div>
+			<div class="right col-md-3 hidden-sm hidden-xs">
+				{include /public/right}
+			</div> 
+		</div>
+		<div class="clearfix"></div>
+		{include /public/footer}
+	</div>
+	<script type="text/javascript" src="{F:getConfig('config','ststic')}/console/js/jquery-1.12.3.min.js"></script>
+	<script type="text/javascript" src="{F:getConfig('config','vendor')}/pace/pace.min.js"></script>
+	<script type="text/javascript" src="{F:getConfig('config','vendor')}/layer/layer.js"></script>
+	<script type="text/javascript" src="{F:getConfig('config','ststic')}/blog/js/common.js"></script>
+</body>
+</html>

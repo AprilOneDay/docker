@@ -32,10 +32,11 @@ docker run -d --name test_apache-php  -e MYSQL_ADDR=74.121.150.93:3306 -p 80:80 
 docker rmi $(docker images | grep "^<none>" | awk "{print $3}")
 docker rmi $(docker images -q)
 
-docker rm $(docker ps -a -q)
 
 关闭所有正在运行容器
 docker ps | awk  '{print $1}' | xargs docker stop
+
+docker rm $(docker ps -a -q)
 
 docker stop test_apache-php
 docker rm test_apache-php
@@ -45,6 +46,11 @@ docker exec -it php /bin/bash
 docker exec -it httpd /bin/bash
 docker exec -it mysql /bin/bash
 docker exec -it nginx /bin/bash
+
+mysql -uroot  -p1q2w3e4r
+mysql -h172.17.0.2 -P3306 -uroot  -p1q2w3e4r
+mysql -h74.121.150.93 -P3306 -uroot  -p1q2w3e4r
+select database();
 
 cd /
 cd var/www/html
