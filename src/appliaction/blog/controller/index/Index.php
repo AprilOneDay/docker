@@ -25,7 +25,7 @@ class Index extends denha\Controller
         }
 
         $total = table('Article')->where($map)->count();
-        $pages = new denha\pages($total, $pageNo, $pageSize, url('index'));
+        $pages = new denha\Pages($total, $pageNo, $pageSize, url('index'));
 
         $field = 'id,tag,type,title,thumb,description,created';
         $list  = table('Article')->where($map)->field($field)->limit($offer, $pageSize)->find('array');
