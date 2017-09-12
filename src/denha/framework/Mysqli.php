@@ -42,7 +42,7 @@ class Mysqli
         $this->tablepre = $this->dbConfig['db_prefix'];
 
         if ($this->dbConfig['db_host'] == '' || $this->dbConfig['db_user'] == '' || $this->dbConfig['db_name'] == '') {
-            throw new Exception('接数据库信息有误！请查看是否配置正确' . print_r($this->dbConfig));
+            throw new Exception('接数据库信息有误！请查看是否配置正确' . var_dump($this->dbConfig));
         }
 
         $this->link = $this->openMysql();
