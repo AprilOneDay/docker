@@ -81,6 +81,7 @@ chmod  +x /usr/local/bin/docker-compose
 #docker-compose°æ±¾
 docker-compose version
 
+su -c "setenforce 0"
 cd
 rm -rf docker 
 git clone https://github.com/AprilOneDay/docker.git
