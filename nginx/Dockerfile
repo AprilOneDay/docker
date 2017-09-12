@@ -6,4 +6,4 @@ FROM nginx:latest
 
 # 增加执行权限
 RUN mkdir -p  /usr/share/nginx/html/public
-RUN chmod -R 755 /usr/share/nginx/html/public
+RUN chmod -R 755 /usr/share/nginx/html
