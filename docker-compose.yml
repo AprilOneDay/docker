@@ -35,7 +35,7 @@
         links:
             - php:php
         volumes:
-            - ./src/:/usr/share/nginx/html/:rw
+            - ./src/:/usr/share/nginx/html/
             - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
             - ./nginx/conf/conf.d/vhosts.conf:/etc/nginx/conf.d/vhosts.conf:ro
         #     - ./nginx/log/:/var/log/nginx/error.log:rw
