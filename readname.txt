@@ -34,8 +34,8 @@ docker rmi $(docker images -q)
 
 关闭所有正在运行容器
 docker ps | awk  '{print $1}' | xargs docker stop
-
 docker rm $(docker ps -a -q)
+docker rmi docker_nginx
 
 docker stop test_apache-php
 docker rm test_apache-php
@@ -81,6 +81,9 @@ chmod  +x /usr/local/bin/docker-compose
 docker-compose version
 
 su -c "setenforce 1"
+docker ps | awk  '{print $1}' | xargs docker stop
+docker rm $(docker ps -a -q)
+docker rmi docker_nginx
 cd
 rm -rf docker 
 git clone https://github.com/AprilOneDay/docker.git

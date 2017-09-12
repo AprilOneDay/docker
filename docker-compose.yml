@@ -36,8 +36,8 @@
             - php:php
         volumes:
             - ./src/:/usr/share/nginx/html/
-            - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
-            - ./nginx/conf/conf.d/vhosts.conf:/etc/nginx/conf.d/vhosts.conf:ro
+            - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+            - ./nginx/conf/conf.d/vhosts.conf:/etc/nginx/conf.d/vhosts.conf
         #     - ./nginx/log/:/var/log/nginx/error.log:rw
         ports:
             - "80:80"
