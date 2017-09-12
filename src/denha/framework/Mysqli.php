@@ -42,7 +42,7 @@ class Mysqli
         $this->tablepre = $this->dbConfig['db_prefix'];
 
         if ($this->dbConfig['db_host'] == '' || $this->dbConfig['db_user'] == '' || $this->dbConfig['db_name'] == '') {
-            throw new Exception('接数据库信息有误！请查看是否配置正确' . var_dump($this->dbConfig));
+            throw new Exception('接数据库信息有误！请查看是否配置正确');
         }
 
         $this->link = $this->openMysql();
@@ -74,7 +74,7 @@ class Mysqli
 
         if (!$res) {
             if (!$this->link) {
-                throw new Exception('连接数据库失败，可能数据库密码不对或数据库服务器出错！');
+                throw new Exception('连接数据库失败，可能数据库密码不对或数据库服务器出错！' . print_r($this->dbConfig));
             }
 
         }
