@@ -37,6 +37,7 @@
             - php:php
         volumes:
             - ./src/:/var/www/html/:rw
+            - ./src/data:/var/www/html/data:rw
             - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf
             - ./nginx/conf/conf.d/:/etc/nginx/conf.d/
             - ./nginx/log/:/var/log/nginx/:rw
