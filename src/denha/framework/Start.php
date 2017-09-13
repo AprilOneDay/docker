@@ -52,7 +52,7 @@ class Start
         $action = lcfirst(parsename(ACTION, true));
 
         if (!method_exists($object, $action)) {
-            throw new Exception('[ ' . parsename(CONTROLLER, true) . ' ] CONTROLLER NOT FIND [ ' . $action . ' ] ACTION');
+            throw new Exception('Class : ' . Route::$class . ' in [ ' . parsename(CONTROLLER, true) . ' ] CONTROLLER NOT FIND [ ' . $action . ' ] ACTION');
         }
 
         $action = $object->$action();
