@@ -19,4 +19,5 @@
 # For explanations see
 # http://dev.mysql.com/doc/mysql/en/server-system-variables.html
 
-[mysql]
+[mysqld]
+explicit_defaults_for_timestamp=true
