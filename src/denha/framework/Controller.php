@@ -69,6 +69,7 @@ class Controller
             //处理视图模板
             $template = new Template($path);
             $template->getContent();
+            var_dump($template);
             include $template->loadPath;
         }
     }
