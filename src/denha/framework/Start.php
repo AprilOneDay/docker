@@ -46,13 +46,14 @@ class Start
         }
 
         if (!$object) {
-            throw new Exception('NOT FIND CONTROLLER : [ ' . CONTROLLER . ' ] in ' . $class = Route::$class);
+            throw new Exception('NOT FIND CONTROLLER : [ ' . CONTROLLER . ' ] in ' . Route::$class);
         }
 
         $action = lcfirst(parsename(ACTION, true));
 
         if (!method_exists($object, $action)) {
-            throw new Exception('Class : ' . Route::$class . ' in [ ' . parsename(CONTROLLER, true) . ' ] CONTROLLER NOT FIND [ ' . $action . ' ] ACTION');
+            var_dump($object);
+            throw new Exception('Class : ' . Route::$class . ' NOT FIND [ ' . $action . ' ] ACTION');
         }
 
         $action = $object->$action();
