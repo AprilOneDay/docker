@@ -80,7 +80,7 @@ chmod  +x /usr/local/bin/docker-compose
 #docker-compose°æ±¾
 docker-compose version
 
-su -c "setenforce 1"
+su -c "setenforce 0"
 docker ps | awk  '{print $1}' | xargs docker stop
 docker rm $(docker ps -a -q)
 docker rmi docker_nginx
