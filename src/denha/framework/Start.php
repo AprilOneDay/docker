@@ -52,7 +52,6 @@ class Start
         $action = lcfirst(parsename(ACTION, true));
 
         if (!method_exists($object, $action)) {
-            var_dump($object);
             throw new Exception('Class : ' . Route::$class . ' NOT FIND [ ' . $action . ' ] ACTION');
         }
 
