@@ -38,7 +38,7 @@ class Template
     {
         $cacheMd5       = md5($this->viewPath);
         $this->loadPath = DATA_PATH . $cacheMd5 . '.php';
-        $file           = fopen($this->loadPath, 'w') or die('NOT CANT FOPEN: ' . $this->loadPath);
+        $file           = fopen($this->loadPath, 'w') or die('CAN NOT  FOPEN: ' . $this->loadPath);
         fwrite($file, $this->content);
         fclose($file);
         //同步修改时间
