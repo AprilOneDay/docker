@@ -5,5 +5,5 @@
 FROM nginx:latest
 
 # 增加执行权限
-RUN mkdir -p  /var/www/html/
-RUN chmod -R 755 /var/www/html
+RUN mkdir -p  /var/www/html/public/
+RUN chmod -R 755 /var/www/html/public
