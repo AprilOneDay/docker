@@ -24,6 +24,7 @@
             - mysql:mysql2
         volumes:
             - ./src/:/var/www/html/:rw
+            - ./src/data:/var/www/html/data:rw
             - ./php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
             - ./php/log/:/var/log/php-fpm/:rw
         expose:

@@ -1,5 +1,5 @@
 /*
-SQLyog Ultimate v12.09 (64 bit)
+SQLyog Enterprise v12.09 (64 bit)
 MySQL - 5.5.53 : Database - denha
 *********************************************************************
 */
@@ -12,7 +12,7 @@ MySQL - 5.5.53 : Database - denha
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`denha` /*!40100 DEFAULT CHARACTER SET utf8 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`denha` /*!40100 DEFAULT CHARACTER SET gbk */;
 
 USE `denha`;
 
@@ -23,15 +23,22 @@ DROP TABLE IF EXISTS `dh_article`;
 CREATE TABLE `dh_article` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '类型',
+  `tag` varchar(20) DEFAULT NULL COMMENT 'tag标签',
   `title` varchar(50) NOT NULL DEFAULT '' COMMENT '标题',
+  `thumb` varchar(255) DEFAULT '' COMMENT '缩略图',
   `description` varchar(255) DEFAULT '' COMMENT '简介',
-  `is_show` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '显示状态 1开始 0关闭',
-  `del_status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '删除状态 1删除 0未删除',
+  `is_show` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '显示状态 1显示 0关闭',
+  `del_status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '删除状态 1删除 0未删除',
   `created` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `hot` int(11) DEFAULT '0' COMMENT '热度',
+  `is_recommend` tinyint(1) DEFAULT '0' COMMENT '推荐排行榜 1推荐 0不推荐',
+  PRIMARY KEY (`id`),
+  KEY `is_show` (`is_show`)
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 /*Data for the table `dh_article` */
+
+insert  into `dh_article`(`id`,`type`,`tag`,`title`,`thumb`,`description`,`is_show`,`del_status`,`created`,`hot`,`is_recommend`) values (1,1,'6','Nginx 实现跨域使用字体文件','d32b6491067a0e25561eb4d192243d7e.jpeg','Nginx 实现跨域使用字体文件',1,0,1504970134,0,1),(2,1,'6','Nginx 跨域访问php  ','','Access-Control-Allow-Origin 错误',1,0,1504970371,0,0),(3,1,'10','Html 文字内容只显示一行','','&lt;ul&gt;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&lt;li&gt;&lt;a&nbsphref=\"javascript:;\"&gt;餐馆&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;css:li{&nbsp;white-space:nowrap;&nbsp;&nbsp;overflow:hidden;&nbsp;text-overflow:ellipsis;}',1,0,1505020972,0,0);
 
 /*Table structure for table `dh_article_blog` */
 
@@ -44,6 +51,8 @@ CREATE TABLE `dh_article_blog` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Data for the table `dh_article_blog` */
+
+insert  into `dh_article_blog`(`id`,`content`) values (1,'<div>location ~* .(eot|ttf|woff|woff2|svg|otf)$ {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; add_header Access-Control-Allow-Origin http://dist.denha.loc;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; #add_header Access-Control-Allow-Headers X-Requested-With;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; #add_header Access-Control-Allow-Credentials true;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; add_header Access-Control-Allow-Methods GET;</div><div>}</div>'),(2,'<div>location ~ .php(.*)$ {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; add_header Access-Control-Allow-Origin http://dist.denha.loc;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; add_header Access-Control-Allow-Headers X-Requested-With;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; add_header Access-Control-Allow-Credentials true;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; add_header Access-Control-Allow-Methods GET,POST;</div><div>}</div>'),(3,'<div><div style=\"\"><font face=\"Microsoft YaHei\">&lt;ul&gt;</font></div><div style=\"\"><font face=\"Microsoft YaHei\">&nbsp; &nbsp; &nbsp;&lt;li&gt;&lt;a href=\"javascript:;\"&gt;餐馆&lt;/a&gt;&lt;/li&gt;</font></div><div style=\"\"><span style=\"font-family: &quot;Microsoft YaHei&quot;;\">&lt;/ul&gt;</span><br></div></div><span style=\"font-family: &quot;Microsoft YaHei&quot;;\"><div><span style=\"font-family: &quot;Microsoft YaHei&quot;;\"><br></span></div>css:</span><div>li{<br style=\"font-family: &quot;Microsoft YaHei&quot;;\"><span style=\"font-family: &quot;Microsoft YaHei&quot;;\">&nbsp;white-space:nowrap;&nbsp;</span><br style=\"font-family: &quot;Microsoft YaHei&quot;;\"><span style=\"font-family: &quot;Microsoft YaHei&quot;;\">&nbsp;overflow:hidden;</span><br style=\"font-family: &quot;Microsoft YaHei&quot;;\"><span style=\"font-family: &quot;Microsoft YaHei&quot;;\">&nbsp;text-overflow:ellipsis;</span></div><div><span style=\"font-family: &quot;Microsoft YaHei&quot;;\">}</span></div>');
 
 /*Table structure for table `dh_console_admin` */
 
@@ -68,7 +77,7 @@ CREATE TABLE `dh_console_admin` (
 
 /*Data for the table `dh_console_admin` */
 
-insert  into `dh_console_admin`(`id`,`consoleid`,`nickname`,`username`,`password`,`salt`,`mobile`,`status`,`group`,`create_ip`,`login_ip`,`created`,`login_time`) values (1,0,'四月','admin','8895c4947031a4019843c0d00fa303b1','50907','15923882847',1,1,'127.0.0.1','127.0.0.1',1502522576,1503132995),(4,0,'陈明江','cmj','96c76c67a66e92c1e90bce05ebec4b5d','34366','15923882847',1,1,'127.0.0.1','0',1502531990,0);
+insert  into `dh_console_admin`(`id`,`consoleid`,`nickname`,`username`,`password`,`salt`,`mobile`,`status`,`group`,`create_ip`,`login_ip`,`created`,`login_time`) values (1,0,'四月','admin','8895c4947031a4019843c0d00fa303b1','50907','15923882847',1,1,'127.0.0.1','127.0.0.1',1502522576,1505009882),(4,0,'陈明江','cmj','96c76c67a66e92c1e90bce05ebec4b5d','34366','15923882847',1,1,'127.0.0.1','0',1502531990,0);
 
 /*Table structure for table `dh_console_menus` */
 
