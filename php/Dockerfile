@@ -11,31 +11,31 @@ MAINTAINER siyue 350375092@qq.com
 # RUN export https_proxy=192.168.1.10:1080
 
 # Update ubuntu
-RUN apt-get update
+#RUN apt-get update
 
 # mcrypt
-RUN apt-get install -y libmcrypt-dev
-RUN docker-php-ext-install mcrypt
+#RUN apt-get install -y libmcrypt-dev
+#RUN docker-php-ext-install mcrypt
 
 # GD
-RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng12-dev
-RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
-RUN docker-php-ext-install -j$(nproc) gd
+#RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng12-dev
+#RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
+#RUN docker-php-ext-install -j$(nproc) gd
 
 # Intl
-RUN apt-get install -y libicu-dev
-RUN docker-php-ext-install -j$(nproc) intl
+#RUN apt-get install -y libicu-dev
+#RUN docker-php-ext-install -j$(nproc) intl
 
 # General
-RUN docker-php-ext-install zip 
-RUN docker-php-ext-install pcntl 
-RUN docker-php-ext-install opcache 
-RUN docker-php-ext-install pdo_mysql 
-RUN docker-php-ext-install mysqli 
+#RUN docker-php-ext-install zip 
+#RUN docker-php-ext-install pcntl 
+#RUN docker-php-ext-install opcache 
+#RUN docker-php-ext-install pdo_mysql 
+#RUN docker-php-ext-install mysqli 
 
 # SOAP Client
-RUN apt-get install -y libxml2-dev
-RUN docker-php-ext-install soap
+#RUN apt-get install -y libxml2-dev
+#RUN docker-php-ext-install soap
 
 # General extensions that may had be installed default
 # If not, install them with following command

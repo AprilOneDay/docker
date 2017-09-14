@@ -4,6 +4,7 @@
         #image: mysql:5.7
         build: ./mysql/
         restart: always
+        privileged: true
         ports:
             - "3306:3306"
         volumes:
@@ -20,6 +21,7 @@
         build: ./php/
         container_name: php
         restart: always
+        privileged: true
         links:
             - mysql:mysql2
         volumes:
@@ -33,6 +35,7 @@
         build: ./nginx/
         container_name: nginx
         restart: always
+        privileged: true
         links:
             - php:php
         volumes:
