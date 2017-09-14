@@ -43,14 +43,14 @@ RUN docker-php-ext-install soap
 #RUN docker-php-ext-install dom
 #RUN docker-php-ext-install fileinfo
 #RUN docker-php-ext-install ftp
-RUN docker-php-ext-install hash
+#RUN docker-php-ext-install hash
 RUN docker-php-ext-install iconv
 RUN docker-php-ext-install json
 RUN docker-php-ext-install mbstring
-RUN docker-php-ext-install pdo
-#RUN docker-php-ext-install pdo_sqlite
 RUN docker-php-ext-install posix
 RUN docker-php-ext-install session
+#RUN docker-php-ext-install pdo
+#RUN docker-php-ext-install pdo_sqlite
 #RUN docker-php-ext-install tokenizer
 #RUN docker-php-ext-install simplexml
 #RUN docker-php-ext-install xml
@@ -58,10 +58,10 @@ RUN docker-php-ext-install session
 #RUN docker-php-ext-install xmlwriter
 
 # CURL, may had be installed default
-RUN apt-get install -y curl
-RUN apt-get install -y libcurl3
-RUN apt-get install -y libcurl4-openssl-dev
-RUN docker-php-ext-install curl
+#RUN apt-get install -y curl
+#RUN apt-get install -y libcurl3
+#RUN apt-get install -y libcurl4-openssl-dev
+#RUN docker-php-ext-install curl
 
 # More extensions
 #RUN docker-php-ext-install exif
@@ -145,5 +145,8 @@ RUN docker-php-ext-install curl
 #    && echo "xdebug.remote_handler=dbgp" >> /usr/local/etc/php/conf.d/xdebug.ini
 #    && echo "xdebug.xdebug.remote_host=127.0.0.1" >> /usr/local/etc/php/conf.d/xdebug.ini
 #    && echo "xdebug.xdebug.remote_port=9000" >> /usr/local/etc/php/conf.d/xdebug.ini
+
+# 增加权限控制
+RUN usermod -u 1000 www-data
 
 
