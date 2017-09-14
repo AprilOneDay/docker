@@ -18,6 +18,6 @@ return [
     'authKey'      => 'QGa9h95r9Q5dYsnpsPb9', //密钥用于可逆加密
 
     /* 基础设置 */
-    'debug'        => false, // 是否开启调试
-    'trace'        => false, // 是否显示页面Trace信息
+    'debug'        => true, // 是否开启调试
+    'trace'        => true, // 是否显示页面Trace信息
 ];

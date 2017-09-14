@@ -44,11 +44,11 @@ MAINTAINER siyue 350375092@qq.com
 #RUN docker-php-ext-install fileinfo
 #RUN docker-php-ext-install ftp
 #RUN docker-php-ext-install hash
-RUN docker-php-ext-install iconv
-RUN docker-php-ext-install json
-RUN docker-php-ext-install mbstring
-RUN docker-php-ext-install posix
-RUN docker-php-ext-install session
+#RUN docker-php-ext-install iconv
+#RUN docker-php-ext-install json
+#RUN docker-php-ext-install mbstring
+#RUN docker-php-ext-install posix
+#RUN docker-php-ext-install session
 #RUN docker-php-ext-install pdo
 #RUN docker-php-ext-install pdo_sqlite
 #RUN docker-php-ext-install tokenizer
@@ -148,5 +148,6 @@ RUN docker-php-ext-install session
 
 # 增加权限控制
 RUN usermod -u 1000 www-data
-
+RUN mkdir -p  /var/www/html/data/
+RUN chmod -R 777 /var/www/html/data
 
