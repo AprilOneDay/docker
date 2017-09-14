@@ -290,7 +290,7 @@ class Mysqli
         $sql    = "select " . $this->field . " from " . $this->table;
         $result = $this->query($sql);
 
-        $data = mysqli_fetch_array($result, MYSQL_ASSOC);
+        $data = mysqli_fetch_array($result, MYSQLI_ASSOC);
 
         foreach ($data as $key => $value) {
             $varField[$key] = $value;
@@ -384,7 +384,7 @@ class Mysqli
         }
         //单字段数组模式
         elseif ($value == 'one' && $isArray) {
-            while ($row = mysqli_fetch_array($result, MYSQL_ASSOC)) {
+            while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
                 if (count($row) > 1) {
                     throw new Exception('sql模块中one只能查询单个字段内容请设置field函数');
                 }
@@ -399,7 +399,7 @@ class Mysqli
         //三维数组模式
         elseif ($this->total > 1 || $value == 'array') {
 
-            while ($row = mysqli_fetch_array($result, MYSQL_ASSOC)) {
+            while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
                 $data[] = $row;
             }
 
@@ -415,7 +415,7 @@ class Mysqli
         }
         //二维数组模式
         else {
-            $row = mysqli_fetch_array($result, MYSQL_ASSOC);
+            $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
 
             foreach ($row as $key => $value) {
                 $data[$key] = $value;

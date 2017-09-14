@@ -14,28 +14,28 @@ MAINTAINER siyue 350375092@qq.com
 #RUN apt-get update
 
 # mcrypt
-#RUN apt-get install -y libmcrypt-dev
-#RUN docker-php-ext-install mcrypt
+RUN apt-get install -y libmcrypt-dev
+RUN docker-php-ext-install mcrypt
 
 # GD
-#RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng12-dev
-#RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
-#RUN docker-php-ext-install -j$(nproc) gd
+RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng12-dev
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
+RUN docker-php-ext-install -j$(nproc) gd
 
 # Intl
 #RUN apt-get install -y libicu-dev
 #RUN docker-php-ext-install -j$(nproc) intl
 
 # General
-#RUN docker-php-ext-install zip 
-#RUN docker-php-ext-install pcntl 
-#RUN docker-php-ext-install opcache 
-#RUN docker-php-ext-install pdo_mysql 
-#RUN docker-php-ext-install mysqli 
+RUN docker-php-ext-install zip 
+RUN docker-php-ext-install pcntl 
+RUN docker-php-ext-install opcache 
+RUN docker-php-ext-install pdo_mysql 
+RUN docker-php-ext-install mysqli 
 
 # SOAP Client
-#RUN apt-get install -y libxml2-dev
-#RUN docker-php-ext-install soap
+RUN apt-get install -y libxml2-dev
+RUN docker-php-ext-install soap
 
 # General extensions that may had be installed default
 # If not, install them with following command
@@ -44,13 +44,13 @@ MAINTAINER siyue 350375092@qq.com
 #RUN docker-php-ext-install fileinfo
 #RUN docker-php-ext-install ftp
 #RUN docker-php-ext-install hash
-#RUN docker-php-ext-install iconv
-#RUN docker-php-ext-install json
-#RUN docker-php-ext-install mbstring
+RUN docker-php-ext-install iconv
+RUN docker-php-ext-install json
+RUN docker-php-ext-install mbstring
+RUN docker-php-ext-install session
+RUN docker-php-ext-install pdo
+RUN docker-php-ext-install pdo_sqlite
 #RUN docker-php-ext-install posix
-#RUN docker-php-ext-install session
-#RUN docker-php-ext-install pdo
-#RUN docker-php-ext-install pdo_sqlite
 #RUN docker-php-ext-install tokenizer
 #RUN docker-php-ext-install simplexml
 #RUN docker-php-ext-install xml
@@ -58,10 +58,10 @@ MAINTAINER siyue 350375092@qq.com
 #RUN docker-php-ext-install xmlwriter
 
 # CURL, may had be installed default
-#RUN apt-get install -y curl
-#RUN apt-get install -y libcurl3
-#RUN apt-get install -y libcurl4-openssl-dev
-#RUN docker-php-ext-install curl
+RUN apt-get install -y curl
+RUN apt-get install -y libcurl3
+RUN apt-get install -y libcurl4-openssl-dev
+RUN docker-php-ext-install curl
 
 # More extensions
 #RUN docker-php-ext-install exif
