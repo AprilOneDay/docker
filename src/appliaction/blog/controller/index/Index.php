@@ -30,7 +30,10 @@ class Index extends denha\Controller
         $pages = new denha\Pages($total, $pageNo, $pageSize, url('index'));
 
         $field = 'id,tag,type,title,thumb,description,created,hot';
-        $list  = table('Article')->where($map)->field($field)->limit($offer, $pageSize)->find('array');
+        $list  = table('Article')->where($map)->field($field)->limit($offer, $pageSize)->order('id desc')->find('array');
+        foreach ($list as $key => $value) {
+            $list[$key]['comment'] = (int) table('VisitorComment')->where(array('goods_id' => $value['id']))->count();
+        }
 
         $class = table('Article')->where(array('is_show' => 1))->field('count(*) as num,tag')->group('tag')->find('array');
         foreach ($class as $key => $value) {
@@ -62,8 +65,9 @@ class Index extends denha\Controller
         $map[$article . '.is_show'] = 1;
         $map[$article . '.id']      = $id;
 
-        $field = "$article.id,$article.title,$article.created,$article.description,$article.hot,$articleBlog.content";
-        $data  = table('Article')->join($articleBlog, "$article.id = $articleBlog.id", 'left')->where($map)->field($field)->find();
+        $field           = "$article.id,$article.title,$article.created,$article.description,$article.hot,$articleBlog.content";
+        $data            = table('Article')->join($articleBlog, "$article.id = $articleBlog.id", 'left')->where($map)->field($field)->find();
+        $data['comment'] = (int) table('VisitorComment')->where(array('goods_id' => $data['id']))->count();
 
         //获取分类
         $class = table('Article')->where(array('is_show' => 1))->field('count(*) as num,tag')->group('tag')->find('array');
@@ -77,6 +81,9 @@ class Index extends denha\Controller
         //增加阅读记录
         table('Article')->where(array('id' => $id))->save(array('hot' => array('add', 1)));
 
+        $user = getSession('user');
+
+        $this->assign('user', $user);
         $this->assign('comment', $comment);
         $this->assign('listClass', $listClass);
         $this->assign('tagCopy', getVar('tags', 'console.article'));

@@ -33,6 +33,9 @@ class Comment extends \app\app\controller\Init
         }
 
         $result = dao('VisitorComment', 'blog')->add($nickname, 1, $goodsId, $content);
+        if ($result['status']) {
+            session('user', array('nickname' => $nickname, 'mail' => $mail));
+        }
         $this->ajaxReturn($result);
     }
 
@@ -60,6 +63,9 @@ class Comment extends \app\app\controller\Init
         }
 
         $result = dao('VisitorComment', 'blog')->reply($nickname, 1, $content, $parentId, $toId);
+        if ($result['status']) {
+            session('user', array('nickname' => $nickname, 'mail' => $mail));
+        }
         $this->ajaxReturn($result);
     }
 
