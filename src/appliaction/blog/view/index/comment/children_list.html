@@ -1,0 +1,16 @@
+{loop $list $key $value}
+<li>
+	<label>{$value['nickname']} to {$value['to_nickname']}</label>
+	<p>{$value['content']}</p>
+	<div class="buttom">
+		<div class="pull-left">
+			<i class="fa fa-clock-o"></i> 时间 {F:date('Y-m-d',$value['created'])}
+		</div>
+		<div class="pull-right">
+			<a href="javascript:;">举报</a>
+			<a href="javascript:;" data-to_id="{$value['id']}" data-parent_id="{$value['id']}" class="btn-show-reply">回复</a>
+		</div>
+	</div>
+	<div class="clearfix"></div>
+</li>
+{/loop}

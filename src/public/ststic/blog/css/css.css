@@ -10,8 +10,10 @@ body{ background: #f0f2f7; }
 .left .news li .news-content img{ width:150px; height: 100px; float: left; margin-right: 15px; margin-bottom: 1rem; }
 .left .news li .news-content .desc{ display: inline-block; }
 .left .news li .news-content .desc p{ line-height: 1.85rem;align-items: center; overflow: hidden;} 
-.left .news li .news-content dl { float: left; padding-right: 10px;  }
-.left .news li .news-content dl i{margin-right: 5px;}
+.desc dl { float: left; padding-right: 10px;  }
+.desc dl i{margin-right: 5px;}
+
+.index-content{ padding-bottom: 20px; }
 
 .index-search{ margin-top: 25px; border: 1px solid #e1e1e1; padding: 20px; }
 
@@ -25,7 +27,15 @@ body{ background: #f0f2f7; }
 .article .article-content{ border: 1px solid #e1e1e1;  padding: 20px;}
 .article .article-content li{float: left; width: 100%;  line-height: 25px; white-space:nowrap; overflow:hidden;text-overflow:ellipsis;}
 
-.footer{background: #363d4c; color: #fff; padding: 20px; margin-top: 25px; line-height: 35px;}
+.comment{ margin-top: 2rem; }
+.comment li{ border-bottom: 1px solid #e1e1e1; padding:1rem 0; }
+
+.comment-chlid{ border: 1px solid #e1e1e1; margin:2rem; padding:1rem; }
+
+.remark{ width: 90%; margin-top: 1rem; }
+.remark textarea{ min-height: 12rem; }
+
+.footer{background: #363d4c; color: #fff; padding: 20px;  line-height: 35px;}
 .footer .link { border-bottom:  1px solid #ccc; }
 .footer .link li{ float: left; padding-right: 10px;   }
 .footer .link .link-title{ font-weight: bolder;}

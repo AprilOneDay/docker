@@ -14,6 +14,7 @@ class Route
         $array = explode('/', $uri);
 
         if (count($array) >= 3) {
+            $version = $array[0];
             define('MODULE', $array[1]);
             define('CONTROLLER', $array[2]);
 
@@ -29,11 +30,14 @@ class Route
 
             //切换小版本
             if (is_numeric($array[3])) {
+                $version = $array[0] . '.' . $array[3];
                 self::$class .= '_' . $array[3];
-            } elseif (is_numeric($array[4])) {
+            } elseif (isset($array[4]) && is_numeric($array[4])) {
+                $version = $array[0] . '.' . $array[4];
                 self::$class .= '_' . $array[4];
             }
 
+            define('APP_VERSION', $version);
             //print_r($array);
             //print_r(self::$class);die;
         }

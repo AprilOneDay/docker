@@ -1,0 +1,57 @@
+.border-top{ height: 50px; background: #2a2f32;  }
+.border-top .logo{ color: #fff; display: block; line-height: 50px; font-size: 17px; width: 80px; text-align: center;  }
+.border-top .border-top-left a:hover{ background: black; cursor: pointer; }
+.border-top .border-top-right li{ float: left;  border-right: 1px solid #373d41;  }
+.border-top .border-top-right li a{ color: #fff; line-height: 50px; display: block; padding-left: 20px;  padding-right: 20px; }
+.border-top .border-top-right li a:hover{  background: black; cursor: pointer;  }
+.border-top .border-top-right li:last-child{ border-right: none; }
+
+.wrapper .sidebar-inner{ min-width: 38px;   background: #333744; padding: 0px;}
+.wrapper .sidebar-inner .sidebar-fold{ width: 100%; background: #4a5064; text-align: center; color: #fff; line-height: 30px;  cursor: pointer;}
+.wrapper .sidebar-inner ul li{ float: left; display: block; width: 100%;}
+.wrapper .sidebar-inner ul li span{ padding-right: 10px; }
+.wrapper .sidebar-inner ul li a{ line-height: 40px; height: 40px; padding-left: 15px;  display: block; cursor: pointer; color: #fff; overflow: hidden; }
+.wrapper .sidebar-inner ul li:hover{ background: #3299cc; color: #fff; }
+.wrapper .sidebar-inner ul li:hover dl{ background: #333744; }
+	
+.wrapper .sidebar-inner ul li dl { margin:0px; display: none; }
+.wrapper .sidebar-inner ul li dl dd a:hover{  background: #4a5064; color: red; }
+.wrapper .sidebar-inner ul li dl dd .cur{ background: #4a5064; }
+
+.wrapper .product-nav-scene{ background: #EAEDF1; padding: 0px;  display: none;}
+.wrapper .product-nav-scene .title{ width: 100%; display: block; height: 70px; background: #e1e1e1; line-height: 70px; padding-left: 40px; color: #000; font-weight: bolder; }
+.wrapper .product-nav-scene ul li{ float: left;  display: block; width: 100%;}
+.wrapper .product-nav-scene ul li a{ line-height: 40px; height: 40px; padding-left: 15px;  display: block; cursor: pointer; color: #333; overflow: hidden; }
+.wrapper .product-nav-scene ul li a span{ padding-right: 14px; width: 14px;  }
+.wrapper .product-nav-scene ul li:hover{ background: #fff; }
+.wrapper .product-nav-scene ul li:hover dl{ background: red;}
+
+.wrapper .product-nav-scene ul li dl{ margin:0px; display: none; width: 100%;}
+.wrapper .product-nav-scene ul li dl dd a{ padding-left: 20px; }
+.wrapper .product-nav-scene ul li:hover dl{ background: none; }
+.wrapper .product-nav-scene ul li dl dd a:hover{  background: #ccc; color: red; }
+.wrapper .product-nav-scene ul li dl dd .cur{ background: #ccc; }
+
+/* 登录 */
+.account-pages { position: absolute; height: 100%; width: 100%;}
+.wrapper-page {margin: 10% auto; position: relative; width: 420px;}
+.wrapper-page .card-box {border: 1px solid rgba(54, 64, 74, 0.1);}
+.card-box {padding: 20px;border: 1px solid rgba(54, 64, 74, 0.05);-webkit-border-radius: 5px; border-radius: 5px;-moz-border-radius: 5px;background-clip: padding-box; margin-bottom: 20px; background-color: #ffffff;box-shadow: 0 0 14px rgba(0,0,0,.1);}
+.panel-heading img{width: 100px; height: 100px; margin: 0 auto;}
+.card-box .panel-heading{text-align: center;}
+.form-control {background-color: #FFFFFF; border: 1px solid #E3E3E3; border-radius: 4px; color: #565656; padding: 7px 12px; height: 34px; max-width: 100%;box-shadow: none;}
+.form-control:focus {background-color: #FFFFFF; border: 1px solid #AAAAAA; -webkit-box-shadow: none; box-shadow: none; outline: 0 !important; color: #333333;}
+.btn-primary,.btn-primary:focus {background-color: #09c; border: 1px solid #027fa9 !important; color: #ffffff; }
+.btn-primary:hover,.btn-primary:active{background-color: #008cbb; border-color:#09c;}
+.error-text{color: #d9534f; line-height: 30px; font-size: 14px; text-align: center; margin: 0;}
+.row p{color: #aaaaaa}
+.captcha { height: 37px; }
+
+.login_method { width: 80%; display: block; margin:0 auto; padding:30px 0; text-align: center; overflow: hidden;}
+.login_method a { float: left; display: block; width: 50%; border: 0; margin: 0; padding: 0; overflow: hidden; }
+.login_method a:hover { text-decoration: none; }
+.login_method a:hover i { background: #337ab7; color: #fff; }
+.login_method i { font-style: normal; font-size: 16px; clear: both; display: block; width: 80px; height: 80px; text-align: center; line-height: 80px; margin: 0 auto; background: #ddd; overflow: hidden; }
+.login_method span { clear: both; padding-top: 20px; overflow: hidden;}
+
+.btn-open{ cursor: pointer; }

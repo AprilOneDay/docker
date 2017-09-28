@@ -11,6 +11,7 @@
 					<div class="title btn737">分类目录</div>
 					<div class="tags-content">
 						<ul>
+							<li><a href="/">全部</a></li>
 							{loop $listClass $key $value}
 							<li><a href="{F:url('index',array('tag'=>$value['tag']))}">{$tagCopy[$value['tag']]} ({$value['num']})</a></li>
 							{/loop}
@@ -24,9 +25,9 @@
 					<div class="title btn737">热门文章</div>
 					<div class="article-content">
 						<ul>
-							{loop $list $key $value}
+							{loop $randList $key $value}
 							<li>
-								<a href="javascript:;" title="{$value['title']}">
+								<a href="{F:url('detail',array('id'=>$value['id']))}" title="{$value['title']}">
 								· {$value['title']}
 								</a>
 							</li>

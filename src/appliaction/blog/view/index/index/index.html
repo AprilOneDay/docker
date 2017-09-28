@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>个人博客</title>
+	<meta name="keywords" content=""/>
+	<meta name="description" content=""/>
+	<meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+	<link rel="stylesheet" href="{F:getConfig('config','vendor')}/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="{F:getConfig('config','vendor')}/bootstrap/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="{F:getConfig('config','vendor')}/pace/themes/blue/pace-theme-minimal.css" />
+	<link rel="stylesheet" href="{F:getConfig('config','ststic')}/blog/css/common.css" />
+	<link rel="stylesheet" href="{F:getConfig('config','ststic')}/blog/css/css.css" />
+</head>
+<body>
+	<div class="wapper w14">
+		<div class="top w" >
+			<div class="location">
+				<i class="fa fa-volume-up"></i>
+				<a hefr="javascript:;">站点通知公告</a>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+		<div class="index-content container-fluid">
+			<div class="left col-md-9 col-xs-12">
+				{if $list}
+				<div class="news">
+					<ul>
+						{loop $list $key $value}
+						<li>
+							<span>
+								<label>[{$tagCopy[$value['tag']]}]</label> 
+								<a href="{F:url('detail',array('id'=>$value['id']))}" title="{$value['title']}">{$value['title']}</a>
+							</span>
+							<div class="news-content">
+								{if $value['thumb']}
+								<a href="{F:url('detail',array('id'=>$value['id']))}" title="{$value['title']}">
+									<img src="{F:imgUrl($value['thumb'],'blog')}" class="hidden-sm hidden-xs">
+								</a>
+								{/if}
+								<div class="desc pull-left">
+									<p >{$value['description']}</p>
+									<dt>
+										<dl><i class="fa fa-eye"></i> 热度 {$value['hot']}</dl>
+										<dl><i class="fa fa-fire"></i> 评论 5</dl>
+										<dl class="hidden-sm hidden-xs"><i class="fa fa-clock-o"></i> 时间 {F:date('Y-m-d',$value['created'])}</dl>
+									</dt>
+								</div>
+							</div>
+							<div class="clearfix"></div>	
+						</li>
+						{/loop}
+					</ul>
+				</div>
+				{else}
+				<div class="nd-news">
+					<p>暂无相关内容</p>
+				</div>
+				{/if}	
+				<nav aria-label="Page navigation">
+				  {$page}
+				</nav>
+			</div>
+			<div class="right col-md-3 hidden-sm hidden-xs">
+				{include /public/right}
+			</div> 
+		</div>
+		<div class="clearfix"></div>
+	</div>
+	{include /public/footer}
+	<script type="text/javascript" src="{F:getConfig('config','ststic')}/console/js/jquery-1.12.3.min.js"></script>
+	<script type="text/javascript" src="{F:getConfig('config','vendor')}/pace/pace.min.js"></script>
+	<script type="text/javascript" src="{F:getConfig('config','vendor')}/layer/layer.js"></script>
+	<script type="text/javascript" src="{F:getConfig('config','ststic')}/blog/js/common.js"></script>
+</body>
+</html>

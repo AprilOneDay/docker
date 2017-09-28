@@ -9,8 +9,8 @@ class Trace
     private static $tracePageTabs  = ['BASE' => '基本', 'FILE' => '文件', 'ERR|NOTIC' => '错误', 'SQL' => 'SQL', 'DEBUG' => '调试'];
     private static $traceErrorType = [0 => '', 1 => 'ERROR', 2 => 'WARNING', 4 => 'PARSE', 8 => 'NOTICE', 100 => 'SQL'];
 
-    public static $errorInfo = []; //错误信息
-    public static $sqlInfo   = []; //sql执行信息
+    public static $errorInfo = array(); //错误信息
+    public static $sqlInfo   = array(); //sql执行信息
 
     //执行
     public static function run()

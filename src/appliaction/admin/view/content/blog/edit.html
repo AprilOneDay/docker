@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+	<meta name="keywords" content=""/>
+	<title>后台管理</title>
+	{include /public/global_css}
+</head>
+  	<body>
+	<div id="console-content-edit">
+		<div class="modal-content">
+			<div class="panel-body">
+				<form class="form-horizontal" role="form" action="">
+					<fieldset>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger">*</span>
+								<span>标题</span>
+							</label>
+							<div class="col-sm-8">
+								<input type="text" value="{??$data['title']}" name="title" placeholder="标题"  required class="form-control">	
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger">*</span>
+								<span>缩略图</span>
+							</label>
+							<div class="col-sm-8">
+								<a class="btn btn-primary btn-ablum" data-name="thumb" data-value='{??$data['thumb']}' data-path="blog" data-max="1">添加图片</a>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger">*</span>
+								<span for="myDate">标签</span>
+							</label>
+							<div class="col-sm-8">
+								<select data-selected="{??$data['tag']}" name="tag" class="form-control w160">
+									{loop $other['tag'] $key $value}
+	                               		<option value="{$key}">{$value}</option>
+	                            	{/loop}
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger">*</span>
+								<span for="myDate">发布时间</span>
+							</label>
+							<div class="col-sm-8">
+								<input type="text" value="{??$data['created']}" name="created" id="created"  class="form-control data-time">	
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger">*</span>
+								<span>摘要</span>
+							</label>
+							<div class="col-sm-8">
+								<textarea name="description" placeholder="输入摘要内容" class="form-control">{??$data['description']}</textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger">*</span>
+								<span>内容</span>
+							</label>
+							<div class="col-sm-8">
+							 	<script id="container" name="content" type="text/plain" class="ue-editor">
+							 	{??$data['content']}
+							 	</script>
+							</div>
+						</div>
+						<div class="form-group radio" data-radio="{??$data['is_recommend']}">
+							<label class="control-label col-sm-3">推荐排行榜：</label>
+							<div class="radio-inline">
+								<label>
+									<input type="radio"  name="is_recommend"  value="1"> 推荐
+								</label>
+							</div>
+							<div class="radio-inline">
+								<label >
+									<input type="radio" name="is_recommend"  value="0"> 不推荐
+								</label>
+							</div>
+						</div>
+						<div class="form-group radio" data-radio="{??$data['is_show']}">
+							<label class="control-label col-sm-3">显示状态：</label>
+							<div class="radio-inline">
+								<label>
+									<input type="radio" name="is_show"  value="1"> 显示
+								</label>
+							</div>
+							<div class="radio-inline">
+								<label >
+									<input type="radio" name="is_show"  value="0"> 隐藏
+								</label>
+							</div>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<a type="submit" class="btn btn-primary btn-comply">确定</a>
+				<button type="button" class="btn btn-default" id="btn-close" >取消</button>
+			</div>
+		</div>
+	</div>
+	{include /public/global_js}
+</body>
+</html>

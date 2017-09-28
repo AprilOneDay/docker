@@ -26,7 +26,7 @@ class Template
         //{$xxx} be echo $xxx;
         $this->content = preg_replace('/' . $this->left . '\$(.*?)' . $this->right . '/is', '<?php echo $\1; ?>', $this->content);
         //??$xx  be !isset($xx) ?: $xx
-        $this->content = preg_replace('/' . $this->left . '\?\?(.*?)' . $this->right . '/is', '<?php echo !isset(\1) ?: \1; ?>', $this->content);
+        $this->content = preg_replace('/' . $this->left . '\?\?(.*?)' . $this->right . '/is', '<?php echo !isset(\1) ? null : \1; ?>', $this->content);
         //替换php函数 {F:XXX}  be echo XXX;
         $this->content = preg_replace('/' . $this->left . 'F:(.*?)' . $this->right . '/', '<?php echo \1; ?>', $this->content);
 
@@ -38,7 +38,7 @@ class Template
     {
         $cacheMd5       = md5($this->viewPath);
         $this->loadPath = DATA_PATH . $cacheMd5 . '.php';
-        $file           = fopen($this->loadPath, 'w+') or die('CAN NOT  FOPEN: ' . $this->loadPath);
+        $file           = fopen($this->loadPath, 'w');
         fwrite($file, $this->content);
         fclose($file);
         //同步修改时间
@@ -53,7 +53,7 @@ class Template
             foreach ($matches[1] as $key => $value) {
                 $value = trim(str_replace('/', DS, $value));
                 if (!$value) {
-                    $path = APP_PATH . APP . DS . 'view' . DS . CONTROLLER . DS . 'index.html';
+                    $path = APP_PATH . APP . DS . 'view' . DS . MODULE . DS . CONTROLLER . DS . ACTION . '.html';
                 }
                 //绝对路径 appliaction目录开始
                 elseif (stripos($value, DS) === 0) {
@@ -61,7 +61,7 @@ class Template
                 }
                 //相对路径
                 else {
-                    $path = APP_PATH . APP . DS . 'view' . DS . CONTROLLER . DS . $value . '.html';
+                    $path = APP_PATH . APP . DS . 'view' . DS . MODULE . DS . CONTROLLER . DS . $value . '.html';
                 }
 
                 if (is_file($path)) {

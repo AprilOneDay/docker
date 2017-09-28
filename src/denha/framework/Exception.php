@@ -8,7 +8,7 @@ class Exception extends \Exception
      * 保存异常页面显示的额外Debug数据
      * @var array
      */
-    protected $data = [];
+    protected $data = array();
 
     /**
      * 设置异常额外的Debug数据

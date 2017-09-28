@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+	<meta name="keywords" content=""/>
+	<title>后台管理</title>
+	{include /public/global_css}
+</head>
+  	<body>
+  		<div class="border-top">
+			<div class="border-top-left fl">
+				<ul>
+					<li><a class="logo">Denha</a></li>
+				</ul>
+			</div>
+			<div class="border-top-right fr">
+				<ul>
+					<li><a href="javascript:;">{$this->consoleName}</a></li>
+					<li><a href="{F:url('login/login_out')}">退出</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="wrapper container-fluid">
+			<nav class="sidebar-inner fl col-md-1">
+				<div class="sidebar-fold" ><span class="glyphicon glyphicon-transfer"></span></div>
+				<ul>
+					{loop $list $key $value}
+					<li>
+						<a href="javascript:;" @click="open(key)">
+							<span class="{$value['icon']}"></span>{$value['name']}
+						</a>
+						{if $value['child']}
+							<dl>
+								{loop $value['child'] $k $v}
+									<dd>
+										<a data-id="{$v['id']}" href="{$v['url']}" target="iframe0"  class="sec-list-show" data-name="{$v['name']}">
+											<span class="{$v['icon']}" ></span>{$v['name']}
+										</a>
+									</dd>
+								{/loop}
+							</dl>
+						{/if}
+					</li>
+					{/loop}
+				</ul>
+			</nav>
+			
+			<div class="product-nav-scene fl col-md-1">
+				<div class="title">设置</div>
+				<ul>
+					{loop $list $key $value}
+					<li>
+						{if $value['child']}
+						<a href="javascript:;"><span class="glyphicon glyphicon-triangle-right"></span>
+						{else}
+						<a href="{$value['url']}" target="iframe0"><span></span>
+						{/if}
+							{$value['name']}
+						</a>
+						{if $value['child']}
+							<dl>
+								{loop $value['child'] $k $v}
+									<dd>
+										<a href="{$v['url']}" target="iframe0">
+											<span class="{$v['icon']}"></span>{$v['name']}
+										</a>
+									</dd>
+								{/loop}
+							</dl>
+						{/if}
+					</li>
+					{/loop}
+				</ul>
+			</div>
+			
+			<div class="content-main fl" >
+				<iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="/setting/menus/index" frameborder="false" scrolling="auto" style="border:none" width="100%" height="auto" allowtransparency="true"></iframe>
+			</div>
+		</div>
+	{include /public/global_js}
+	<script type="text/javascript">
+	$('.sec-list-show').click(function(){
+		var id = $(this).attr('data-id');
+		var name = $(this).attr('data-name');
+		$.post('/index/index/menus',{id:id},function(result){
+			$('.product-nav-scene').find('.title').text(name);
+			$('.product-nav-scene').css('display','block');
+			$('.product-nav-scene').find('ul').html(result);
+
+			//导航展开下级菜单
+    		$('.product-nav-scene ul li').click(function() {
+		        //初始化
+		        $('.product-nav-scene ul li dl').css('display', 'none');
+		        $('.product-nav-scene ul li').each(function() {
+		            if ($(this).children().children().eq(0).attr('class') == 'glyphicon glyphicon-triangle-bottom') {
+		                $(this).children().children().eq(0).attr('class', 'glyphicon glyphicon-triangle-right');
+		            }
+		        });
+
+		        //展开/收缩
+		        var ico = $(this).children().children(':first').attr('class');
+		        if (ico == 'glyphicon glyphicon-triangle-right') {
+		            $(this).children().children(':first').attr('class', 'glyphicon glyphicon-triangle-bottom');
+		            $(this).find('dl').css('display', 'block');
+		        } else if (ico == 'glyphicon glyphicon-triangle-bottom') {
+		            $(this).children().children(':first').attr('class', 'glyphicon glyphicon-triangle-right');
+		            $(this).find('dl').css('display', 'none');
+		        }
+		    })
+
+	     	//二级高亮
+		    $('.product-nav-scene dd').click(function() {
+		        $('.product-nav-scene dd').each(function() {
+		            $(this).find('a').removeClass();
+		        })
+		        $(this).find('a').addClass('cur');
+		    });
+		},"html");
+	})
+	</script>
+</body>
+</html>

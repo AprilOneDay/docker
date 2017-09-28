@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+	<meta name="keywords" content=""/>
+	<title>后台管理</title>
+	{include /public/global_css}
+</head>
+  	<body>
+	<div id="console-content-index-index">
+		<div class="view-content-container" >
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="console-title console-title-border clearfix">
+						<div class="pull-left">
+							<h5>文章列表</h5>
+						</div>
+						<div class="pull-right">
+							<a class="btn btn-primary btn-open" data-href="{F:url('edit')}" data-height="750px">添加文章</a>
+						</div>
+					</div>
+					<form class="form-inline ng-pristine ng-valid" action=""  method="get">
+                        <div class="form-group">
+                    	  	<select class="form-control" data-selected="{??$param['tag']}" name="tag">
+                            	<option value="0">选择类型</option>
+                            	{loop $other['tag'] $key $value}
+                               		<option value="{$key}">{$value}</option>
+                            	{/loop}
+                            </select>
+                        	<select class="form-control" data-selected="{??$param['is_show']}" name="is_show">
+                                <option value="">选择状态</option>
+                                {loop $other['isShowCopy'] $key $value}
+                               		<option value="{$key}">{$value}</option>
+                            	{/loop}
+                            </select>
+                            <select class="form-control" data-selected="{??$param['is_recommend']}" name="is_recommend">
+                                <option value="">选择推荐状态</option>
+                                {loop $other['isRecommendCopy'] $key $value}
+                               		<option value="{$key}">{$value}</option>
+                            	{/loop}
+                            </select>
+                            <select class="form-control" data-selected="{??$param['field']}" name="field">
+                                <option value="">请选择搜索条件</option>
+                                <option value="title">标题</option>
+                            </select>
+                            <input type="text" class="form-control w120" placeholder="Search" name="keyword" value="{??$param['keyword']}" >
+                            <button type="submit" class="btn btn-default">搜索</button>
+                        </div>
+                    </form>
+					<div class="console-form">
+						<div class="mt8">
+							<form>
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th style="width:75px;">ID</th>
+											<th>标题</th>
+											<th style="width:120px;">类型</th>
+											<th style="width:120px;">发布时间</th>
+											<th style="width:120px;">状态</th>
+											<th style="width:160px; text-align:center;">编辑/操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										{loop $list $key $value}
+									 	<tr v-for="list in data.list">
+											<td>{$value['id']}</td>
+											<td>{$value['title']}</td>
+											<td>{$other['tag'][$value['tag']]}</td>
+											<td>{F:date('Y-m-d H:i',$value['created'])}</td>
+											<td>{$other['isShowCopy'][$value['is_show']]}</td>
+											<td align='center'>
+												<a data-href="{F:url('edit',array('id'=>$value['id']))}" data-title="编辑文章" data-width="90%"  data-height="800px" class="btn-open">编辑</a>
+												<span class="text-explode">|</span>
+												<a>评价</a>
+												<span class="text-explode">|</span>
+												<a ng-click="delete(list.id)">删除</a>
+											</td>
+										</tr>
+										{/loop}
+									</tbody>
+									<tfoot>
+							          	<tr>
+          									<td colspan="13">{$pages}</td>
+          								</tr>
+									</tfoot>
+								</table>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{include /public/global_js}
+	<script type="text/javascript">
+	</script>
+</body>
+</html>

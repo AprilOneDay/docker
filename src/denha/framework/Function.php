@@ -65,7 +65,7 @@ function post($name, $type = '', $default = '')
                 $data = $data === '' ? intval($default) : intval($data);
                 break;
             case 'float':
-                $data = $data === '' ? float($default) : float($data);
+                $data = $data === '' ? floatval($default) : floatval($data);
                 break;
             case 'text':
                 $data = $data === '' ? strval($default) : strval($data);
@@ -110,7 +110,7 @@ function get($name, $type = '', $default = '')
                 $data = $data === '' ? intval($default) : intval($data);
                 break;
             case 'float':
-                $data = $data === '' ? float($default) : float($data);
+                $data = $data === '' ? floatval($default) : floatval($data);
                 break;
             case 'text':
                 $data = $data === '' ? strval($default) : strval($data);
@@ -131,6 +131,25 @@ function get($name, $type = '', $default = '')
                 break;
         }
     }
+    return $data;
+}
+
+function files($name)
+{
+    if (isset($_FILES[$name])) {
+        if (is_array($_FILES[$name]['name'])) {
+            foreach ($_FILES[$name] as $key => $value) {
+                foreach ($value as $k => $v) {
+                    $data[$k][$key] = $v;
+                }
+            }
+        } else {
+            $data = $_FILES[$name];
+        }
+    } else {
+        $data = null;
+    }
+
     return $data;
 }
 
@@ -176,7 +195,7 @@ function dao($name, $app = '')
     if (!$app) {
         $class = 'app\\tools\\dao\\' . $name;
     } else {
-        $class = 'app\\' . $app . '\\tools\\dao' . $name;
+        $class = 'app\\' . $app . '\\tools\\dao\\' . $name;
     }
 
     $value = md5($class);
@@ -204,7 +223,7 @@ function comprise($path)
 //getVar('tags','article') 获取 appliaction/tools/var/article文件中的 tags.$ext 文件
 function getVar($filename, $path, $ext = EXT)
 {
-    static $_vars = [];
+    static $_vars = array();
 
     if (!$filename) {
         return null;
@@ -222,7 +241,6 @@ function getVar($filename, $path, $ext = EXT)
 
         if (is_file($filePath)) {
             $_vars[$name] = include $filePath;
-
             return $_vars[$name];
         }
     }
@@ -233,7 +251,7 @@ function getVar($filename, $path, $ext = EXT)
 //获取config下配置文档
 function getConfig($path = 'config', $name = '')
 {
-    static $_configData = [];
+    static $_configData = array();
 
     if (!isset($_configData[$path])) {
         if (is_file(CONFIG_PATH . $path . '.php')) {
@@ -261,17 +279,21 @@ function url($location = '', $params = array())
     $locationUrl = $location;
     if (stripos($location, '/') === false && $location != '') {
         $locationUrl = URL . '/' . MODULE . '/' . CONTROLLER . '/' . $location;
+    } elseif (stripos($location, '/') != 1) {
+        $locationUrl = URL . '/' . MODULE . '/' . $location;
     }
     $param = '';
     if (!empty($params)) {
         foreach ($params as $key => $value) {
-            if ($key == 0 && stripos($locationUrl, '?') === false) {
+            if (key($params) === $key && stripos($locationUrl, '?') === false) {
                 $param = '?' . $key . '=' . $value;
             } else {
                 $param .= '&' . $key . '=' . $value;
             }
         }
     }
+
+    // var_dump($param);
 
     return $locationUrl . $param;
 }
@@ -309,23 +331,42 @@ function getCookie($name, $encode = false)
 }
 
 //获取上传图片地址
-function imgUrl($name, $path = '', $size = 0)
+function imgUrl($name, $path = '', $size = 0, $host = false)
 {
-    if (!$name) {
-        $url = URL . '/ststic/console/images/nd.jpg';
-    } else {
-        if ($path) {
-            $url = URL . '/uploadfile/' . $path . '/' . $name;
-        } else {
-            $url = URL . '/uploadfile/' . $name;
-        }
 
-        if (!file_get_contents($url)) {
-            $url = URL . '/ststic/console/images/nd.jpg';
-        }
+    if (stripos($name, ',') !== false) {
+        $imgName = explode(',', $name);
+    } else {
+        $imgName = is_array($name) ? $name : (array) $name;
     }
 
-    return $url;
+    foreach ($imgName as $key => $value) {
+        if ($path) {
+            $url = '/uploadfile/' . $path . '/' . $value;
+        } else {
+            $url = '/uploadfile/' . $value;
+        }
+
+        $url = !$host ? URL . $url : $host . $url;
+
+        //这块有点影响网速 设置超时 后续会改为检测数据库
+        $opts = array(
+            'http' => array(
+                'method'  => "GET",
+                'timeout' => 1, //单位秒
+            ),
+        );
+
+        if (!file_get_contents($url, false, stream_context_create($opts))) {
+            $url = '/ststic/console/images/nd.jpg';
+            $url = !$host ? URL . $url : $host . $url;
+        }
+
+        $data[] = $url;
+    }
+
+    $data = count($data) > 1 ? $data : current($data);
+    return $data;
 }
 
 function imgFetch($path)
@@ -337,20 +378,30 @@ function imgFetch($path)
 function session($name = '', $value = '')
 {
     isset($_SESSION) ?: session_start();
-    // 数组
-    if (is_array($name)) {
-        foreach ($name as $k => $v) {
-            $_SESSION[$k] = $v;
+    //删除
+    if ($value === null) {
+        if (isset($_SESSION[$name])) {
+            unset($_SESSION[$name]);
         }
     }
-    //二维数组
-    elseif (is_array($value)) {
-        foreach ($value as $k => $v) {
-            $_SESSION[$name][$k] = $v;
+    //保存
+    else {
+        // 数组
+        if (is_array($name)) {
+            foreach ($name as $k => $v) {
+                $_SESSION[$k] = $v;
+            }
         }
-    } else {
-        $_SESSION[$name] = $value;
+        //二维数组
+        elseif (is_array($value)) {
+            foreach ($value as $k => $v) {
+                $_SESSION[$name][$k] = $v;
+            }
+        } else {
+            $_SESSION[$name] = $value;
+        }
     }
+
     //关闭session 可防止高并发下死锁问题
     session_write_close();
 }
@@ -522,4 +573,141 @@ function getIP()
         $ip = $_SERVER['REMOTE_ADDR'];
     }
     return $ip;
+}
+
+//百度转腾讯坐标转换
+function baiduToTenxun($lat, $lng)
+{
+    $x_pi  = 3.14159265358979324 * 3000.0 / 180.0;
+    $x     = $lng - 0.0065;
+    $y     = $lat - 0.006;
+    $z     = sqrt($x * $x + $y * $y) - 0.00002 * sin($y * $x_pi);
+    $theta = atan2($y, $x) - 0.000003 * cos($x * $x_pi);
+    $lng   = $z * cos($theta);
+    $lat   = $z * sin($theta);
+    return array('lng' => $lng, 'lat' => $lat);
+}
+
+//腾讯转百度坐标转换
+function tenxunToBaidu($lat, $lng)
+{
+    $x_pi  = 3.14159265358979324 * 3000.0 / 180.0;
+    $x     = $lng;
+    $y     = $lat;
+    $z     = sqrt($x * $x + $y * $y) + 0.00002 * sin($y * $x_pi);
+    $theta = atan2($y, $x) + 0.000003 * cos($x * $x_pi);
+    $lng   = $z * cos($theta) + 0.0065;
+    $lat   = $z * sin($theta) + 0.006;
+    return array('lng' => $lng, 'lat' => $lat);
+
+}
+
+//获取汉字首字母
+function getFirstCharter($str)
+{
+    if (empty($str)) {
+        return '';
+    }
+    $fchar = ord($str{0});
+    if ($fchar >= ord('A') && $fchar <= ord('z')) {
+        return strtoupper($str{0});
+    }
+
+    $s1  = iconv('UTF-8', 'gb2312', $str);
+    $s2  = iconv('gb2312', 'UTF-8', $s1);
+    $s   = $s2 == $str ? $s1 : $str;
+    $asc = ord($s{0}) * 256 + ord($s{1}) - 65536;
+    if ($asc >= -20319 && $asc <= -20284) {
+        return 'A';
+    }
+
+    if ($asc >= -20283 && $asc <= -19776) {
+        return 'B';
+    }
+
+    if ($asc >= -19775 && $asc <= -19219) {
+        return 'C';
+    }
+
+    if ($asc >= -19218 && $asc <= -18711) {
+        return 'D';
+    }
+
+    if ($asc >= -18710 && $asc <= -18527) {
+        return 'E';
+    }
+
+    if ($asc >= -18526 && $asc <= -18240) {
+        return 'F';
+    }
+
+    if ($asc >= -18239 && $asc <= -17923) {
+        return 'G';
+    }
+
+    if ($asc >= -17922 && $asc <= -17418) {
+        return 'H';
+    }
+
+    if ($asc >= -17417 && $asc <= -16475) {
+        return 'J';
+    }
+
+    if ($asc >= -16474 && $asc <= -16213) {
+        return 'K';
+    }
+
+    if ($asc >= -16212 && $asc <= -15641) {
+        return 'L';
+    }
+
+    if ($asc >= -15640 && $asc <= -15166) {
+        return 'M';
+    }
+
+    if ($asc >= -15165 && $asc <= -14923) {
+        return 'N';
+    }
+
+    if ($asc >= -14922 && $asc <= -14915) {
+        return 'O';
+    }
+
+    if ($asc >= -14914 && $asc <= -14631) {
+        return 'P';
+    }
+
+    if ($asc >= -14630 && $asc <= -14150) {
+        return 'Q';
+    }
+
+    if ($asc >= -14149 && $asc <= -14091) {
+        return 'R';
+    }
+
+    if ($asc >= -14090 && $asc <= -13319) {
+        return 'S';
+    }
+
+    if ($asc >= -13318 && $asc <= -12839) {
+        return 'T';
+    }
+
+    if ($asc >= -12838 && $asc <= -12557) {
+        return 'W';
+    }
+
+    if ($asc >= -12556 && $asc <= -11848) {
+        return 'X';
+    }
+
+    if ($asc >= -11847 && $asc <= -11056) {
+        return 'Y';
+    }
+
+    if ($asc >= -11055 && $asc <= -10247) {
+        return 'Z';
+    }
+
+    return null;
 }

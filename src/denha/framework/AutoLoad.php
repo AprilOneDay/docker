@@ -3,12 +3,12 @@ namespace denha;
 
 class AutoLoad
 {
-    protected static $instance = [];
+    protected static $instance = array();
     // 类名映射
-    protected static $map = [];
+    protected static $map = array();
 
     // 命名空间别名
-    protected static $namespaceAlias = [];
+    protected static $namespaceAlias = array();
 
     // 自动加载
     public static function autoload($class)

@@ -44,7 +44,7 @@ class Controller
 
         if (!$peg) {
             if (!$viewPath) {
-                $path = APP_PATH . APP . DS . 'view' . DS . MODULE . DS . ACTION . '.html';
+                $path = APP_PATH . APP . DS . 'view' . DS . MODULE . DS . CONTROLLER . DS . ACTION . '.html';
             }
             //绝对路径
             elseif (stripos($viewPath, '/') === 0) {
@@ -82,18 +82,27 @@ class Controller
      */
     protected function ajaxReturn($value)
     {
-        die(json_encode($value));
+        header("Content-Type:application/json; charset=utf-8");
+        $array = array(
+            'status' => true,
+            'data'   => array(),
+            'msg'    => '操作成功',
+        );
+        $value = array_merge($array, $value);
+        exit(json_encode($value));
     }
 
     protected function appReturn($value)
     {
+        header("Content-Type:application/json; charset=utf-8");
         $array = array(
             'code'   => 200,
             'status' => true,
             'data'   => array(),
+            'msg'    => '获取数据成功',
         );
         $value = array_merge($array, $value);
-        die(json_encode($value));
+        exit(json_encode($value));
     }
 
     /**
@@ -107,7 +116,7 @@ class Controller
     protected function jsonpReturn(array $value, $callback = '')
     {
         if ($callback) {
-            die($callback . '(' . json_encode($value) . ')');
+            exit($callback . '(' . json_encode($value) . ')');
         } else {
             $this->ajaxReturn($value);
         }

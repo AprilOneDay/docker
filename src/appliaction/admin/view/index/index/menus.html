@@ -1,0 +1,22 @@
+{loop $list $key $value}
+<li>
+	{if $value['child']}
+	<a href="javascript:;"><span class="glyphicon glyphicon-triangle-right"></span>
+	{else}
+	<a href="{$value['url']}" target="iframe0"><span></span>
+	{/if}
+		{$value['name']}
+	</a>
+	{if $value['child']}
+		<dl>
+			{loop $value['child'] $k $v}
+				<dd>
+					<a href="{$v['url']}" target="iframe0">
+						<span class="{$v['icon']}"></span>{$v['name']}
+					</a>
+				</dd>
+			{/loop}
+		</dl>
+	{/if}
+</li>
+{/loop}

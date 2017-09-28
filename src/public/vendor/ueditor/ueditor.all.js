@@ -29416,10 +29416,8 @@ UE.ui = baidu.editor.ui = {};
                     }
                     //编辑器最外容器设置了高度，会导致，编辑器不占位
                     //todo 先去掉，没有找到原因
-                    if(holder.hasOwnProperty(style)){
-                        if(holder.style.height){
-                            holder.style.height = ''
-                        }
+                    if(holder.style.height){
+                        holder.style.height = ''
                     }
                     editor.container.style.width = opt.initialFrameWidth + (/%$/.test(opt.initialFrameWidth) ? '' : 'px');
                     editor.container.style.zIndex = opt.zIndex;

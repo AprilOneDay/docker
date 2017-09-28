@@ -22,8 +22,8 @@ class Start
         self::$client = $client;
         //获取配置文档信息
         self::$config = include CONFIG_PATH . 'config.php';
-        if (is_file(CONFIG_PATH . '.config' . $client . '.php')) {
-            self::$config = array_merge(include (CONFIG_PATH . 'config.php'), include (CONFIG_PATH . '.config' . $client . '.php'));
+        if (is_file(CONFIG_PATH . 'config' . $client . '.php')) {
+            self::$config = array_merge(include (CONFIG_PATH . 'config' . $client . '.php'), include (CONFIG_PATH . 'config' . $client . '.php'));
         }
 
         error_reporting(0);
@@ -46,14 +46,16 @@ class Start
         }
 
         if (!$object) {
-            throw new Exception('NOT FIND CONTROLLER : [ ' . CONTROLLER . ' ] in ' . Route::$class);
+            throw new Exception('NOT FIND CONTROLLER : ' . CONTROLLER . ' in ' . $class = Route::$class);
         }
 
-        $action = lcfirst(parsename(ACTION, true));
+        $action = lcfirst(parsename(ACTION, 1));
 
         if (!method_exists($object, $action)) {
             throw new Exception('Class : ' . Route::$class . ' NOT FIND [ ' . $action . ' ] ACTION');
         }
+
+        get('api') == false ?: self::apiDoc(Route::$class, $action);
 
         $action = $object->$action();
 
@@ -88,6 +90,18 @@ class Start
             $_COOKIE  = array_map('GSS', $_COOKIE);
             $_REQUEST = array_map('GSS', $_REQUEST);
         }
+    }
+
+    //自动创建文件夹
+    private static function apiDoc($class, $action)
+    {
+        $doc = new \ReflectionMethod($class, $action);
+        $tmp = $doc->getDocComment();
+
+        /* $flag = preg_match_all('/@cc(.*?)\n/', $tmp, $tmp);
+        $tmp  = trim($tmp[1][0]);
+        $tmp  = $tmp != '' ? $tmp : '无';*/
+        var_dump($doc);
     }
 
     //自动创建文件夹

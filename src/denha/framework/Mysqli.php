@@ -32,7 +32,7 @@ class Mysqli
         if ($dbConfig) {
             $this->dbConfig = $dbConfig;
         } else {
-            if (getConfig(APP . '.db')) {
+            if (getConfig('db.' . APP)) {
                 $this->dbConfig = getConfig('db.' . APP);
             } else {
                 $this->dbConfig = getConfig('db');
@@ -124,37 +124,62 @@ class Mysqli
     }
 
     /**
+     * 判断是否存在该表
+     * @date   2017-09-20T09:57:21+0800
+     * @author ChenMingjiang
+     * @return boolean                  [description]
+     */
+    public function isTable()
+    {
+        $this->_sql = 'SHOW TABLES LIKE \'dh_banner\'';
+        $result     = (bool) mysqli_num_rows($this->query());
+        return $result;
+    }
+
+    /**
      * 查询条件
      * @date   2017-03-19T16:18:18+0800
      * @author ChenMingjiang
      * @param  [type]                   $where [description]
      * @return [type]                          [description]
      */
-    public function where($where)
+    public function where($where, $value = '')
     {
-        if (is_array($where)) {
-            $newWhere = '';
-            foreach ($where as $k => $v) {
-                if (is_array($v)) {
-                    if ($v[0] == '>' || $v[0] == '<' || $v[0] == '>=' || $v[0] == '<=' || $v[0] == '!=' || $v[0] == 'like') {
-                        $newWhere .= $k . '  ' . $v[0] . ' \'' . $v[1] . '\' AND ';
-                    } elseif ($v[0] == 'in' || $v['0'] == 'not in') {
-                        $newWhere .= $k . '  ' . $v[0] . ' (' . $v[1] . ') AND ';
-                    } elseif ($v[0] == 'between') {
-                        $newWhere .= $k . '  ' . $v[0] . ' \'' . $v[1] . '\' AND \'' . $v[2] . '\'';
-                    } elseif ($v[0] == 'or') {
-                        $newWhere .= $k . ' = \'' . $v[1] . '\' OR ';
-                    }
-                } elseif ($k == '_string') {
-                    $newWhere .= $v;
-                } else {
-                    $newWhere .= $k . ' = \'' . $v . '\' AND ';
-                }
-            }
+        if ($value !== '' && !is_array($where)) {
+            $this->where = ' WHERE ' . $where . ' = \'' . $value . '\'';
         } else {
-            $newWhere = $where;
+            if ($where) {
+                if (is_array($where)) {
+                    $newWhere = '';
+                    foreach ($where as $k => $v) {
+                        if (is_array($v)) {
+                            if ($v[0] == '>' || $v[0] == '<' || $v[0] == '>=' || $v[0] == '<=' || $v[0] == '!=' || $v[0] == 'like') {
+                                $newWhere .= $k . '  ' . $v[0] . ' \'' . $v[1] . '\' AND ';
+                            } elseif ($v[0] == 'in' || $v['0'] == 'not in') {
+                                if (!$v[1]) {
+                                    $newWhere .= $k . '  ' . $v[0] . ' (\'\') AND ';
+                                } else {
+                                    $v[1] = is_array($v[1]) ? implode(',', $v[1]) : $v[1];
+                                    $newWhere .= $k . '  ' . $v[0] . ' (' . $v[1] . ') AND ';
+                                }
+                            } elseif ($v[0] == 'between') {
+                                $newWhere .= $k . '  ' . $v[0] . ' \'' . $v[1] . '\' AND \'' . $v[2] . '\' AND ';
+                            } elseif ($v[0] == 'or') {
+                                $newWhere .= $k . ' = \'' . $v[1] . '\' OR ';
+                            }
+                        } elseif ($k == '_string') {
+                            $newWhere .= $v . ' AND ';
+                        } else {
+                            $newWhere .= $k . ' = \'' . $v . '\' AND ';
+                        }
+                    }
+                } else {
+                    $newWhere = $where;
+                }
+                $this->where = ' WHERE ' . substr($newWhere, 0, -4);
+            }
         }
-        $this->where = ' WHERE ' . substr($newWhere, 0, -4);
+
         return $this;
     }
 
@@ -355,15 +380,15 @@ class Mysqli
             if ($this->limit == '') {$this->limit(1000);}
         }
 
-        $sql = 'SELECT ' . $this->field . ' FROM ' . $this->table;
+        $this->_sql = 'SELECT ' . $this->field . ' FROM ' . $this->table;
 
-        empty($this->join) ?: $sql .= $this->join;
-        empty($this->where) ?: $sql .= $this->where;
-        empty($this->group) ?: $sql .= $this->group;
-        empty($this->order) ?: $sql .= $this->order;
-        empty($this->limit) ?: $sql .= $this->limit;
+        empty($this->join) ?: $this->_sql .= $this->join;
+        empty($this->where) ?: $this->_sql .= $this->where;
+        empty($this->group) ?: $this->_sql .= $this->group;
+        empty($this->order) ?: $this->_sql .= $this->order;
+        empty($this->limit) ?: $this->_sql .= $this->limit;
 
-        $result = $this->query($sql);
+        $result = $this->query();
 
         //获取记录条数
         $this->total = mysqli_num_rows($result);
@@ -457,31 +482,50 @@ class Mysqli
     }
 
     /**
+     * 添加多条信息
+     * @date   2017-09-19T15:45:40+0800
+     * @author ChenMingjiang
+     */
+    public function addAll($data = array())
+    {
+        foreach ($data as $key => $value) {
+            $result = $this->add($value);
+        }
+
+        return $result;
+    }
+
+    /**
      * 修改保存
      * @date   2017-03-19T16:20:24+0800
      * @author ChenMingjiang
      * @param  string                   $data [description]
      * @return [type]                         [description]
      */
-    public function save($data = '')
+    public function save($data = '', $value = '')
     {
         $newField = '';
-        if (is_array($data)) {
-            foreach ($data as $k => $v) {
-                if (is_array($v)) {
-                    if ($v[0] == 'add') {
-                        $newField .= '`' . $k . '`  = `' . $k . '` + ' . $v[1] . ',';
-                    } elseif ($v[0] == 'less') {
-                        $newField .= '`' . $k . '`  = `' . $k . '` - ' . $v[1] . ',';
-                    }
-                } else {
-                    $newField .= '`' . $k . '`=\'' . $v . '\',';
-                }
-            }
-            $newField = substr($newField, 0, -1);
+        if ($value !== '' && !is_array($data)) {
+            $newField = '`' . $data . '`=\'' . $value . '\'';
         } else {
-            $newField = $field;
+            if (is_array($data)) {
+                foreach ($data as $k => $v) {
+                    if (is_array($v)) {
+                        if ($v[0] == 'add') {
+                            $newField .= '`' . $k . '`  = `' . $k . '` + ' . $v[1] . ',';
+                        } elseif ($v[0] == 'less') {
+                            $newField .= '`' . $k . '`  = `' . $k . '` - ' . $v[1] . ',';
+                        }
+                    } else {
+                        $newField .= '`' . $k . '`=\'' . $v . '\',';
+                    }
+                }
+                $newField = substr($newField, 0, -1);
+            } else {
+                $newField = $field;
+            }
         }
+
         $this->field = $newField;
 
         $sql = 'UPDATE ' . $this->table . ' SET ' . $this->field;
@@ -503,6 +547,30 @@ class Mysqli
         return $result;
     }
 
+    //开启事务
+    public function startTrans()
+    {
+        mysqli_query($this->link, 'begin');
+        /*$this->query('begin');*/
+        return true;
+    }
+
+    //回滚事务
+    public function rollback()
+    {
+        mysqli_query($this->link, 'rollback');
+        /*$this->query('rollback');*/
+        return true;
+    }
+
+    //提交事务
+    public function commit()
+    {
+        mysqli_query($this->link, 'commit');
+        /* $this->query('commit');*/
+        return true;
+    }
+
     /**
      * 执行
      * @date   2017-03-19T16:20:36+0800
@@ -512,10 +580,10 @@ class Mysqli
      */
     public function query($sql)
     {
-        $this->_sql = $sql;
-        $_beginTime = microtime(true);
-        $result     = mysqli_query($this->link, $sql);
-        $_endTime   = microtime(true);
+        !$sql ?: $this->_sql = $sql;
+        $_beginTime          = microtime(true);
+        $result              = mysqli_query($this->link, $this->_sql);
+        $_endTime            = microtime(true);
 
         $this->sqlInfo['time'] = $_endTime - $_beginTime; //获取执行时间
         $this->sqlInfo['sql']  = $this->_sql;

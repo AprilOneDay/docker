@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+	<meta name="keywords" content=""/>
+	<title>后台管理</title>
+	{include /public/global_css}
+</head>
+  	<body>
+	<div id="console-content-edit">
+		<div class="modal-content">
+			<div class="panel-body">
+				<form class="form-horizontal" role="form" action="">
+					<fieldset>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger"></span>
+								<span>店铺名称</span>
+							</label>
+							<div class="col-sm-8">
+								<input type="text" value="{??$data['name']}" name="name" placeholder="标题"  disabled class="form-control">	
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger"></span>
+								<span>店铺头图</span>
+							</label>
+							<div class="col-sm-8">
+								<img src="{$data['avatar']}" width="150" height="100" style="margin-left: 10px;">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger"></span>
+								<span for="myDate">店铺评分</span>
+							</label>
+							<div class="col-sm-8">
+								<select data-selected="{??$data['tag']}" name="tag" class="form-control w160">
+									{loop $other['tag'] $key $value}
+	                               		<option value="{$key}">{$value}</option>
+	                            	{/loop}
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger"></span>
+								<span for="myDate">店铺照片</span>
+							</label>
+							<div class="col-sm-8">
+								{loop $data['ablum'] $key $value}
+									<img src="{$value}" width="150" height="100" style="margin-left: 10px;">
+								{/loop}
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger"></span>
+								<span for="myDate">店铺认证信息</span>
+							</label>
+							<div class="col-sm-8">
+								{loop $data['ide_ablum'] $key $value}
+									<img src="{$value}" width="150" height="100" style="margin-left: 10px;">
+								{/loop}
+							</div>
+						</div>
+						<div class="form-group radio" data-radio="{??$data['is_ide']}">
+							<label class="control-label col-sm-3">认证状态：</label>
+							<div class="radio-inline">
+								<label>
+									<input type="radio"  name="is_ide"  value="0"> 未认证 
+								</label>
+							</div>
+							<div class="radio-inline">
+								<label >
+									<input type="radio" name="is_ide"  value="1"> 已认证
+								</label>
+							</div>
+							<div class="radio-inline">
+								<label>
+									<input type="radio"  name="is_ide"  value="2"> 认证未通过
+								</label>
+							</div>
+						</div>
+						<div class="form-group radio" data-radio="{??$data['status']}">
+							<label class="control-label col-sm-3">店铺状态</label>
+							<div class="radio-inline">
+								<label>
+									<input type="radio" name="status"  value="1"> 开启
+								</label>
+							</div>
+							<div class="radio-inline">
+								<label >
+									<input type="radio" name="status"  value="2"> 关闭
+								</label>
+							</div>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<a type="submit" class="btn btn-primary btn-comply">确定</a>
+				<button type="button" class="btn btn-default" id="btn-close" >取消</button>
+			</div>
+		</div>
+	</div>
+	{include /public/global_js}
+</body>
+</html>
