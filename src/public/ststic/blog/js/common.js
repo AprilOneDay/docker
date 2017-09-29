@@ -1,4 +1,11 @@
 $(function() {
+    $(window).scroll(function(){
+        if($(window).scrollTop() > 0){
+            $('.arrow-up').show(1000);
+        }else{
+            $('.arrow-up').hide(1000);
+        }
+    })
 	$('.news li').each(function(){
 		var img = $(this).find('img');
 		var imgShow = img.parent().find() 

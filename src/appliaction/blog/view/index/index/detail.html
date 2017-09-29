@@ -152,13 +152,6 @@
 	<script type="text/javascript" src="{F:getConfig('config','vendor')}/layer/layer.js"></script>
 	<script type="text/javascript" src="{F:getConfig('config','ststic')}/blog/js/common.js"></script>
 	<script type="text/javascript">
-	$(window).scroll(function(){
-		if($(window).scrollTop() > 0){
-			$('.arrow-up').show(1000);
-		}else{
-			$('.arrow-up').hide(1000);
-		}
-	})
 	$('.btn-comment-up').click(function(){
 		var comment = $(this).parent().parent().parent();
 		comment.hide(1000);
