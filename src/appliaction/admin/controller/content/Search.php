@@ -30,7 +30,10 @@ class Search extends \app\admin\controller\Init
             }
         }
 
-        $list  = table('SearchLog')->where($map)->limit($offer, $pageSize)->field('id,value,type,SUM(hot) as hot')->group('value')->find('array');
+        $field = "CONCAT(type,value) AS g,value,type,GROUP_CONCAT(id) AS id,SUM(hot) AS hot";
+
+        $list = table('SearchLog')->where($map)->limit($offer, $pageSize)->field($field)->group('g')->find('array');
+        echo table('SearchLog')->getSql();die;
         $total = table('SearchLog')->where($map)->group('value')->count();
         $page  = new denha\Pages($total, $pageNo, $pageSize, url('', $param));
 

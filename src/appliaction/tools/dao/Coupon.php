@@ -5,13 +5,14 @@ class Coupon
 {
     public function add($uid = 0, $param = array())
     {
-        $data['uid']        = $uid;
-        $data['category']   = (int) $param['category'];
-        $data['type']       = (int) $param['type'];
-        $data['start_time'] = (int) $param['start_time'];
-        $data['end_time']   = (int) $param['end_time'];
-        $data['num']        = $data['remainder_num']        = (int) $param['num'];
-        $data['title']      = (string) $param['title'];
+        $data['uid']         = $uid;
+        $data['category']    = (int) $param['category'];
+        $data['type']        = (int) $param['type'];
+        $data['start_time']  = (int) $param['start_time'];
+        $data['end_time']    = (int) $param['end_time'];
+        $data['num']         = $data['remainder_num']         = (int) $param['num'];
+        $data['title']       = (string) $param['title'];
+        $data['is_exchange'] = (int) $param['is_exchange'];
 
         $data['created'] = TIME;
         if (!$data['title']) {
@@ -76,7 +77,7 @@ class Coupon
         $couponLog = table('CouponLog')->tableName();
         $coupon    = table('Coupon')->tableName();
 
-        $field = "$coupon.title,$coupon.uid as shop_uid,$coupon.start_time,$coupon.end_time,$coupon.type,$coupon.full,$coupon.less,$coupon.discount,$coupon.category,$couponLog.use_time,$couponLog.uid,$couponLog.id";
+        $field = "$coupon.title,$coupon.uid as shop_uid,$coupon.start_time,$coupon.end_time,$coupon.type,$coupon.full,$coupon.less,$coupon.discount,$coupon.category,$couponLog.use_time,$couponLog.uid,$couponLog.id,$couponLog.origin";
         $list  = table('CouponLog')->join($coupon, "$coupon.id = $couponLog.coupon_id", 'left')->where($map)->limit($offer, $pageSize)->field($field)->order("$couponLog.use_time asc,$coupon.end_time desc")->find('array');
 
         foreach ($list as $key => $value) {
@@ -84,6 +85,8 @@ class Coupon
             if ($value['use_time']) {
                 $list[$key]['status'] = 3;
             }
+            $list[$key]['shop_name']   = dao('User')->getInfo($value['shop_uid'], 'nickname');
+            $list[$key]['origin_copy'] = $value['origin'] == 1 ? '积分兑换' : '消费赠送';
         }
 
         $list = $list ? $list : array();
@@ -160,6 +163,7 @@ class Coupon
         $data['coupon_id'] = $couponId;
         $data['uid']       = $uid;
         $data['created']   = TIME;
+        $data['origin']    = 2;
 
         table('CouponLog')->startTrans();
         $result = table('CouponLog')->add($data);

@@ -66,7 +66,7 @@ class Coupon extends \app\app\controller\Init
             $this->appReturn(array('status' => false, 'msg' => '信息不存在'));
         }
 
-        $map['category']      = $param['type'];
+        $map['category']      = $param['category'];
         $map['remainder_num'] = array('>', 0);
         $map['status']        = 1;
         $map['is_exchange']   = 1;
@@ -74,13 +74,14 @@ class Coupon extends \app\app\controller\Init
 
         $coupon = table('Coupon')->where($map)->order('RAND()')->find();
         if (!$coupon) {
-            $this->appReturn(array('status' => false, 'msg' => '暂无相关抵扣卷'));
+            $this->appReturn(array('status' => false, 'msg' => '暂无相关抵扣卷', 'sql' => table('Coupon')->getSql()));
         }
 
         //增加抵扣卷领取记录
         $data['coupon_id'] = $coupon['id'];
         $data['uid']       = $this->uid;
         $data['created']   = TIME;
+        $data['origin']    = 1;
 
         table('User')->startTrans();
         $result = table('CouponLog')->add($data);

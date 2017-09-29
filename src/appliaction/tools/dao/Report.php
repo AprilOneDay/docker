@@ -3,7 +3,7 @@ namespace app\tools\dao;
 
 class Report
 {
-    public function add($uid = 0, $type = 1, $goodsId = 0)
+    public function add($uid = 0, $type = 0, $goodsId = 0)
     {
         if (!$type || !$goodsId) {
             return array('status' => false, 'msg' => '参数错误');
@@ -15,7 +15,6 @@ class Report
         $map['ip']       = getIP();
 
         $id = table('ReportLog')->where($map)->field('id')->find('one');
-
         if ($id) {
             return array('status' => false, 'msg' => '感谢您的举报！！！');
         }

@@ -43,15 +43,16 @@ class Coupon extends \app\app\controller\Init
      */
     public function add()
     {
-        $data['category']   = post('category', 'intval', 0);
-        $data['type']       = post('type', 'intval', 0);
-        $data['start_time'] = post('start_time', 'text', '');
-        $data['end_time']   = post('end_time', 'text', '');
-        $data['num']        = post('num', 'intval', 0);
-        $data['title']      = post('title', 'text', 0);
-        $data['full']       = post('full', 'intval', 0);
-        $data['less']       = post('less', 'text', 0);
-        $data['discount']   = post('discount', 'text', 0);
+        $data['category']    = post('category', 'intval', 0);
+        $data['type']        = post('type', 'intval', 0);
+        $data['start_time']  = post('start_time', 'text', '');
+        $data['end_time']    = post('end_time', 'text', '');
+        $data['num']         = post('num', 'intval', 0);
+        $data['title']       = post('title', 'text', 0);
+        $data['full']        = post('full', 'intval', 0);
+        $data['less']        = post('less', 'text', 0);
+        $data['discount']    = post('discount', 'text', 0);
+        $data['is_exchange'] = post('is_exchange', 'text', 1);
 
         if (!$data['category']) {
             $this->appReturn(array('status' => false, 'msg' => '请选择所属分类'));
