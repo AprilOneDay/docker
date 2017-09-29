@@ -14,7 +14,7 @@ class Report
         $map['goods_id'] = $goodsId;
         $map['ip']       = getIP();
 
-        $id = table('ReportLog')->where($map)->field('id')->find('one');
+        $id = table('ReportLog')->where($map)->field('id')->find();
         if ($id) {
             return array('status' => false, 'msg' => '感谢您的举报！！！');
         }
