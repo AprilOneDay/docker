@@ -3,7 +3,7 @@ namespace app\tools\dao;
 
 class Report
 {
-    public function add($uid = 0, $type = 0, $goodsId = 0)
+    public function add($uid = 0, $type = 1, $goodsId = 0)
     {
         if (!$type || !$goodsId) {
             return array('status' => false, 'msg' => '参数错误');
@@ -18,6 +18,8 @@ class Report
         if ($id) {
             return array('status' => false, 'msg' => '感谢您的举报！！！');
         }
+
+        echo table('ReportLog')->getSql();die;
 
         $data['uid']      = $uid;
         $data['type']     = $type;
