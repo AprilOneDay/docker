@@ -37,6 +37,7 @@ body{ background: #f0f2f7; }
 
 .fix{width: 3.5rem;  position: fixed; bottom:7rem; right: 1rem; }
 .fix li{ min-width: 3.5rem;  min-height: 3.5rem; border-radius: 3rem; background: #fff; text-align: center; cursor: pointer; z-index:100;  }
+.fix .arrow-up{ display: none; }
 
 .footer{background: #363d4c; color: #fff; padding: 20px;  line-height: 35px;}
 .footer .link { border-bottom:  1px solid #ccc; }
