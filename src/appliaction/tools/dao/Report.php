@@ -14,7 +14,7 @@ class Report
         $map['goods_id'] = $goodsId;
         $map['ip']       = getIP();
 
-        $id = table('Report')->where($map)->field('id')->find('one');
+        $id = table('ReportLog')->where($map)->field('id')->find('one');
         if ($id) {
             return array('status' => false, 'msg' => '感谢您的举报！！！');
         }
@@ -25,7 +25,7 @@ class Report
         $data['ip']       = getIP();
         $data['created']  = TIME;
 
-        $result = table('Report')->add($data);
+        $result = table('ReportLog')->add($data);
         if (!$result) {
             return array('status' => false, 'msg' => '举报失败,请联系管理员');
         }

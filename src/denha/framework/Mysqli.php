@@ -578,7 +578,7 @@ class Mysqli
      * @param  [type]                   $sql [description]
      * @return [type]                        [description]
      */
-    public function query($sql)
+    public function query($sql = '')
     {
         !$sql ?: $this->_sql = $sql;
         $_beginTime          = microtime(true);

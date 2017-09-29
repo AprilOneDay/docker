@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>个人博客 - {$data['title']}</title>
+	<title>四月 - 个人博客  - {$data['title']}</title>
 	<meta name="keywords" content=""/>
 	<meta name="description" content="{$data['description']}"/>
 	<meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
@@ -50,7 +50,7 @@
 									<i class="fa fa-clock-o"></i> 时间 {F:date('Y-m-d',$value['created'])}
 								</div>
 								<div class="pull-right">
-									<a href="javascript:;">举报</a>
+									<a href="javascript:;" class="btn-ajax-post" data-href="{F:url('report/add')}" data-goods_id="{$value['id']}">举报</a>
 									<a href="javascript:;" data-to_id="{$value['id']}" data-parent_id="{$value['id']}" class="btn-show-reply">回复[{$value['total']}]</a>
 								</div>
 							</div>
