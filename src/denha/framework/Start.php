@@ -26,6 +26,8 @@ class Start
             self::$config = array_merge(include (CONFIG_PATH . 'config' . $client . '.php'), include (CONFIG_PATH . 'config' . $client . '.php'));
         }
 
+        print_r(self::$config);
+
         error_reporting(0);
         register_shutdown_function('denha\Trace::catchError');
         set_error_handler('denha\Trace::catchNotice');
