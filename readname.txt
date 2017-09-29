@@ -92,6 +92,18 @@ docker-compose up
 docker-compose up -d
 docker exec -it php /bin/bash
 chmod -R 777 /var/www/html/data
+chmod -R 777 /var/www/html/public/uploadfile
+
+docker ps | awk  '{print $1}' | xargs docker stop
+docker rm $(docker ps -a -q)
+cd
+cd docker
+git pull
+docker-compose up -d
+docker exec -it php /bin/bash
+chmod -R 777 /var/www/html/data
+chmod -R 777 /var/www/html/public/uploadfile
+
 
 cd docker 
 git pull
