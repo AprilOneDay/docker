@@ -19,6 +19,7 @@ class Report
             return array('status' => false, 'msg' => '感谢您的举报！！！');
         }
 
+        var_dump($id);
         echo table('ReportLog')->getSql();die;
 
         $data['uid']      = $uid;
