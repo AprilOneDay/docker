@@ -23,4 +23,4 @@
 skip-name-resolve
 explicit_defaults_for_timestamp=true
 
-​sql-mode="NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
+​# sql-mode="NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
