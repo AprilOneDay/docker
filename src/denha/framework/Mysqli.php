@@ -396,7 +396,7 @@ class Mysqli
         if ($this->total == 0) {return false;}
         //单个字段模式
         if ($value == 'one' && !$isArray) {
-            $row = mysqli_fetch_array($result, MYSQL_NUM);
+            $row = mysqli_fetch_array($result, MYSQLI_NUM);
             if (empty($row)) {
                 return false;
             }
