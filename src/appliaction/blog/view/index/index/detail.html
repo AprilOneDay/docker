@@ -141,6 +141,11 @@
 		</div>
 		<div class="clearfix"></div>
 	</div>
+	<div class="fix">
+		<ul>
+			<li><i class="fa-3x fa fa-arrow-up" title="返回顶部"></i></li>
+		</ul>
+	</div>
 	{include /public/footer}
 	<script type="text/javascript" src="{F:getConfig('config','ststic')}/console/js/jquery-1.12.3.min.js"></script>
 	<script type="text/javascript" src="{F:getConfig('config','vendor')}/pace/pace.min.js"></script>
@@ -166,6 +171,10 @@
 				comment.find('form').find('input[name=to_id]').val(to_id);
 			});
 		},"text")
+	})
+	$('.fa-arrow-up').click(function(){
+	 	var sc=$(window).scrollTop();
+   		$('body,html').animate({scrollTop:0},300);
 	})
 	</script>
 </body>

@@ -35,6 +35,9 @@ body{ background: #f0f2f7; }
 .remark{ width: 90%; margin-top: 1rem; }
 .remark textarea{ min-height: 12rem; }
 
+.fix{width: 3rem;  position: fixed; bottom:7rem; right: 1rem; }
+.fix li{ width: 3rem; height: 3rem; border-radius: 3rem; background: #fff; text-align: center; cursor: pointer; }
+
 .footer{background: #363d4c; color: #fff; padding: 20px;  line-height: 35px;}
 .footer .link { border-bottom:  1px solid #ccc; }
 .footer .link li{ float: left; padding-right: 10px;   }
