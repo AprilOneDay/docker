@@ -35,8 +35,8 @@ body{ background: #f0f2f7; }
 .remark{ width: 90%; margin-top: 1rem; }
 .remark textarea{ min-height: 12rem; }
 
-.fix{width: 3rem;  position: fixed; bottom:7rem; right: 1rem; }
-.fix li{ width: 3rem; height: 3rem; border-radius: 3rem; background: #fff; text-align: center; cursor: pointer; }
+.fix{width: 3.5rem;  position: fixed; bottom:7rem; right: 1rem; }
+.fix li{ min-width: 3.5rem;  min-height: 3.5rem; border-radius: 3rem; background: #fff; text-align: center; cursor: pointer; z-index:100;  }
 
 .footer{background: #363d4c; color: #fff; padding: 20px;  line-height: 35px;}
 .footer .link { border-bottom:  1px solid #ccc; }
