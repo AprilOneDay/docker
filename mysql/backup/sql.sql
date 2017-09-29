@@ -1,9 +1,8 @@
 /*
 SQLyog Professional v12.09 (64 bit)
-MySQL - 5.5.53 : Database - koudaiche
+MySQL - 5.7.19 : Database - blog
 *********************************************************************
-*/
-
+*/
 
 /*!40101 SET NAMES utf8 */;
 
@@ -39,7 +38,7 @@ CREATE TABLE `dh_article` (
 
 /*Data for the table `dh_article` */
 
-insert  into `dh_article`(`id`,`type`,`tag`,`title`,`thumb`,`description`,`is_show`,`del_status`,`created`,`hot`,`is_recommend`) values (1,1,'6','Nginx 实现跨域使用字体文件','d32b6491067a0e25561eb4d192243d7e.jpeg','Nginx 实现跨域使用字体文件',1,0,1504970134,1,1),(2,1,'6','Nginx 跨域访问php  ','','Access-Control-Allow-Origin 错误',1,0,1504970371,1,0),(3,1,'10','Html 文字内容只显示一行','','&lt;ul&gt;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&lt;li&gt;&lt;a&nbsphref=\"javascript:;\"&gt;餐馆&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;css:li{&nbsp;white-space:nowrap;&nbsp;&nbsp;overflow:hidden;&nbsp;text-overflow:ellipsis;}',1,0,1505020972,51,0);
+insert  into `dh_article`(`id`,`type`,`tag`,`title`,`thumb`,`description`,`is_show`,`del_status`,`created`,`hot`,`is_recommend`) values (1,1,'6','Nginx 实现跨域使用字体文件','','Nginx 实现跨域使用字体文件',1,0,1504970134,8,1),(2,1,'6','Nginx 跨域访问php  ','','Access-Control-Allow-Origin 错误',1,0,1504970371,11,0),(3,1,'10','Html 文字内容只显示一行','','css控制文字内容只显示一行',1,0,1505020972,65,0);
 
 /*Table structure for table `dh_article_blog` */
 
@@ -53,7 +52,7 @@ CREATE TABLE `dh_article_blog` (
 
 /*Data for the table `dh_article_blog` */
 
-insert  into `dh_article_blog`(`id`,`content`) values (1,'<div>location ~* .(eot|ttf|woff|woff2|svg|otf)$ {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; add_header Access-Control-Allow-Origin http://dist.denha.loc;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; #add_header Access-Control-Allow-Headers X-Requested-With;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; #add_header Access-Control-Allow-Credentials true;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; add_header Access-Control-Allow-Methods GET;</div><div>}</div>'),(2,'<div>location ~ .php(.*)$ {</div><div>&nbsp; &nbsp; &nbsp; &nbsp; add_header Access-Control-Allow-Origin http://dist.denha.loc;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; add_header Access-Control-Allow-Headers X-Requested-With;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; add_header Access-Control-Allow-Credentials true;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; add_header Access-Control-Allow-Methods GET,POST;</div><div>}</div>'),(3,'<div><div style=\"\"><font face=\"Microsoft YaHei\">&lt;ul&gt;</font></div><div style=\"\"><font face=\"Microsoft YaHei\">&nbsp; &nbsp; &nbsp;&lt;li&gt;&lt;a href=\"javascript:;\"&gt;餐馆&lt;/a&gt;&lt;/li&gt;</font></div><div style=\"\"><span style=\"font-family: &quot;Microsoft YaHei&quot;;\">&lt;/ul&gt;</span><br></div></div><span style=\"font-family: &quot;Microsoft YaHei&quot;;\"><div><span style=\"font-family: &quot;Microsoft YaHei&quot;;\"><br></span></div>css:</span><div>li{<br style=\"font-family: &quot;Microsoft YaHei&quot;;\"><span style=\"font-family: &quot;Microsoft YaHei&quot;;\">&nbsp;white-space:nowrap;&nbsp;</span><br style=\"font-family: &quot;Microsoft YaHei&quot;;\"><span style=\"font-family: &quot;Microsoft YaHei&quot;;\">&nbsp;overflow:hidden;</span><br style=\"font-family: &quot;Microsoft YaHei&quot;;\"><span style=\"font-family: &quot;Microsoft YaHei&quot;;\">&nbsp;text-overflow:ellipsis;</span></div><div><span style=\"font-family: &quot;Microsoft YaHei&quot;;\">}</span></div>');
+insert  into `dh_article_blog`(`id`,`content`) values (1,'<p>							 	</p><pre class=\"brush:php;toolbar:false\">location&nbsp;~*&nbsp;.(eot|ttf|woff|woff2|svg|otf)$&nbsp;{\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_header&nbsp;Access-Control-Allow-Origin&nbsp;http://dist.denha.loc;\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#add_header&nbsp;Access-Control-Allow-Headers&nbsp;X-Requested-With;\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#add_header&nbsp;Access-Control-Allow-Credentials&nbsp;true;&nbsp;\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_header&nbsp;Access-Control-Allow-Methods&nbsp;GET;\r\n}</pre><p><br/></p><p>							 	</p>'),(2,'<pre class=\"brush:php;toolbar:false\">\r\nlocation&nbsp;~&nbsp;.php(.*)$&nbsp;{\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_header&nbsp;Access-Control-Allow-Origin&nbsp;http://dist.denha.loc;\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_header&nbsp;Access-Control-Allow-Headers&nbsp;X-Requested-With;\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_header&nbsp;Access-Control-Allow-Credentials&nbsp;true;&nbsp;\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_header&nbsp;Access-Control-Allow-Methods&nbsp;GET,POST;\r\n}</pre><p><br/></p>'),(3,'<p>							 	</p><pre class=\"brush:html;toolbar:false\">&lt;ul&gt;\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;&lt;a&nbsp;href=&quot;javascript:;&quot;&gt;餐馆&lt;/a&gt;&lt;/li&gt;\r\n&lt;/ul&gt;</pre><pre class=\"brush:css;toolbar:false\">css:\r\n\r\nli{\r\n&nbsp;white-space:nowrap;&nbsp;\r\n&nbsp;overflow:hidden;\r\n&nbsp;text-overflow:ellipsis;\r\n}</pre><p><br/></p><p><br/></p><p><br/></p><p>							 	</p>');
 
 /*Table structure for table `dh_banner` */
 
@@ -225,7 +224,7 @@ CREATE TABLE `dh_console_admin` (
 
 /*Data for the table `dh_console_admin` */
 
-insert  into `dh_console_admin`(`id`,`consoleid`,`nickname`,`username`,`password`,`salt`,`mobile`,`status`,`group`,`create_ip`,`login_ip`,`created`,`login_time`) values (1,0,'四月','admin','8895c4947031a4019843c0d00fa303b1','50907','15923882847',1,1,'127.0.0.1','127.0.0.1',1502522576,1506491308),(4,0,'陈明江','cmj','96c76c67a66e92c1e90bce05ebec4b5d','34366','15923882847',1,1,'127.0.0.1','0',1502531990,0);
+insert  into `dh_console_admin`(`id`,`consoleid`,`nickname`,`username`,`password`,`salt`,`mobile`,`status`,`group`,`create_ip`,`login_ip`,`created`,`login_time`) values (1,0,'四月','admin','8895c4947031a4019843c0d00fa303b1','50907','15923882847',1,1,'127.0.0.1','14.111.51.216',1502522576,1506647396),(4,0,'陈明江','cmj','96c76c67a66e92c1e90bce05ebec4b5d','34366','15923882847',1,1,'127.0.0.1','0',1502531990,0);
 
 /*Table structure for table `dh_console_menus` */
 
@@ -848,21 +847,28 @@ DROP TABLE IF EXISTS `dh_visitor_comment`;
 
 CREATE TABLE `dh_visitor_comment` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `type` tinyint(3) unsigned DEFAULT NULL COMMENT '类型',
-  `goods_id` int(10) unsigned DEFAULT NULL COMMENT '商品id',
-  `parent_id` int(10) unsigned DEFAULT NULL COMMENT '上级id',
-  `content` varchar(500) DEFAULT NULL COMMENT '评论内容',
-  `nickname` varchar(10) DEFAULT NULL COMMENT '昵称',
-  `mail` varchar(20) DEFAULT NULL COMMENT '邮箱',
-  `ip` varchar(20) DEFAULT NULL COMMENT 'ip地址',
+  `type` tinyint(3) unsigned DEFAULT '1' COMMENT '类型 1文章',
+  `goods_id` int(10) unsigned DEFAULT '0' COMMENT '商品id',
+  `parent_id` int(10) unsigned DEFAULT '0' COMMENT '上级id',
+  `content` varchar(500) DEFAULT '' COMMENT '评论内容',
+  `nickname` varchar(10) DEFAULT '' COMMENT '昵称',
+  `mail` varchar(20) DEFAULT '' COMMENT '邮箱',
+  `ip` varchar(20) DEFAULT '' COMMENT 'ip地址',
   `is_show` tinyint(1) unsigned DEFAULT '1' COMMENT '状态 1显示 0不显示',
-  `created` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `created` int(10) unsigned DEFAULT '0' COMMENT '创建时间',
+  `to_id` int(11) DEFAULT '0' COMMENT '回复id',
+  `to_nickname` varchar(10) DEFAULT '' COMMENT '回复昵称',
+  PRIMARY KEY (`id`),
+  KEY `goods_id` (`goods_id`),
+  KEY `parent_id` (`parent_id`),
+  KEY `is_show` (`is_show`),
+  KEY `nickname` (`nickname`),
+  KEY `ip` (`ip`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='游客评论';
 
 /*Data for the table `dh_visitor_comment` */
 
-insert  into `dh_visitor_comment`(`id`,`type`,`goods_id`,`parent_id`,`content`,`nickname`,`mail`,`ip`,`is_show`,`created`) values (1,1,3,0,'33333','111',NULL,'127.0.0.1',1,1506592498);
+insert  into `dh_visitor_comment`(`id`,`type`,`goods_id`,`parent_id`,`content`,`nickname`,`mail`,`ip`,`is_show`,`created`,`to_id`,`to_nickname`) values (1,1,3,0,'33333','111',NULL,'127.0.0.1',1,1506592498,0,'');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

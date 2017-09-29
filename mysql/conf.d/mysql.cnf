@@ -20,4 +20,5 @@
 # http://dev.mysql.com/doc/mysql/en/server-system-variables.html
 
 [mysqld]
+skip-name-resolve
 explicit_defaults_for_timestamp=true
