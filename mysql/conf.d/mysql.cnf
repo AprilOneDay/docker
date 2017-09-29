@@ -22,3 +22,5 @@
 [mysqld]
 skip-name-resolve
 explicit_defaults_for_timestamp=true
+
+​sql-mode="ANSI,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION,NO_AUTO_CREATE_USER"
