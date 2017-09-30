@@ -59,6 +59,10 @@ class Index extends denha\Controller
     {
         $id = get('id', 'intval', 0);
 
+        if (!$id) {
+            denha\Log::error('参数错误');
+        }
+
         $article     = table('Article')->tableName();
         $articleBlog = table('ArticleBlog')->tableName();
 

@@ -15,9 +15,7 @@ class Trace
     //执行
     public static function run()
     {
-
         echo self::showTrace();
-
     }
 
     //展示调试信息
