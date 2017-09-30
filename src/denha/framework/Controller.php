@@ -33,13 +33,13 @@ class Controller
     protected function show($viewPath = '', $peg = false)
     {
 
+        if (get('all')) {
+            extract(get('all'), EXTR_OVERWRITE);
+        }
+
         if ($this->assign) {
             // 模板阵列变量分解成为独立变量
             extract($this->assign, EXTR_OVERWRITE);
-        }
-
-        if (get('all')) {
-            extract(get('all'), EXTR_OVERWRITE);
         }
 
         if (!$peg) {

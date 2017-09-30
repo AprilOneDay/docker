@@ -274,10 +274,12 @@ function getConfig($path = 'config', $name = '')
 }
 
 //创建getUrl
-function url($location = '', $params = array())
+function url($location = '', $params = array(), $isGet = false)
 {
     $locationUrl = $location;
-    if (stripos($location, '/') === false && $location != '') {
+    if ($location === '') {
+        $locationUrl = URL . '/' . MODULE . '/' . CONTROLLER . '/' . ACTION;
+    } elseif (stripos($location, '/') === false && $location != '') {
         $locationUrl = URL . '/' . MODULE . '/' . CONTROLLER . '/' . $location;
     } elseif (stripos($location, '/') != 1) {
         $locationUrl = URL . '/' . MODULE . '/' . $location;
@@ -285,11 +287,16 @@ function url($location = '', $params = array())
     $param = '';
     if (!empty($params)) {
         foreach ($params as $key => $value) {
-            if (key($params) === $key && stripos($locationUrl, '?') === false) {
-                $param = '?' . $key . '=' . $value;
+            if ($isGet) {
+                if (key($params) === $key && stripos($locationUrl, '?') === false) {
+                    $param = '?' . $key . '=' . $value;
+                } else {
+                    $param .= '&' . $key . '=' . $value;
+                }
             } else {
-                $param .= '&' . $key . '=' . $value;
+                $param .= '/' . $key . '/' . $value;
             }
+
         }
     }
 

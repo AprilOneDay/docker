@@ -38,8 +38,6 @@ class Route
             }
 
             define('APP_VERSION', $version);
-            //print_r($array);
-            //print_r(self::$class);die;
         }
 
     }
@@ -70,12 +68,14 @@ class Route
                             } else {
                                 $_GET['action'] = $array[2];
                             }
+                        }
 
-                            if (isset($array[3]) && $array[3]) {
-                                $_GET['penult'] = $array[3];
-                                if (isset($array[4]) && $array[4]) {
-                                    $_GET['last'] = $array[4];
-                                }
+                        //静态化
+                        $total = count($array);
+                        if ($total >= 4) {
+                            for ($i = 3; $i < $total;) {
+                                $_GET[$array[$i]] = $array[$i + 1];
+                                $i += 2;
                             }
                         }
                     }
@@ -86,13 +86,9 @@ class Route
         $module     = self::initValue('module', 'index');
         $controller = self::initValue('controller', 'index');
         $action     = self::initValue('action', 'index');
-        $penult     = self::initValue('penult', null);
-        $last       = self::initValue('last', null);
         define('MODULE', $module);
         define('CONTROLLER', $controller);
         define('ACTION', $action);
-        define('PENULT', $penult);
-        define('LAST', $last);
 
         self::$path  = APP ? APP . DS : '';
         self::$class = 'app\\' . APP . '\\' . 'controller\\' . parsename(MODULE) . '\\' . parsename(CONTROLLER, true);
@@ -115,10 +111,12 @@ class Route
                             $_GET['action'] = $array[1];
                         }
 
-                        if (isset($array[2]) && $array[2]) {
-                            $_GET['penult'] = $array[2];
-                            if (isset($array[3]) && $array[3]) {
-                                $_GET['last'] = $array[3];
+                        //静态化
+                        $total = count($array);
+                        if ($total >= 4) {
+                            for ($i = 3; $i < $total;) {
+                                $_GET[$array[$i]] = $array[$i + 1];
+                                $i += 2;
                             }
                         }
                     }
@@ -128,13 +126,9 @@ class Route
 
         $controller = self::initValue('controller', 'index');
         $action     = self::initValue('action', 'index');
-        $penult     = self::initValue('penult', null);
-        $last       = self::initValue('last', null);
 
         define('CONTROLLER', $controller);
         define('ACTION', $action);
-        define('PENULT', $penult);
-        define('LAST', $last);
         self::$path  = APP . DS;
         self::$class = 'app\\' . APP . '\\' . 'controller\\' . parsename(CONTROLLER, true);
     }
