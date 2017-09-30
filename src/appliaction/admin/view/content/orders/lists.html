@@ -19,35 +19,35 @@
 					</div>
 					<form class="form-inline ng-pristine ng-valid" action=""  method="get">
                         <div class="form-group">
-                        	<select class="form-control" data-selected="{??$param['type']}" name="type">
+                        	<select class="form-control" data-selected="{??$param['type']}" name="param[type]">
                             	<option value="0">选择类型</option>
                             	{loop $other['typeCopy'] $key $value}
                                		<option value="{$key}">{$value}</option>
                             	{/loop}
                             </select>
-                        	<select class="form-control" data-selected="{??$param['order_status']}" name="order_status">
+                        	<select class="form-control" data-selected="{??$param['order_status']}" name="param[order_status]">
                                 <option value="">订单状态</option>
                                 {loop $other['orderStatusCopy'] $key $value}
                                		<option value="{$key}">{$value}</option>
                             	{/loop}
                             </select>
-                            <select class="form-control" data-selected="{??$param['status']}" name="status">
+                            <select class="form-control" data-selected="{??$param['status']}" name="param[status]">
                                 <option value="">审核状态</option>
                                 {loop $other['statusCopy'] $key $value}
                                		<option value="{$key}">{$value}</option>
                             	{/loop}
                             </select>
-                             <select class="form-control" data-selected="{??$param['origin']}" name="origin">
+                             <select class="form-control" data-selected="{??$param['origin']}" name="param[origin]">
                                 <option value="">来源</option>
                                 {loop $other['originCopy'] $key $value}
                                		<option value="{$key}">{$value}</option>
                             	{/loop}
                             </select>
-                            <select class="form-control" name="field" data-selected="{??$param['field']}">
+                            <select class="form-control" name="param[field]" data-selected="{??$param['field']}">
                             	<option value="">选择搜索条件</option>
                                 <option value="order_sn">订单编号</option>
                             </select>
-                            <input type="text" class="form-control w120" placeholder="Search" name="keyword" value="{??$param['keyword']}" >
+                            <input type="text" class="form-control w120" placeholder="Search" name="param[keyword]" value="{??$param['keyword']}" >
                             <button type="submit" class="btn btn-default" @click="search()">搜索</button>
                         </div>
                     </form>

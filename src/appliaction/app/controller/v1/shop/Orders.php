@@ -302,9 +302,9 @@ class Orders extends \app\app\controller\Init
 
             if ($orders['type'] == 1) {
                 $type       = 23;
-                $ordersData = table('OrdersCar')->where('order_sn', $orderSn)->field('goods_id')->find('one');
+                $ordersData = table('OrdersCar')->where('order_sn', $orderSn)->field('goods_id')->find();
             } else {
-                $ordersData = table('OrdersService')->where('order_sn', $orderSn)->field('type,goods_id')->find('one');
+                $ordersData = table('OrdersService')->where('order_sn', $orderSn)->field('type,goods_id')->find();
                 $type       = $ordersData['type'];
             }
             $canUseCouponList = dao('Coupon')->canUseCouponList($orders['uid'], $orders['acount_original']);
@@ -520,8 +520,8 @@ class Orders extends \app\app\controller\Init
             $orderSn = dao('Orders')->createOrderSn();
 
             $data['is_temp']         = 1;
-            $data['uid']             = $uid;
-            $data['type']            = $type;
+            $data['uid']             = 0;
+            $data['type']            = 1;
             $data['status']          = 1;
             $data['order_status']    = 3;
             $data['origin']          = $origin;
@@ -531,8 +531,8 @@ class Orders extends \app\app\controller\Init
             $data['message']         = $message;
             $data['acount_original'] = $value['data']['acount_original'];
             $data['acount']          = $acount;
-            $data['coupon_price']    = $couponPrice;
-            $data['fare_price']      = $farePrice;
+            $data['coupon_price']    = 0;
+            $data['fare_price']      = 0;
             $data['created']         = $data['success_time']         = $data['pass_time']         = TIME;
 
             table('Orders')->startTrans();

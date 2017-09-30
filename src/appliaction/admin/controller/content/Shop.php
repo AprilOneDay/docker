@@ -4,56 +4,24 @@
  */
 namespace app\admin\controller\content;
 
-use denha;
-
 class Shop extends \app\admin\controller\Init
 {
     public function lists()
     {
-        $param['field']        = get('field', 'text', 'name');
-        $param['keyword']      = get('keyword', 'text', '');
-        $param['tag']          = get('tag', 'intval', 0);
-        $param['is_show']      = get('is_show', 'text', '');
-        $param['is_recommend'] = get('is_recommend', 'text', '');
-
+        $param    = get('param', 'text');
         $pageNo   = get('pageNo', 'intval', 1);
         $pageSize = get('pageSize', 'intval', 25);
 
-        $offer = max(($param['pageNo'] - 1), 0) * $pageSize;
-
-        if ($param['tag']) {
-            $map['tag'] = $param['tag'];
-        }
-
-        if ($param['is_recommend'] != '') {
-            $map['is_recommend'] = $param['is_recommend'];
-        }
-
-        if ($param['is_show'] != '') {
-            $map['is_show'] = $param['is_show'];
-        }
-
-        if ($param['field'] && $param['keyword']) {
-            if ($param['field'] == 'name') {
-                $map['name'] = array('like', '%' . $param['keyword'] . '%');
-            }
-        }
-        $list  = table('UserShop')->where($map)->limit($offer, $pageSize)->order('id desc')->field('id,uid,name,category,is_ide,status')->find('array');
-        $total = table('UserShop')->where($map)->count();
-        $page  = new denha\Pages($total, $pageNo, $pageSize, url('', $param));
-
-        foreach ($list as $key => $value) {
-            $list[$key]['user'] = dao('User')->getInfo($value['uid'], 'nickname,mobile');
-        }
+        $data = dao('Shop', 'admin')->lists($param, $pageNo, $pageSize);
 
         $other = array(
             'categoryCopy' => getVar('tags', 'console.article'),
             'isIdeCopy'    => array(0 => '未认证', 1 => '已认证', 2 => '认证未通过'),
         );
 
-        $this->assign('list', $list);
+        $this->assign('list', $data['list']);
         $this->assign('param', $param);
-        $this->assign('pages', $page->loadConsole());
+        $this->assign('pages', $data['page']->loadConsole());
         $this->assign('other', $other);
 
         $this->show();

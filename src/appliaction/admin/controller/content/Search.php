@@ -30,10 +30,10 @@ class Search extends \app\admin\controller\Init
             }
         }
 
-        $field = "CONCAT(type,value) AS g,value,type,GROUP_CONCAT(id) AS id,SUM(hot) AS hot";
+        $field = "CONCAT(type,value) AS g,value,type,id,SUM(hot) AS hot";
 
         $list = table('SearchLog')->where($map)->limit($offer, $pageSize)->field($field)->group('g')->find('array');
-        echo table('SearchLog')->getSql();die;
+        //echo table('SearchLog')->getSql();die;
         $total = table('SearchLog')->where($map)->group('value')->count();
         $page  = new denha\Pages($total, $pageNo, $pageSize, url('', $param));
 
@@ -197,5 +197,18 @@ class Search extends \app\admin\controller\Init
         $reslut = dao('ChangeTable')->changeStatus($table, $id, $status);
 
         $this->ajaxReturn($reslut);
+    }
+
+    public function del()
+    {
+
+        $type  = post('type', 'intval', 0);
+        $value = post('value', 'text', '');
+        $table = post('table', 'text', '');
+
+        $reslut = dao('Search')->del($table, $type, $value);
+
+        $this->ajaxReturn($reslut);
+
     }
 }

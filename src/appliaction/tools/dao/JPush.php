@@ -4,13 +4,13 @@
  * @author sunpeilaing <sunpeilaing@linksus.net.cn>
  * @version $Id: JPush.php 2016-12-13 15:55:59 $
  */
-namespace service;
+namespace app\tools\dao;
 
 class JPush
 {
     protected $client;
-    protected $app_key       = 'dd9d9c4fcfee347620c1def9';
-    protected $master_secret = '0e58cbbae2311397b32bd10d';
+    protected $app_key       = 'd9ba6e59c899d284c9101040';
+    protected $master_secret = 'b0e6096103a161c3b371864b';
     public function __construct()
     {
         require_once APP_PATH . 'tools' . DS . 'vendor' . DS . 'JPush' . DS . 'autoload.php';
@@ -28,32 +28,26 @@ class JPush
      */
     public function sendByRegId($uids, $title, $content, $jumpParam = array())
     {
-        if (empty($uids) || !is_array($uids) || !$content) {
+        if (empty($uids) || !$content) {
             return false;
         }
-        //过滤茗星关闭推送的数据
-        $sellerList = M('Seller')->field('uid')->where(array('gid' => 11, 'is_push' => 0))->select();
-        $filterUid  = array();
-        if ($sellerList) {
-            foreach ($sellerList as $val) {
-                $filterUid[] = $val['uid'];
-            }
-        }
-        $uids   = array_diff($uids, $filterUid);
-        $uidStr = implode(',', $uids);
-        //茶语用户极光注册ID
-        $map                    = array();
-        $map['uid']             = array('in', $uidStr);
-        $map['registration_id'] = array('neq', '');
-        $list                   = M('AppAgentLastLogin')->field('registration_id')->where($map)->select();
-        $registration_ids       = array();
+
+        //获取可推送列表
+        $map               = array();
+        $map['id']         = array('in', $uids);
+        $map['is_message'] = 1;
+        $map['imei']       = array('!=', '');
+        $list              = table('User')->field('imei')->where($map)->find('array');
+        $registration_ids  = array();
+
         if ($list) {
             foreach ($list as $val) {
-                $registration_ids[] = $val['registration_id'];
+                $registration_ids[] = $val['imei'];
             }
         } else {
             return false;
         }
+
         $count = count($registration_ids);
         //每次最多推1000条
         $queryLimit = 1000;
@@ -68,6 +62,7 @@ class JPush
             $this->sendByRegIdExe($registration_ids, $title, $content, $jumpParam);
         }
     }
+
     /**
      * [按注册ID推送]
      * @date   2016-12-16T17:44:53+0800
@@ -83,7 +78,8 @@ class JPush
     {
         $pusher = $this->client->push();
         $pusher->setPlatform('all');
-        $pusher->addRegistrationId($registration_ids);
+        $pusher->addAlias($registration_ids);
+        //$pusher->addRegistrationId($registration_ids);
         $pusher->iosNotification($content, array(
             'sound'  => 'sound.caf',
             "style"  => 1, // 1,2,3
@@ -106,9 +102,9 @@ class JPush
         try {
             $result = $pusher->send();
         } catch (\JPush\Exceptions\APIConnectionException $e) {
-            // print $e;
+            print $e;die;
         } catch (\JPush\Exceptions\APIRequestException $e) {
-            // print $e;
+            print $e;die;
         }
         return true;
     }

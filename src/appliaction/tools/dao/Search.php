@@ -161,4 +161,39 @@ class Search
         }
     }
 
+    /**
+     * 删除推荐 删除禁用
+     * @date   2017-09-30T11:56:12+0800
+     * @author ChenMingjiang
+     * @param  [type]                   $table [description]
+     * @param  integer                  $type  [description]
+     * @param  string                   $value [description]
+     * @return [type]                          [description]
+     */
+    public function del($table, $type = 0, $value = '')
+    {
+        if (!in_array($table, array('SearchDisable', 'SearchRemmond'))) {
+            return array('status' => false, 'msg' => '非法操作');
+        }
+
+        if (!$type || !$value) {
+            return array('status' => false, 'msg' => '参数错误');
+        }
+
+        $map['type']  = $type;
+        $map['value'] = $value;
+
+        $id = table($table)->where($map)->field('id')->find('one');
+
+        if (!$id) {
+            return array('status' => false, 'msg' => '信息不存在');
+        }
+
+        $reslut = table($table)->where('id', $id)->delete();
+        if (!$reslut) {
+            $this->ajaxReturn(array('status' => false, 'msg' => '删除失败'));
+        }
+        return array('status' => true, 'msg' => '删除成功');
+    }
+
 }

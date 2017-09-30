@@ -276,14 +276,17 @@ function getConfig($path = 'config', $name = '')
 //创建getUrl
 function url($location = '', $params = array(), $isGet = false)
 {
-    $locationUrl = $location;
+    $locationUrl = URL . '/' . MODULE;
     if ($location === '') {
-        $locationUrl = URL . '/' . MODULE . '/' . CONTROLLER . '/' . ACTION;
+        $locationUrl .= '/' . CONTROLLER . '/' . ACTION;
     } elseif (stripos($location, '/') === false && $location != '') {
-        $locationUrl = URL . '/' . MODULE . '/' . CONTROLLER . '/' . $location;
+        $locationUrl .= '/' . CONTROLLER . '/' . $location;
     } elseif (stripos($location, '/') != 1) {
-        $locationUrl = URL . '/' . MODULE . '/' . $location;
+        $locationUrl .= '/' . $location;
+    } else {
+        $locationUrl = $location;
     }
+
     $param = '';
     if (!empty($params)) {
         foreach ($params as $key => $value) {

@@ -11,16 +11,14 @@ class Blog extends \app\admin\controller\Init
 
     public function index()
     {
-        $param['field']        = get('field', 'text', 'title');
-        $param['keyword']      = get('keyword', 'text', '');
-        $param['tag']          = get('tag', 'intval', 0);
-        $param['is_show']      = get('is_show', 'text', '');
-        $param['is_recommend'] = get('is_recommend', 'text', '');
+        $param = get('param', 'text');
 
         $pageNo   = get('pageNo', 'intval', 1);
         $pageSize = get('pageSize', 'intval', 25);
 
-        $offer = max(($param['pageNo'] - 1), 0) * $pageSize;
+        $param['field'] ?: $param['field'] = 'title';
+
+        $offer = max(($pageNo - 1), 0) * $pageSize;
 
         $map['del_status'] = 0;
 
@@ -90,6 +88,7 @@ class Blog extends \app\admin\controller\Init
                 $result = table('Article')->where(array('id' => $id))->save($data);
                 if ($result) {
                     $resultData = table('ArticleBlog')->where(array('id' => $id))->save($dataContent);
+                    dao('BaiduSpider')->pull($id); //百度主动推送
                     $this->ajaxReturn(array('status' => true, 'msg' => '修改成功'));
                 } else {
                     $this->ajaxReturn(array('status' => false, 'msg' => '修改失败'));
@@ -100,6 +99,7 @@ class Blog extends \app\admin\controller\Init
                 if ($result) {
                     $dataContent['id'] = $result;
                     $resultData        = table('ArticleBlog')->add($dataContent);
+                    dao('BaiduSpider')->pull($result); //百度主动推送
                     $this->ajaxReturn(array('status' => true, 'msg' => '添加成功'));
                 } else {
                     $this->ajaxReturn(array('status' => false, 'msg' => '添加失败'));
@@ -119,7 +119,7 @@ class Blog extends \app\admin\controller\Init
                 $rs['thumb']   = json_encode((array) imgUrl($rs['thumb'], 'blog'));
 
             } else {
-                $rs = array('is_show' => 1, 'is_recommend' => 0);
+                $rs = array('is_show' => 1, 'is_recommend' => 0, 'created' => date('Y-m-d', TIME));
             }
 
             $other = array(
@@ -130,5 +130,20 @@ class Blog extends \app\admin\controller\Init
             $this->assign('other', $other);
             $this->show();
         }
+    }
+
+    /**
+     * 手动推送 http://admin.denha.loc/content/blog/send_baidu_pull?id=1
+     * @date   2017-09-30T15:07:43+0800
+     * @author ChenMingjiang
+     * @return [type]                   [description]
+     */
+    public function sendBaiduPull()
+    {
+        $id = get('id', 'intval', 0);
+
+        $result = dao('BaiduSpider')->pull($id);
+
+        $this->ajaxReturn($result);
     }
 }

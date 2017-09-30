@@ -14,19 +14,17 @@
 				<div class="col-sm-12">
 					<div class="console-title console-title-border clearfix">
 						<div class="pull-left">
-							<h5>禁用列表</h5>
-						</div>
-						<div class="pull-right">
-							<a class="btn btn-primary btn-open"  data-href="{F:url('add_disable')}"  data-height="500px" data-width="356px">添加禁用</a>
+							<h5>推荐汽车</h5>
 						</div>
 					</div>
-
 					<form class="form-inline ng-pristine ng-valid" action=""  method="get">
                         <div class="form-group">
-                            <select class="form-control" name="field" data-selected="{??$param['field']}">
-                                <option value="value">内容</option>
+                            <select class="form-control" data-selected="{$param['status']}" name="param[status]">
+                                <option value="">状态</option>
+                                {loop $other['statusCopy'] $key $value}
+                               		<option value="{$key}">{$value}</option>
+                            	{/loop}
                             </select>
-                            <input type="text" class="form-control w120" placeholder="Search" name="keyword" value="{??$param['keyword']}" >
                             <button type="submit" class="btn btn-default" @click="search()">搜索</button>
                         </div>
                     </form>
@@ -37,29 +35,38 @@
 									<thead>
 										<tr>
 											<th style="width:75px;">ID</th>
-											<th style="width:100px;">类型</th>
-											<th>关键词</th>
-											<th style="width:160px; text-align:center;">状态</th>
-											<th style="width:160px; text-align:center;">操作</th>
+											<th style="width:200px;">申请用户</th>
+											<th style="width:100px;">品牌</th>
+											<th style="width:100px;">期望价格</th>
+											<th style="width:100px;">期望里程</th>
+											<th style="width:50px;">状态</th>
+											<th style="width:50px;">发布时间</th>
+											<th style="width:80px; text-align:center;">操作</th>
 										</tr>
 									</thead>
 									<tbody>
 										{loop $list $key $value}
 									 	<tr v-for="list in list">
 											<td>{$value['id']}</td>
-											<td>{$other['typeCopy'][$value['type']]}</td>
-											<td>{$value['value']}</td>
+											<td>{$value['user']['nickname']}</td>
+											<td>{$value['brand']}</td>
+											<td>{$value['price']}</td>
+											<td>{$value['mileage']}</td>
+											<td>{$other['statusCopy'][$value['status']]}</td>
+											<td>{F:date('Y-m-d H:i',$value['created'])}</td>
 											<td align='center'>
-												{if $value['status']}
-													<a data-href="{F:url('change_status')}" data-type="SearchRemmond" data-id="{$value['id']}" data-status="0" style="color: green" class="btn-ajax-post">启用</a>
-												{else}
-													<a data-href="{F:url('change_status')}" data-type="SearchRemmond" data-id="{$value['id']}" data-status="1" style="color: red" class="btn-ajax-post">禁用</a>
-												{/if}
-											</td>
-											<td align='center'>
-												<a data-href="{F:url('del')}" data-table="SearchDisable" data-type="{$value['type']}" data-value="{$value['value']}"  class="btn-ajax-post">删除</a>
+												<a data-href="{F:url('show_car_list',array('id'=>$value['id']))}"  data-height="500px" data-width="80%"  data-title="推荐汽车"  class="btn-open">推荐</a>
 											</td>
 										</tr>
+										<td colspan="13">
+											<table class="table" >
+												<thead> 
+													<tr>
+														<th style="width: 100px;">详细介绍:</th><th>{$value['description']}</th>
+													</tr>
+												</thead>
+											</table>
+										</td>
 										{/loop}
 									</tbody>
 								    <tfoot>

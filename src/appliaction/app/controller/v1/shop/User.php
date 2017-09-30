@@ -201,7 +201,7 @@ class User extends \app\app\controller\Init
             $this->appReturn(array('status' => false, 'msg' => '请选择登录方式'));
         }
 
-        $result = dao('User')->login($account, $password);
+        $result = dao('User')->login($account, $password, $this->imei);
 
         if ($result['status']) {
             if ($result['data']['type'] != $type) {

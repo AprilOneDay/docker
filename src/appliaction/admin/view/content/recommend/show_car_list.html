@@ -12,11 +12,6 @@
 		<div class="view-content-container" >
 			<div class="row">
 				<div class="col-sm-12">
-					<div class="console-title console-title-border clearfix">
-						<div class="pull-left">
-							<h5>汽车列表</h5>
-						</div>
-					</div>
 					<form class="form-inline ng-pristine ng-valid" action=""  method="get">
                         <div class="form-group">
                         	<select class="form-control" data-selected="{??$param['type']}" name="param[type]">
@@ -54,10 +49,11 @@
                     </form>
 					<div class="console-form">
 						<div class="mt8">
-							<form>
+							<form class="form-horizontal" action="{F:url('add_car_id',array('id'=>$id))}">
 								<table class="table table-hover">
 									<thead>
 										<tr>
+											<th style="width:75px;">#</th>
 											<th style="width:75px;">ID</th>
 											<th>标题</th>
 											<th style="width:60px;">类型</th>
@@ -72,6 +68,7 @@
 									<tbody>
 										{loop $list $key $value}
 									 	<tr v-for="list in list">
+									 		<td><input type="checkbox" class="checkbox" value="{$value['id']}" name="id[]" data-checked='{F:json_encode($checkValue)}'></td>
 											<td>{$value['id']}</td>
 											<td>{$value['title']}</td>
 											<td>{$other['typeCopy'][$value['type']]}</td>
@@ -98,6 +95,10 @@
           								</tr>
 									</tfoot>
 								</table>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-primary btn-comply" click="comply">推荐</button>
+									<button type="button" class="btn btn-default" id="btn-close">取消</button>
+								</div>
 							</form>
 						</div>
 					</div>

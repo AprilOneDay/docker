@@ -14,22 +14,23 @@
 				<div class="col-sm-12">
 					<div class="console-title console-title-border clearfix">
 						<div class="pull-left">
-							<h5>店铺列表</h5>
+							<h5>推荐服务</h5>
 						</div>
 					</div>
 					<form class="form-inline ng-pristine ng-valid" action=""  method="get">
                         <div class="form-group">
-                        	<select class="form-control" data-selected="{$param['is_ide']}" name="param[is_ide]">
+                            <select class="form-control" data-selected="{$param['status']}" name="param[status]">
                                 <option value="">状态</option>
-                                {loop $other['isIdeCopy'] $key $value}
+                                {loop $other['statusCopy'] $key $value}
                                		<option value="{$key}">{$value}</option>
                             	{/loop}
                             </select>
-                            <select class="form-control" name="param[field]" data-selected="{??$param['field']}">
-                                <option value="uid">UID</option>
-                                <option value="name">店铺名称</option>
+                         	<select class="form-control" data-selected="{$param['sign']}" name="param[sign]">
+                                <option value="">类型</option>
+                                {loop $other['signCopy'] $key $value}
+                               		<option value="{$key}">{$value}</option>
+                            	{/loop}
                             </select>
-                            <input type="text" class="form-control w120" placeholder="Search" name="param[keyword]" value="{??$param['keyword']}" >
                             <button type="submit" class="btn btn-default" @click="search()">搜索</button>
                         </div>
                     </form>
@@ -40,33 +41,36 @@
 									<thead>
 										<tr>
 											<th style="width:75px;">ID</th>
-											<th>店铺名称</th>
-											<th>所属用户/UID</th>
-											<th>店铺联系电话</th>
-											<th style="width:120px;">资质认证</th>
-											<th style="width:120px;">状态</th>
-											<th style="width:160px; text-align:center;">操作</th>
+											<th style="width:100px;">类型</th>
+											<th style="width:200px;">申请用户</th>
+											<th style="width:100px;">期望价格</th>
+											<th style="width:50px;">状态</th>
+											<th style="width:50px;">发布时间</th>
+											<th style="width:80px; text-align:center;">操作</th>
 										</tr>
 									</thead>
 									<tbody>
 										{loop $list $key $value}
 									 	<tr v-for="list in list">
 											<td>{$value['id']}</td>
-											<td>{$value['name']}</td>
-											<td>{$value['user']['nickname']} / {$value['uid']}</td>
-											<td>{$value['user']['mobile']}</td>
-											<td>{$other['isIdeCopy'][$value['is_ide']]}</td>
-											<td>
-												{if $value['status']}
-													<a href="javascript:;" style="color: green">营业中</a>
-												{else}
-													<a href="javascript:;" style="color: red">关闭中</a>
-												{/if}
-											</td>
+											<td>{$other['signCopy'][$value['sign']]}</td>
+											<td>{$value['user']['nickname']}</td>
+											<td>{$value['price']}</td>
+											<td>{$other['statusCopy'][$value['status']]}</td>
+											<td>{F:date('Y-m-d H:i',$value['created'])}</td>
 											<td align='center'>
-												<a data-href="{F:url('edit',array('id'=>$value['id']))}"  data-width="90%"  data-title="店铺详情"  class="btn-open">详情</a>
+												<a data-href="{F:url('show_shop_list',array('id'=>$value['id']))}"  data-height="500px" data-width="80%"  data-title="推荐汽车"  class="btn-open">推荐</a>
 											</td>
 										</tr>
+										<td colspan="13">
+											<table class="table" >
+												<thead> 
+													<tr>
+														<th style="width: 100px;">详细介绍:</th><th>{$value['description']}</th>
+													</tr>
+												</thead>
+											</table>
+										</td>
 										{/loop}
 									</tbody>
 								    <tfoot>

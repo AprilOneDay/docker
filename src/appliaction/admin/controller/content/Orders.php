@@ -10,17 +10,11 @@ class Orders extends \app\admin\controller\Init
 {
     public function lists()
     {
-        $param['field']        = get('field', 'text', 'order_sn');
-        $param['keyword']      = get('keyword', 'text', '');
-        $param['type']         = get('type', 'intval', 1);
-        $param['origin']       = get('origin', 'text', '');
-        $param['order_status'] = get('order_status', 'text', '');
-        $param['status']       = get('status', 'text', '');
-
+        $param    = get('param', 'text');
         $pageNo   = get('pageNo', 'intval', 1);
         $pageSize = get('pageSize', 'intval', 25);
 
-        $offer = max(($param['pageNo'] - 1), 0) * $pageSize;
+        $offer = max(($pageNo - 1), 0) * $pageSize;
 
         if ($param['type']) {
             $map['type'] = $param['type'];
