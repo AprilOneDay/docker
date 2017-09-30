@@ -81,7 +81,7 @@ class Blog extends \app\admin\controller\Init
             }
 
             if (!$data['description']) {
-                $data['description'] = mb_substr(str_replace(' ', '&nbsp', strip_tags($dataContent['content'])), 0, 255, 'UTF-8');
+                $data['description'] = mb_substr(str_replace(' ', '', strip_tags($dataContent['content'])), 0, 255, 'UTF-8');
             }
 
             if ($id) {

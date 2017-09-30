@@ -83,6 +83,19 @@ $(function() {
         })
     })
 
+    //绑定checkbox
+    $('.checkbox').each(function(){
+        var data  = $(this).val();
+        var value = $(this).attr('data-checked');
+        if(value != ''){
+            value =  jQuery.parseJSON(value);
+        }
+
+        if($.inArray(data,value) >= 0){
+            $(this).attr("checked","checked");
+        }
+    })
+
    //打开弹出
     $('.btn-open').click(function() {
         var href = $(this).attr('data-href');
@@ -118,14 +131,13 @@ $(function() {
 
     //提交信息
     $('.btn-comply').click(function(){
-        var form;
-        if($('.form-horizontal').length == 1){
-           form = $('.form-horizontal');
-        }else{
-           form = $(this).parent().parent().parent();
+        var form = $(this).parents('.form-horizontal');
+        var data = form.serializeArray();
+        var url  = form.attr('action');
+        if(data.length < 1){
+            return layer.msg('请上传参数');
         }
-        var data= form.serializeArray();
-        var url = form.attr('action');
+
 
         $.post(url,data,function(reslut){
             layer.msg(reslut.msg);

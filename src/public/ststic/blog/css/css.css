@@ -46,6 +46,10 @@ body{ background: #f0f2f7; }
 .footer .link li a{ color: #fff; }
 .footer .link li a:hover{ color: red; }
 
+.footer-ico li{ margin-left: 0.5rem;  }
+.footer-ico li a{ color: #fff; }
+.footer-ico li a:hover{ color:#ccc; }
+
 .pagination-info {color: #888;display: inline-block; padding: 0 16px; vertical-align: middle; float: left; margin-top: 28px;}
 .pagination-goto {display: inline-block; padding: 0 15px; vertical-align: middle;}
 .pagination-goto input.w40{display: inline-block; margin-right: 6px; width: 40px;}
