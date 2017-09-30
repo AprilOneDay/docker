@@ -15,7 +15,9 @@ class Trace
     //执行
     public static function run()
     {
+
         echo self::showTrace();
+
     }
 
     //展示调试信息
@@ -63,18 +65,31 @@ class Trace
     {
         $e = error_get_last();
         if ($e) {
-            return include FARM_PATH . DS . 'trace' . DS . 'error.html';
+            if (TRACE) {
+                return include FARM_PATH . DS . 'trace' . DS . 'error.html';
+            } else {
+                header("http/1.1 404 not found");
+                header("status: 404 not found");
+                return include FARM_PATH . DS . 'trace' . DS . '404.html';
+            }
+
         }
     }
 
     //捕获未处理的自定义错误信息
     public static function catchApp($error)
     {
-        $e['type']    = 0;
-        $e['message'] = $error->getMessage();
-        $e['file']    = $error->getFile();
-        $e['line']    = $error->getLine();
-        return include FARM_PATH . DS . 'trace' . DS . 'error.html';
+        if (TRACE) {
+            $e['type']    = 0;
+            $e['message'] = $error->getMessage();
+            $e['file']    = $error->getFile();
+            $e['line']    = $error->getLine();
+            return include FARM_PATH . DS . 'trace' . DS . 'error.html';
+        } else {
+            header("http/1.1 404 not found");
+            header("status: 404 not found");
+            return include FARM_PATH . DS . 'trace' . DS . '404.html';
+        }
     }
 
     //增加非致命错误信息记录

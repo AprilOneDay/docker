@@ -29,7 +29,7 @@ class AutoLoad
             if (is_file(self::$namespaceAlias[$namespace] . $class . EXT)) {
                 return self::$namespaceAlias[$namespace] . $class . EXT;
             } else {
-                print_r($class);
+                //print_r($class);
             }
         }
     }

@@ -26,6 +26,8 @@ class Start
             self::$config = array_merge(include (CONFIG_PATH . 'config.php'), include (CONFIG_PATH . 'config.' . $client . '.php'));
         }
 
+        define('TRACE', self::$config['trace']); //定义Trace
+
         error_reporting(0);
         register_shutdown_function('denha\Trace::catchError');
         set_error_handler('denha\Trace::catchNotice');
@@ -98,10 +100,6 @@ class Start
         $doc = new \ReflectionMethod($class, $action);
         $tmp = $doc->getDocComment();
 
-        /* $flag = preg_match_all('/@cc(.*?)\n/', $tmp, $tmp);
-        $tmp  = trim($tmp[1][0]);
-        $tmp  = $tmp != '' ? $tmp : '无';*/
-        var_dump($doc);
     }
 
     //自动创建文件夹
