@@ -30,7 +30,7 @@ default-character-set=utf8
 # skip-name-resolve
 explicit_defaults_for_timestamp=true
 
-log-bin= /var/lib/log/mysql-bin
+log-bin= mysql-bin
 server-id=1
 
 max_allowed_packet=8M
