@@ -229,7 +229,7 @@ class Mysqli
         $field    = is_array($field) ? $field : explode(',', $field);
 
         foreach ($field as $k => $v) {
-            if (stripos($v, 'as') === false && stripos($v, 'count(*)') === false) {
+            if (stripos($v, 'as') === false && stripos($v, 'count(*)') === false && stripos($v, '`') === false && stripos($v, '.') === false) {
                 $newField .= '`' . $v . '`,';
             } else {
                 $newField .= $v . ',';
