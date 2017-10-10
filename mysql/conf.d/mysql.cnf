@@ -19,6 +19,15 @@
 # For explanations see
 # http://dev.mysql.com/doc/mysql/en/server-system-variables.html
 
+[mysqldump]
+user=siyue
+password=renyao748
+
 [mysqld]
 skip-name-resolve
 explicit_defaults_for_timestamp=true
+max_allowed_packet=8M
+lower_case_table_names=1
+character_set_server=utf8
+max_connections=300
+max_connect_errors=200
