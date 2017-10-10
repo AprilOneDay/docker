@@ -1,7 +1,7 @@
 # version: '2'
 # services:
     mysql:
-        #image: mysql:5.7
+        # image: mysql:5.7
         build: ./mysql/
         restart: always
         privileged: true
@@ -14,74 +14,74 @@
         environment:
             MYSQL_ROOT_PASSWORD: "1qq2ww3ee4rr"
         container_name: mysql
-    # slave1:
-        #image: mysql:5.7
-    #     build: ./mysql.slave1/
+    mysqlsrv:
+        # image: mysql:5.7
+        build: ./mysqlsrv/
+        restart: always
+        privileged: true
+        ports:
+            - "3316:3306"
+        volumes:
+            - ./mysqlsrv/conf.d/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+            - ./mysqlsrv/data/:/var/lib/mysql/:rw
+            - ./mysqlsrv/log/:/var/log/mysql/:rw
+        environment:
+            MYSQL_ROOT_PASSWORD: "1qq2ww3ee4rr"
+        container_name: mysqlsrv
+    # php:
+    #     #depends_on:
+    #     #    - mysql
+    #     build: ./php/
+    #     container_name: php
     #     restart: always
     #     privileged: true
-    #     ports:
-    #         - "3309:3306"
+    #     links:
+    #         - mysql:mysql
     #     volumes:
-    #         - ./mysql.slave1/conf.d/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
-    #         - ./mysql.slave1/data/:/var/lib/mysql/:rw
-    #         - ./mysql.slave1/log/:/var/log/mysql/:rw
-    #     environment:
-    #         MYSQL_ROOT_PASSWORD: "1qq2ww3ee4rr"
-    #     container_name: slave1
-    php:
-        #depends_on:
-        #    - mysql
-        build: ./php/
-        container_name: php
-        restart: always
-        privileged: true
-        links:
-            - mysql:mysql
-        volumes:
-            - ./src/:/var/www/html/:rw
-            - ./src/data:/var/www/html/data:rw
-            - ./php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
-            - ./php/log/:/var/log/php-fpm/:rw
-        expose:
-            - "9000"        
-    nginx:
-        build: ./nginx/
-        container_name: nginx
-        restart: always
-        privileged: true
-        links:
-            - php:php
-        volumes:
-            - ./src/:/var/www/html/:rw
-            - ./src/data:/var/www/html/data:rw
-            - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf
-            - ./nginx/conf/conf.d/:/etc/nginx/conf.d/
-            - ./nginx/log/:/var/log/nginx/:rw
-        ports:
-            - "80:80"
+    #         - ./src/:/var/www/html/:rw
+    #         - ./src/data:/var/www/html/data:rw
+    #         - ./php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+    #         - ./php/log/:/var/log/php-fpm/:rw
+    #     expose:
+    #         - "9000"        
+    # nginx:
+    #     build: ./nginx/
+    #     container_name: nginx
+    #     restart: always
+    #     privileged: true
+    #     links:
+    #         - php:php
+    #     volumes:
+    #         - ./src/:/var/www/html/:rw
+    #         - ./src/data:/var/www/html/data:rw
+    #         - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+    #         - ./nginx/conf/conf.d/:/etc/nginx/conf.d/
+    #         - ./nginx/log/:/var/log/nginx/:rw
+    #     ports:
+    #         - "80:80"
     # httpd:
-        # 前置需要
-        # depends_on:
-        #     - php
-        # 容器名称
-        # image: httpd:latest
-        # 容器名称
-        # container_name: httpd
-        # 意外停止自动重启
-        # restart: always
-        # 挂载数据卷 本地path：容器path ： 权限 | ro不可创建文件 rw可读写
-        # volumes:
-        #     - ./src/:/usr/local/apache2/htdocs/:rw
-        #     - ./apache/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
-        #     - ./apache/conf/extra/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf:ro
-        #     - ./apache/log/:/usr/local/apache2/logs/:rw
-        # 链接容器
-        # links:
-        #    - php:php
-        # 端口映射 本地prot ： 容器prot
-        # ports:
-        #    - "80:80"
-        #    - "443:443"
+    #     前置需要
+    #     depends_on:
+    #         - php
+    #     容器名称
+    #     image: httpd:latest
+    #     容器名称
+    #     container_name: httpd
+    #     意外停止自动重启
+    #     restart: always
+    #     挂载数据卷 本地path：容器path ： 权限 | ro不可创建文件 rw可读写
+    #     volumes:
+    #         - ./src/:/usr/local/apache2/htdocs/:rw
+    #         - ./apache/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+    #         - ./apache/conf/extra/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf:ro
+    #         - ./apache/log/:/usr/local/apache2/logs/:rw
+    #     链接容器
+    #     links:
+    #        - php:php
+    #     端口映射 本地prot ： 容器prot
+    #     ports:
+    #        - "80:80"
+    #        - "443:443"
 
     
             
