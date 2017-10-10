@@ -226,25 +226,20 @@ class Mysqli
     public function field($field)
     {
         $newField = '';
-        if (is_array($field)) {
-            $i = 0;
-            foreach ($field as $k => $v) {
-                if ($i == 0) {
-                    $newField .= $v;
-                } else {
-                    $newField .= "," . $v;
-                }
+        $field    = is_array($field) ? $field : explode(',', $field);
 
-                $i++;
+        foreach ($field as $k => $v) {
+            if (stripos($v, 'as') === false && stripos($v, 'count(*)') === false) {
+                $newField .= '`' . $v . '`,';
+            } else {
+                $newField .= $v . ',';
             }
-        } else {
-            $newField = $field;
+
         }
+
+        $newField = substr($newField, 0, -1);
+
         $this->field = $newField;
-        if ($this->field && $this->field != '*') {
-            $this->field = '`' . $newField . '`';
-            $this->field = str_replace(',', '`,`', $this->field);
-        }
 
         return $this;
     }
