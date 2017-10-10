@@ -21,7 +21,7 @@ ENV INSTALL_DATA_SHELL install_data.sh
 #创建文件夹
 RUN mkdir -p $WORK_PATH
 #安装定时任务
-RUN apt-get install cron
+#RUN apt-get install cron
 
 #把数据库初始化数据的文件复制到工作目录下
 COPY ./backup/$FILE_1 $WORK_PATH/
