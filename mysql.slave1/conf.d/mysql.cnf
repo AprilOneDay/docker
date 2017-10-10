@@ -39,7 +39,6 @@ master-connect-retry       =   60                  		# 链接重连间隔(单位
 replicate-ignore-db        =   mysql               		# 不从主机同步的数据库(多个写多行)  
 replicate-do-db            =   blog                 	# 要从主机同步的库(多个写多行)  
 log-slave-update   # 启用从机服务器上的slave日志功能，使这台计算机可以用来构成一个镜像链(A->B->C)  
-slave-skip-errors  # 跳过错误，从机一般应该配置该项  
 
 # skip-name-resolve
 max_allowed_packet=8M
