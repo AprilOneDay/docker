@@ -20,8 +20,8 @@
 # http://dev.mysql.com/doc/mysql/en/server-system-variables.html
 
 [mysqldump]
-user=siyuework
-password=cheng6251
+user=siyue
+password=siyue1q2w3e4r
 
 [mysql]
 default-character-set=utf8
