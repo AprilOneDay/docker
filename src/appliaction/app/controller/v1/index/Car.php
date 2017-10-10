@@ -125,13 +125,23 @@ class Car extends \app\app\controller\Init
             $chart          = getFirstCharter($value['name']);
             $value['thumb'] = $this->appimg($value['thumb'], 'category');
             if (!isset($data[$chart])) {
-                $data[$chart] = $value;
+                $data[$chart][] = $value;
             } else {
-                $data[$chart] = $value;
+                $data[$chart][] = $value;
             }
         }
 
-        $this->appReturn(array('msg' => '获取数据成功', 'data' => $data));
+        foreach ($data as $key => $value) {
+            $brand[$key]['letter'] = $key;
+            $brand[$key]['list']   = $value;
+        }
+
+        //$chart = getFirstCharter('讴歌');
+        //var_dump($chart);die;
+
+        $brand = array_values($brand);
+
+        $this->appReturn(array('msg' => '获取数据成功', 'data' => $brand));
     }
 
     /**
@@ -182,7 +192,7 @@ class Car extends \app\app\controller\Init
         $data['content'] = '';
         $ablum           = table('GoodsAblum')->where(array('goods_id' => $data['id']))->find('array');
         foreach ($ablum as $key => $value) {
-            $data['content'] .= '<p><img src="' . $this->appImg($value['path'], 'car') . '" /></p>';
+            $data['content'] .= '<p><img src="' . $this->appImg($value['path'], 'car') . '" style="width:90%;text-algin:center" /></p>';
             if ($value['description']) {
                 $data['content'] .= '<p>' . $value['description'] . '</p>';
             }
@@ -190,7 +200,7 @@ class Car extends \app\app\controller\Init
         }
 
         if ($data['type'] == 1) {
-            $user = dao('User')->getInfo($uid, 'nickname,avatar,mobile');
+            $user = dao('User')->getInfo($data['uid'], 'nickname,avatar,mobile');
 
             $data['user']['avatar']   = $this->appImg($user['avatar'], 'avatar');
             $data['user']['nickname'] = $user['nickname'];
@@ -204,6 +214,10 @@ class Car extends \app\app\controller\Init
             $data['shop']['avatar']       = $this->appImg($shop['avatar'], 'avatar');
             $data['shop']['mobile']       = (string) dao('User')->getInfo($data['uid'], 'mobile');
             $data['shop']['credit_level'] = dao('User')->getShopCredit($shop['credit_level']);
+            $data['coment']               = dao('Comment')->getList(2, $id); //获取评价内容
+            foreach ($data['coment'] as $key => $value) {
+                $data['coment'][$key]['ablum'] = $this->appImgArray($value['ablum'], 'comment');
+            }
         }
 
         //增加浏览记录

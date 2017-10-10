@@ -251,9 +251,11 @@ class Orders extends \app\app\controller\Init
         }
 
         if ($orders['type'] == 1) {
-            $ordersData = table('OrdersCar')->where('order_sn', $orderSn)->field('goods_id')->find('one');
+            $commentType = 2;
+            $ordersData  = table('OrdersCar')->where('order_sn', $orderSn)->field('goods_id')->find('one');
         } else {
-            $ordersData = table('OrdersService')->where('order_sn', $orderSn)->field('goods_id')->find('one');
+            $commentType = 3;
+            $ordersData  = table('OrdersService')->where('order_sn', $orderSn)->field('goods_id')->find('one');
         }
 
         $is = table('Comment')->where(array('order_sn' => $orderSn, 'uid' => $this->uid))->field('id')->find();
@@ -262,7 +264,8 @@ class Orders extends \app\app\controller\Init
         }
 
         table('Orders')->startTrans();
-        $result = dao('Comment')->add($this->uid, 2, $ordersData['goods_id'], $content, $dataContent, $orders['seller_uid']);
+        //增加评价信息
+        $result = dao('Comment')->add($this->uid, $commentType, $ordersData['goods_id'], $content, $dataContent, $orders['seller_uid']);
         if ($result['status']) {
             //订单改为已评价
             $resultOrders = table('Orders')->where(array('order_sn' => $orderSn))->save('order_status', 5);

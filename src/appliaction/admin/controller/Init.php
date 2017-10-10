@@ -8,6 +8,7 @@ class Init extends denha\Controller
     public $consoleid;
     public $consoleName;
     public $group;
+    public $power;
 
     public function __construct()
     {
@@ -16,7 +17,15 @@ class Init extends denha\Controller
             $console           = getSession('console');
             $this->consoleid   = $console['id'];
             $this->consoleName = $console['nickname'];
-            if (!$console) {
+            $this->group       = $console['group'];
+
+            //获取权限信息
+            if ($this->group) {
+                $checkArray  = table('ConsoleGroup')->where('id', $this->group)->field('power')->find('one');
+                $this->power = explode(',', $checkArray);
+            }
+
+            if (!$console || !$checkArray) {
                 header('Location:/index/login/');
             }
         }

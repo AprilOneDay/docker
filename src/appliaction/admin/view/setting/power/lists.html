@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+	<meta name="keywords" content=""/>
+	<title>后台管理</title>
+	{include /public/global_css}
+</head>
+  	<body>
+	<div id="console-setting-menus-index">
+		<div class="view-content-container" >
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="console-form">
+						<div class="mt8">
+							<form class="form-horizontal" action="{F:url('power/edit',array('id'=>$id))}">
+								<ul>
+									<?php for($i=0;$i<$max;$i++){ ?>
+										{loop $list $key $value}
+										<li style="line-height: 25px;">
+											{if $value['child']}
+											<span class="glyphicon glyphicon-triangle-right" style="cursor: pointer;"></span>
+											{else}
+											<span></span>
+											{/if}
+											<span>{$value['delimiter']}</span>
+											<input type="checkbox" style="margin-right:5px;vertical-align:text-bottom;" name="id[]" level="{$value['level']}" value="{$value['id']}" {if in_array($value['id'],$checkArray)}checked="checked"{/if} onclick='javascript:checknode(this);'>{$value['name']}
+										</li>
+										{/loop}
+									<?php } ?>
+								</ul>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-primary btn-comply" click="comply">确定</button>
+									<button type="button" class="btn btn-default" id="btn-close">取消</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{include /public/global_js}
+	<script type="text/javascript">
+	function checknode(obj){
+		var chk = $("input[type='checkbox']");
+		var count = chk.length;
+		var num = chk.index(obj);
+		var level_top = level_bottom =  chk.eq(num).attr('level');
+		for (var i=num; i>=0; i--){
+			var le = chk.eq(i).attr('level');
+			if(eval(le) < eval(level_top)) {
+		  		chk.eq(i).prop("checked",true);
+		  		var level_top = level_top-1;
+			}
+		}
+
+		for (var j=num+1; j<count; j++){
+	      	var le = chk.eq(j).attr('level');
+	      	if($(obj).prop('checked')) {
+	          	if(eval(le) > eval(level_bottom)) chk.eq(j).prop("checked",true);
+	          	else if(eval(le) == eval(level_bottom)) break;
+	      	}
+	      	else {
+      			if(eval(le) > eval(level_bottom)) chk.eq(j).prop("checked",false);
+          		else if(eval(le) == eval(level_bottom)) break;
+	      	}
+		}
+  	}
+	</script>
+</body>
+</html>

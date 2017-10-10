@@ -451,6 +451,67 @@ function delSession($name)
 }
 
 /**
+ * 转换其他编码成Unicode编码
+ * @date   2017-10-10T15:24:33+0800
+ * @author ChenMingjiang
+ * @param  [type]                   $name [需要转换的内容]
+ * @param  string                   $code [当前编码]
+ * @return [type]                         [description]
+ */
+function enUnicode($name, $code = 'UTF-8')
+{
+    $name = iconv($code, 'UCS-2', $name);
+    $len  = strlen($name);
+    $str  = '';
+    for ($i = 0; $i < $len - 1; $i = $i + 2) {
+        $c  = $name[$i];
+        $c2 = $name[$i + 1];
+        if (ord($c) > 0) {
+            //两个字节的文字
+            $str .= '\u' . base_convert(ord($c), 10, 16) . str_pad(base_convert(ord($c2), 10, 16), 2, 0, STR_PAD_LEFT);
+            //$str .= base_convert(ord($c), 10, 16).str_pad(base_convert(ord($c2), 10, 16), 2, 0, STR_PAD_LEFT);
+        } else {
+            $str .= '\u' . str_pad(base_convert(ord($c2), 10, 16), 4, 0, STR_PAD_LEFT);
+            //$str .= str_pad(base_convert(ord($c2), 10, 16), 4, 0, STR_PAD_LEFT);
+        }
+    }
+    $str = strtoupper($str); //转换为大写
+    return $str;
+}
+
+/**
+ * 转换Unicode编码为其他编码
+ * @date   2017-10-10T15:24:54+0800
+ * @author ChenMingjiang
+ * @param  [type]                   $name [需要转换的内容]
+ * @param  string                   $code [需要转换成的编码]
+ * @return [type]                         [description]
+ */
+function deUnicode($name, $code = 'UTF-8')
+{
+    $name = strtolower($name);
+    // 转换编码，将Unicode编码转换成可以浏览的utf-8编码
+    $pattern = '/([\w]+)|(\\\u([\w]{4}))/i';
+    preg_match_all($pattern, $name, $matches);
+    if (!empty($matches)) {
+        $name = '';
+        for ($j = 0; $j < count($matches[0]); $j++) {
+            $str = $matches[0][$j];
+            if (strpos($str, '\\u') === 0) {
+                $code  = base_convert(substr($str, 2, 2), 16, 10);
+                $code2 = base_convert(substr($str, 4), 16, 10);
+                $c     = chr($code) . chr($code2);
+                $c     = iconv('UCS-2', $code, $c);
+                $name .= $c;
+            } else {
+                $name .= $str;
+            }
+        }
+    }
+    return $name;
+}
+
+/**
  * 编码转换
  * @date   2017-08-27T16:07:41+0800
  * @author ChenMingjiang
@@ -482,7 +543,7 @@ function mbDetectEncoding($content = '', $mbEncode = "UTF-8")
 function auth($string, $operation = 'ENCODE', $key = '', $expiry = 0)
 {
     $ckey_length = 4;
-    $key         = md5($key != '' ? $key : vars('config', 'authKey'));
+    $key         = md5($key != '' ? $key : getConfig('config', 'authKey'));
     $keya        = md5(substr($key, 0, 16));
     $keyb        = md5(substr($key, 16, 16));
     $keyc        = $ckey_length ? ($operation == 'DECODE' ? substr($string, 0, $ckey_length) : substr(md5(microtime()), -$ckey_length)) : '';
@@ -615,18 +676,27 @@ function tenxunToBaidu($lat, $lng)
 //获取汉字首字母
 function getFirstCharter($str)
 {
+    header("content-Type: text/html; charset=GB2312");
     if (empty($str)) {
         return '';
     }
+
     $fchar = ord($str{0});
     if ($fchar >= ord('A') && $fchar <= ord('z')) {
         return strtoupper($str{0});
     }
 
-    $s1  = iconv('UTF-8', 'gb2312', $str);
-    $s2  = iconv('gb2312', 'UTF-8', $s1);
-    $s   = $s2 == $str ? $s1 : $str;
-    $asc = ord($s{0}) * 256 + ord($s{1}) - 65536;
+    //$s1 = iconv("UTF-8", "gb2312//IGNORE", $str);
+    //$s2 = iconv("gb2312", "UTF-8//IGNORE", $s1);
+
+    $s1 = mb_convert_encoding($str, "GBK", "UTF-8");
+    $s2 = mb_convert_encoding($s1, "UTF-8", "GBK");
+
+    $s = $s2 == $str ? $s1 : $str;
+
+    $asc = current(unpack('N', "\xff\xff$s"));
+    //$asc = ord($s{0}) * 256 + ord($s{1}) - 65536;
+
     if ($asc >= -20319 && $asc <= -20284) {
         return 'A';
     }
@@ -717,6 +787,10 @@ function getFirstCharter($str)
 
     if ($asc >= -11055 && $asc <= -10247) {
         return 'Z';
+    }
+
+    if ($asc == -9559) {
+        return 'O';
     }
 
     return null;

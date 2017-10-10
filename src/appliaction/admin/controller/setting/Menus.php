@@ -25,6 +25,7 @@ class Menus extends \app\admin\controller\Init
                 $list[$key]['status']  = $value['status'] ? '√' : '×';
                 $list[$key]['is_show'] = $value['is_show'] ? '√' : '×';
             }
+
             $data = [
                 'data' => [
                     'list' => $list,
@@ -35,7 +36,6 @@ class Menus extends \app\admin\controller\Init
         $this->assign('list', $list);
         $this->show();
 
-        //$this->ajaxReturn(['status' => true, 'data' => $data]);
     }
 
     /**

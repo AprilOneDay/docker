@@ -3,6 +3,12 @@ namespace app\admin\controller\setting;
 
 class Admin extends \app\admin\controller\Init
 {
+    /**
+     * 管理员列表
+     * @date   2017-10-09T10:51:21+0800
+     * @author ChenMingjiang
+     * @return [type]                   [description]
+     */
     public function index()
     {
         $list = table('ConsoleAdmin')->find('array');
@@ -12,6 +18,12 @@ class Admin extends \app\admin\controller\Init
         $this->show();
     }
 
+    /**
+     * 添加/编辑管理员
+     * @date   2017-10-09T10:51:28+0800
+     * @author ChenMingjiang
+     * @return [type]                   [description]
+     */
     public function edit()
     {
         $id = get('id', 'intval', 0);
@@ -25,17 +37,17 @@ class Admin extends \app\admin\controller\Init
             $data['status']   = post('status', 'intval', 0);
 
             if ((!$data['username'] || !$data['password']) && !$id) {
-                $this->ajaxReturn(['status' => false, 'msg' => '请填写用户名/密码']);
+                $this->ajaxReturn(array('status' => false, 'msg' => '请填写用户名/密码'));
             }
 
             if ($id) {
                 if ($id == 1 && !$data['status']) {
-                    $this->ajaxReturn(['status' => false, 'msg' => '初始账户不可关闭']);
+                    $this->ajaxReturn(array('status' => false, 'msg' => '初始账户不可关闭'));
                 }
 
-                $admin = table('ConsoleAdmin')->where(['id' => $id])->field('salt,id,username')->find();
+                $admin = table('ConsoleAdmin')->where('id', $id)->field('salt,id,username')->find();
                 if (!$admin) {
-                    $this->ajaxReturn(['status' => false, 'msg' => '账号不存在']);
+                    $this->ajaxReturn(array('status' => false, 'msg' => '账号不存在'));
                 }
 
                 if (!$data['password']) {
@@ -46,9 +58,9 @@ class Admin extends \app\admin\controller\Init
 
                 $result = table('ConsoleAdmin')->where(array('id' => $id))->save($data);
                 if ($result) {
-                    $this->ajaxReturn(['status' => true, 'msg' => '修改成功']);
+                    $this->ajaxReturn(array('status' => true, 'msg' => '修改成功'));
                 } else {
-                    $this->ajaxReturn(['status' => false, 'msg' => '修改失败']);
+                    $this->ajaxReturn(array('status' => false, 'msg' => '修改失败'));
                 }
             } else {
                 $data['salt']      = mt_rand(10000, 99999);
@@ -57,15 +69,15 @@ class Admin extends \app\admin\controller\Init
                 $data['password']  = md5($data['salt'] . $data['password']);
                 $result            = table('ConsoleAdmin')->add($data);
                 if ($result) {
-                    $this->ajaxReturn(['status' => true, 'msg' => '添加成功']);
+                    $this->ajaxReturn(array('status' => true, 'msg' => '添加成功'));
                 } else {
-                    $this->ajaxReturn(['status' => false, 'msg' => '添加失败']);
+                    $this->ajaxReturn(array('status' => false, 'msg' => '添加失败'));
                 }
             }
 
         } else {
             if ($id) {
-                $rs = table('ConsoleAdmin')->field('id,username,`group`,status,nickname,mobile')->where(array('id' => $id))->find();
+                $rs = table('ConsoleAdmin')->field('id,username,`group`,status,nickname,mobile')->where('id', $id)->find();
                 $this->assign('data', $rs);
             } else {
                 $rs['status'] = 1;
@@ -80,15 +92,15 @@ class Admin extends \app\admin\controller\Init
     {
         $id = post('id', 'intval', 0);
         if ($id <= 1) {
-            $this->ajaxReturn(['status' => false, 'msg' => '初试账户不可删除！！']);
+            $this->ajaxReturn(array('status' => false, 'msg' => '初试账户不可删除！！'));
         }
 
-        $result = table('ConsoleAdmin')->where(['id' => $id])->delete();
+        $result = table('ConsoleAdmin')->where('id', $id)->delete();
 
         if ($result) {
-            $this->ajaxReturn(['status' => true, 'msg' => '删除成功']);
+            $this->ajaxReturn(array('status' => true, 'msg' => '删除成功'));
         }
 
-        $this->ajaxReturn(['status' => true, 'msg' => '执行失败']);
+        $this->ajaxReturn(array('status' => true, 'msg' => '执行失败'));
     }
 }

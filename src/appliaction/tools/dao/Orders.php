@@ -81,7 +81,7 @@ class Orders
      */
     public function detail($map)
     {
-        $orders = table('Orders')->where($map)->field('type,order_status,status,acount,message,seller_message')->find();
+        $orders = table('Orders')->where($map)->field('uid,seller_uid,type,order_status,status,acount,message,seller_message,order_sn,created')->find();
         if (!$orders) {
             return array('status' => false, 'msg' => '订单信息不存在');
         }
@@ -100,6 +100,9 @@ class Orders
 
         $data['orders'] = $orders;
         $data['goods']  = $ordersData;
+
+        $data['user']   = dao('User')->getInfo($orders['uid'], 'nickname,avatar,mobile');
+        $data['seller'] = dao('User')->getInfo($orders['seller_uid'], 'nickname,avatar,mobile');
 
         return array('status' => true, 'data' => $data);
     }

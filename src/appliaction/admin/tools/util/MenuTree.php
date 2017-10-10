@@ -11,6 +11,7 @@ class MenuTree
     private $child     = 'child';
     private $blank     = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
     private $delimiter = '|—'; //空位符
+
     /**
      * 定制分页链接设置
      * @param string $name  设置名称
@@ -31,6 +32,7 @@ class MenuTree
             $this->delimiter = $delimiter;
         }
     }
+
     /**
      * 获取树形多位数组
      * @param arr $items 待处理的数组
@@ -52,6 +54,7 @@ class MenuTree
         }
         return $tree;
     }
+
     /**
      * 获取树形一维数组
      * @param arr $items 待处理的数组

@@ -17,10 +17,13 @@ class User extends \app\app\controller\Init
 
         $user = table('UserShop')->where(array('uid' => $this->uid))->field('name,avatar,credit_level,status')->find();
 
-        $user['avatar'] = imgUrl($user['avatar'], 'avatar', 0, getConfig('config.app', 'imgUrl'));
-
-        $data['user'] = $user;
+        $user['avatar']                = imgUrl($user['avatar'], 'avatar', 0, getConfig('config.app', 'imgUrl'));
+        $user['credit_level']          = dao('User')->getShopCredit($shop['credit_level']);
+        $data['user']                  = $user;
+        $data['tot_read_total']        = (int) dao('Comment')->getNotReadTotal($this->uid); //获取未读信息条数
+        $data['not_appointment_total'] = table('Orders')->where(array('seller_uid' => $this->uid, 'order_status' => 2, 'status' => 1))->count();
         $this->appReturn(array('data' => $data));
+
     }
 
     /**

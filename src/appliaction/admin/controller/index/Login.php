@@ -11,7 +11,7 @@ class Login extends \app\admin\controller\Init
             $username = (string) post('username', 'text', '');
             $password = (string) post('password', 'text', '');
 
-            $admin = table('ConsoleAdmin')->where(['username' => $username])->field('id,consoleid,password,salt,status,nickname')->find();
+            $admin = table('ConsoleAdmin')->where(['username' => $username])->field('id,consoleid,password,salt,status,nickname,group')->find();
             //判断帐号
             if (!$admin || !$username) {
                 $this->ajaxReturn(['status' => false, 'msg' => '用户名错误']);
@@ -32,9 +32,9 @@ class Login extends \app\admin\controller\Init
 
             $console['id']       = $admin['id'];
             $console['nickname'] = $admin['nickname'];
+            $console['group']    = $admin['group'];
 
             session('console', $console);
-            session('aaa', '11111');
 
             $this->ajaxReturn(['status' => true, 'msg' => '登录成功']);
 

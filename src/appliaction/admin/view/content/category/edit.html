@@ -10,9 +10,9 @@
   	<body>
 	<div id="console-setting-menus-edit">
 		<div class="modal-content">
-			<div class="panel-body">
-				<form class="form-horizontal" role="form" action="">
-					<input type="hidden" value="{??$data['id']}" name="id">	
+			<form class="form-horizontal" role="form" action="">
+			<input type="hidden" value="{??$data['id']}" name="id">	
+				<div class="panel-body">
 					<fieldset>
 						<div class="form-group">
 							<label class="control-label col-sm-3">
@@ -71,12 +71,12 @@
 							</div>
 						</div>
 					</fieldset>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="submit" class="btn btn-primary btn-comply" click="comply">确定</button>
-				<button type="button" class="btn btn-default" id="btn-close">取消</button>
-			</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary btn-comply" click="comply">确定</button>
+					<button type="button" class="btn btn-default" id="btn-close">取消</button>
+				</div>
+			</form>
 		</div>
 	</div>
 	{include /public/global_js}

@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+	<meta name="keywords" content=""/>
+	<title>后台管理</title>
+	{include /public/global_css}
+</head>
+  	<body>
+	<div id="console-admin-index">
+		<div class="view-content-container" >
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="console-title console-title-border clearfix">
+						<div class="pull-left">
+							<h5>管理分组列表</h5>
+						</div>
+						<div class="pull-right">
+							<a class="btn btn-primary btn-open"  data-href="{F:url('edit')}"  data-height="300px" data-width="356px">添加管理组</a>
+						</div>
+					</div>
+					<div class="console-form">
+						<div class="mt8">
+							<form>
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th >ID</th>
+											<th>管理组</th>
+											<th>状态</th>
+											<th style="text-align:center; width: 160px;">编辑/操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										{loop $list $key $value}
+									 	<tr v-for="list in data.list">
+											<td>{$value['id']}</td>
+											<td>{$value['name']}</td>
+											<td>
+												{if $value['status']}
+													<p style="color:green">{$statusCopy[$value['status']]}</p>
+												{else}
+													<p style="color:red">{$statusCopy[$value['status']]}</p>
+												{/if}
+											</td>
+											<td align='center'>
+												<a data-title="编辑管理员" class="btn-open"  data-href="{F:url('edit',array('id'=>$value['id']))}"  data-height="300px" data-width="356px">编辑</a>
+												<span class="text-explode">|</span>
+												<a data-title="权限管理" class="btn-open"  data-href="{F:url('power/lists',array('id'=>$value['id']))}"  data-height="80%" data-width="80%">权限</a>
+											</td>
+										</tr>
+										{/loop}
+									</tbody>
+								</table>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{include /public/global_js}
+	<script type="text/javascript">
+	</script>
+</body>
+</html>

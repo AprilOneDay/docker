@@ -44,7 +44,7 @@ class Circle extends \app\app\controller\Init
             $list[$key]['comment'] = $comment;
         }
 
-        $data['tot_read_total'] = (int) dao('Comment')->getNotReadTotal($this->uid);
+        $data['tot_read_total'] = (int) dao('Comment')->getNotReadTotal($this->uid); //获取未读信息条数
         $data['list']           = $list ? $list : array();
 
         $this->appReturn(array('data' => $data));
@@ -148,6 +148,9 @@ class Circle extends \app\app\controller\Init
         }
 
         $data['list'] = $list ? $list : array();
+
+        //进入后直接标记为已读
+        $reslut = table('Comment')->where($map)->save('is_to_uid_reader', 1);
 
         $this->appReturn(array('data' => $data));
     }

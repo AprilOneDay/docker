@@ -79,7 +79,7 @@ class Index extends \app\app\controller\Init
         $map[$goodsCar . '.is_show'] = 1;
 
         $field = "$goodsCar.title,$goodsCar.type,$goodsCar.id,$goodsCar.thumb,$goodsCar.price,$goodsCar.mileage,$goodsCar.produce_time,$goodsCar.is_lease,$goodsCar.guarantee,$footprints.created";
-        $list  = table('GoodsCar')->join($footprints, "$goodsCar.id = $footprints.value")->where($map)->field($field)->order("$footprints.created desc")->find('array');
+        $list  = table('GoodsCar')->join($footprints, "$goodsCar.id = $footprints.value")->where($map)->limit($offer, $pageSize)->field($field)->order("$footprints.created desc")->find('array');
         foreach ($list as $key => $value) {
             $time = date('Y/m/d', $value['created']);
             if ($value['is_lease'] || stripos($value['guarantee'], 3) !== false) {

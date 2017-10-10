@@ -117,12 +117,12 @@ class Comment
             return false;
         }
 
-        $map['type']       = 1;
+        $map['type']       = $type;
         $map['goods_id']   = $goodsId;
         $map['parent_id']  = 0;
         $map['del_status'] = 0;
 
-        $list = table('Comment')->where($map)->order('created desc')->field('id,content,uid,created')->find('array');
+        $list = table('Comment')->where($map)->order('created desc')->field('id,content,uid,created,ablum')->find('array');
         foreach ($list as $key => $value) {
             $list[$key]['child'] = $this->getChildList($type, $goodsId, $value['id']);
             $user                = dao('User')->getInfo($value['uid'], 'nickname,avatar');

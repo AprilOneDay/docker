@@ -37,7 +37,13 @@
                                		<option value="{$key}">{$value}</option>
                             	{/loop}
                             </select>
-                             <select class="form-control" data-selected="{??$param['origin']}" name="param[origin]">
+                            <select class="form-control" data-selected="{??$param['origin']}" name="param[origin]">
+                                <option value="">录入状态</option>
+                                {loop $other['isTempCopy'] $key $value}
+                               		<option value="{$key}">{$value}</option>
+                            	{/loop}
+                            </select>
+                         	<select class="form-control" data-selected="{??$param['origin']}" name="param[origin]">
                                 <option value="">来源</option>
                                 {loop $other['originCopy'] $key $value}
                                		<option value="{$key}">{$value}</option>
@@ -63,6 +69,7 @@
 											<th style="width:200px;">订单总价</th>
 											<th style="width:200px;">买家</th>
 											<th style="width:200px;">卖家</th>
+											<th style="width:100px;">录入状态</th>
 											<th style="width:100px;">审核状态</th>
 											<th style="width:100px;">订单状态</th>
 											<th style="width:120px;">发布时间</th>
@@ -79,12 +86,13 @@
 											<td>{$value['acount']} {if $value['type'] == 1}万{/if}</td>
 											<td>{$value['user']['nickname']}</td>
 											<td>{$value['seller']['nickname']}</td>
+											<td>{$other['isTempCopy'][$value['is_temp']]}</td>
 											<td>{$other['statusCopy'][$value['status']]}</td>
 											<td>{$other['orderStatusCopy'][$value['order_status']]}</td>
 											<td>{F:date('Y-m-d H:i',$value['created'])}</td>
 											<td>{$other['originCopy'][$value['origin']]}</td>
 											<td align='center'>
-												<a data-href="{F:url('detail',array('id'=>$value['id']))}"  data-height="500px" data-width="80%"  data-title="订单详情"  class="btn-open">详情</a>
+												<a data-href="{F:url('detail',array('order_sn'=>$value['order_sn']))}"  data-height="70%" data-width="70%"  data-title="订单详情"  class="btn-open">详情</a>
 											</td>
 										</tr>
 										{/loop}

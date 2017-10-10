@@ -44,7 +44,7 @@ class Orders extends \app\admin\controller\Init
         $page  = new denha\Pages($total, $pageNo, $pageSize, url('', $param));
 
         foreach ($list as $key => $value) {
-            $seller['nickname']   = $value['type'] == 1 ? dao('User')->getNickname($value['seller_uid']) : dao('User')->getShopName($value['seller_uid']);
+            $seller['nickname']   = dao('User')->getNickname($value['seller_uid']);
             $list[$key]['seller'] = $seller;
             $user['nickname']     = dao('User')->getNickname($value['uid']);
             $list[$key]['user']   = $user;
@@ -55,12 +55,46 @@ class Orders extends \app\admin\controller\Init
             'originCopy'      => getVar('origin', 'admin.orders'),
             'orderStatusCopy' => array('1' => '待确认', '2' => '待完成', '3' => '已完成', '4' => '已评价'),
             'statusCopy'      => array('1' => '审核通过', '0' => '代审核', '2' => '另设时间', '3' => '直接拒绝'),
+            'isTempCopy'      => array('0' => '正常订单', '1' => '临时订单'),
         );
 
         $this->assign('list', $list);
         $this->assign('other', $other);
         $this->assign('param', $param);
         $this->assign('pages', $page->loadConsole());
+        $this->show();
+    }
+
+    public function detail()
+    {
+        $orderSn = get('order_sn', 'text', '');
+        if (!$orderSn) {
+            $this->appReturn(array('status' => false, 'msg' => '参数错误'));
+        }
+
+        $map['order_sn'] = $orderSn;
+
+        $result = dao('Orders')->detail($map);
+        if (!$result['status']) {
+            $this->appReturn($result);
+        }
+
+        $data = $result['data'];
+
+        foreach ($data['goods'] as $key => $value) {
+            $data['goods'][$key]['thumb'] = imgUrl($value['thumb'], 'car');
+        }
+
+        $other = array(
+            'typeCopy'        => getVar('type', 'admin.orders'),
+            'originCopy'      => getVar('origin', 'admin.orders'),
+            'orderStatusCopy' => array('1' => '待确认', '2' => '待完成', '3' => '已完成', '4' => '已评价'),
+            'statusCopy'      => array('1' => '审核通过', '0' => '代审核', '2' => '另设时间', '3' => '直接拒绝'),
+            'isTempCopy'      => array('0' => '正常订单', '1' => '临时订单'),
+        );
+
+        $this->assign('other', $other);
+        $this->assign('data', $data);
         $this->show();
     }
 }

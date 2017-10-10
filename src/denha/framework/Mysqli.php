@@ -241,6 +241,11 @@ class Mysqli
             $newField = $field;
         }
         $this->field = $newField;
+        if ($this->field && $this->field != '*') {
+            $this->field = '`' . $newField . '`';
+            $this->field = str_replace(',', '`,`', $this->field);
+        }
+
         return $this;
     }
 
@@ -505,6 +510,10 @@ class Mysqli
      */
     public function save($data = '', $value = '')
     {
+        if (!$this->where) {
+            return false;
+        }
+
         $newField = '';
         if ($value !== '' && !is_array($data)) {
             $newField = '`' . $data . '`=\'' . $value . '\'';
@@ -531,6 +540,7 @@ class Mysqli
 
         $sql = 'UPDATE ' . $this->table . ' SET ' . $this->field;
         $sql .= $this->where ? $this->where : '';
+
         $result = $this->query($sql);
         return $result;
     }
@@ -543,6 +553,9 @@ class Mysqli
      */
     public function delete()
     {
+        if (!$this->where) {
+            return false;
+        }
         $sql    = 'DELETE FROM ' . $this->table . $this->where;
         $result = $this->query($sql);
         return $result;
