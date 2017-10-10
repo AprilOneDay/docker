@@ -115,7 +115,7 @@ docker restart mysql;
 
 docker-compose up -d
 docker exec -it mysql /bin/bash
-mysqldump -hlocalhost -usiyuework -pcheng6251 --databases blog > /usr/local/work/blog.sql
+mysqldump -hlocalhost -usiyue -psiyue1q2w3e4r --databases blog > /usr/local/work/blog.sql
 
 cd docker 
 git pull

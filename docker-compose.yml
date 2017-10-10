@@ -14,7 +14,20 @@
         environment:
             MYSQL_ROOT_PASSWORD: "1qq2ww3ee4rr"
         container_name: mysql
-
+    slave1:
+        #image: mysql:5.7
+        build: ./mysql.slave1/
+        restart: always
+        privileged: true
+        ports:
+            - "3309:3306"
+        volumes:
+            - ./mysql.slave1/conf.d/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+            - ./mysql.slave1/data/:/var/lib/mysql/:rw
+            - ./mysql.slave1/log/:/var/log/mysql/:rw
+        environment:
+            MYSQL_ROOT_PASSWORD: "1qq2ww3ee4rr"
+        container_name: slave1
     php:
         #depends_on:
         #    - mysql
