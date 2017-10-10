@@ -103,7 +103,13 @@ docker-compose up -d
 docker exec -it php /bin/bash
 chmod -R 777 /var/www/html/data
 chmod -R 777 /var/www/html/public/uploadfile
-
+exit
+docker exec -it mysql /bin/bash
+mysql -uroot -p1qq2ww3ee4rr
+use  mysql
+update  user  set  password  =  password('cheng6251') where  user='root'
+update  user  set  user  =  'siyue' where  user='root'
+eixt
 
 cd docker 
 git pull
