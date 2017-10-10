@@ -30,9 +30,6 @@ default-character-set=utf8
 log-bin=mysql-bin
 server-id=2
 
-#作为从机的配置  
-log-slave-update   # 启用从机服务器上的slave日志功能，使这台计算机可以用来构成一个镜像链(A->B->C)  
-slave-skip-errors = all  # 跳过错误，从机一般应该配置该项  
 
 # skip-name-resolve
 max_allowed_packet=8M
