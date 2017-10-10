@@ -27,12 +27,21 @@ password=siyue1q2w3e4r
 default-character-set=utf8
 
 [mysqld]
-# skip-name-resolve
-explicit_defaults_for_timestamp=true
-
 log-bin=mysql-bin
 server-id=2
 
+#作为从机的配置  
+master-host                =   74.121.150.93            # 目标主机IP  
+master-user                =   siyue                	# 目标主机用户名  
+master-password            =   siyue1q2w3e4r            # 目标主机密码  
+master-port                =   3306                		# 目标主机端口  
+master-connect-retry       =   60                  		# 链接重连间隔(单位s)  
+replicate-ignore-db        =   mysql               		# 不从主机同步的数据库(多个写多行)  
+replicate-do-db            =   blog                 	# 要从主机同步的库(多个写多行)  
+log-slave-update   # 启用从机服务器上的slave日志功能，使这台计算机可以用来构成一个镜像链(A->B->C)  
+slave-skip-errors  # 跳过错误，从机一般应该配置该项  
+
+# skip-name-resolve
 max_allowed_packet=8M
 lower_case_table_names=1
 max_connections=300

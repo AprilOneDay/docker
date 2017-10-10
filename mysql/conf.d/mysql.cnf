@@ -30,8 +30,10 @@ default-character-set=utf8
 # skip-name-resolve
 explicit_defaults_for_timestamp=true
 
-log-bin=mysql-bin
+log-bin= /home/www/mysql_bin_log/mysql-bin
 server-id=1
+binlog-do-db=blog            # 要给从机同步的库
+binlog-ignore-db=mysql       # 不给从机同步的库    
 
 max_allowed_packet=8M
 lower_case_table_names=1
