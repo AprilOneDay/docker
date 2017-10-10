@@ -1,25 +1,25 @@
-docker Æô¶¯Mysql
+docker å¯åŠ¨Mysql
 docker run -e MSYQL_ROOT_PASSWORD=admin --name mysql_bname -v /data/mysql/data:/var/lib/mysql -p 3306:3306 -d mysql:5.6
 
--e MSYQL_ROOT_PASSWORD=admin ³õÊ¼»¯mysqlÊı¾İ¿ârootÕË»§ ÃÜÂë
---name mysql_bname ÖØÃüÃûÈİÆ÷Ãû³Æ
--v /data/mysql/data:/var/lib/mysql ½«ÈİÆ÷/var/lib/mysql ¹ÒÔØµ½ /data/mysql/data 
--p 3306:3306 ½«ÈİÆ÷¶Ë¿ÚÓ³Éäµ½±¾µØ¶Ë¿Ú
--d mysql:5.6 Æô¶¯¾µÏñ
+-e MSYQL_ROOT_PASSWORD=admin åˆå§‹åŒ–mysqlæ•°æ®åº“rootè´¦æˆ· å¯†ç 
+--name mysql_bname é‡å‘½åå®¹å™¨åç§°
+-v /data/mysql/data:/var/lib/mysql å°†å®¹å™¨/var/lib/mysql æŒ‚è½½åˆ° /data/mysql/data 
+-p 3306:3306 å°†å®¹å™¨ç«¯å£æ˜ å°„åˆ°æœ¬åœ°ç«¯å£
+-d mysql:5.6 å¯åŠ¨é•œåƒ
 
 docker run -p 80:80 -v /www/:/usr/local/apache2/htdocs/ -v /www/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf -v /usr/local/apache2/logs/ -d httpd
 
 
-×·¼ÓCentOS 6.5µÄepel¼°remiÔ´¡£
+è¿½åŠ CentOS 6.5çš„epelåŠremiæºã€‚
 
 # rpm -Uvh http://ftp.iij.ad.jp/pub/linux/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm
 # rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
-ÒÔÏÂÊÇCentOS 7.0µÄÔ´¡£
+ä»¥ä¸‹æ˜¯CentOS 7.0çš„æºã€‚
 
 yum install epel-release
 rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
 
-Í¨¹ıDockerfile Éú³É apache + php + mysql
+é€šè¿‡Dockerfile ç”Ÿæˆ apache + php + mysql
 
 docker build -t server:v2 github.com/AprilOneDay/docker_php
 
@@ -27,12 +27,12 @@ docker build -t php:v1 github.com/AprilOneDay/docker_php
 
 docker run -d --name test_apache-php  -e MYSQL_ADDR=74.121.150.93:3306 -p 80:80 server:v1
 
-ÏëÒªÉ¾³ıuntagged images£¬Ò²¾ÍÊÇÄÇĞ©idÎª<None>µÄimageµÄ»°¿ÉÒÔÓÃ
+æƒ³è¦åˆ é™¤untagged imagesï¼Œä¹Ÿå°±æ˜¯é‚£äº›idä¸º<None>çš„imageçš„è¯å¯ä»¥ç”¨
 
 docker rmi $(docker images | grep "^<none>" | awk "{print $3}")
 docker rmi $(docker images -q)
 
-¹Ø±ÕËùÓĞÕıÔÚÔËĞĞÈİÆ÷
+å…³é—­æ‰€æœ‰æ­£åœ¨è¿è¡Œå®¹å™¨
 docker ps | awk  '{print $1}' | xargs docker stop
 docker rm $(docker ps -a -q)
 docker rmi docker_nginx
@@ -67,17 +67,17 @@ docker cp nginx:/etc/nginx ~/docker/nginx/
 
 docker run -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7
 
-#²é¿´LinuxÏµÍ³°æ±¾µÄÃüÁî
+#æŸ¥çœ‹Linuxç³»ç»Ÿç‰ˆæœ¬çš„å‘½ä»¤
 cat /etc/issue
 uname -a
 
 
-°²×°Docker Compose
+å®‰è£…Docker Compose
 
 curl -L https://github.com/docker/compose/releases/download/1.4.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
 chmod  +x /usr/local/bin/docker-compose
 
-#docker-compose°æ±¾
+#docker-composeç‰ˆæœ¬
 docker-compose version
 
 su -c "setenforce 0"
@@ -104,28 +104,30 @@ docker exec -it php /bin/bash
 chmod -R 777 /var/www/html/data
 chmod -R 777 /var/www/html/public/uploadfile
 exit
+# ä¿®æ”¹mysqlå¯†ç 
 docker exec -it mysql /bin/bash
-mysql -uroot -p1qq2ww3ee4rr
-use  mysql
-update  user  set  password  =  password('cheng6251') where  user='root'
-update  user  set  user  =  'siyue' where  user='root'
-eixt
+mysql -usiyue -p1qq2ww3ee4rr
+use  mysql;
+update  user  set  authentication_string  =  password('siyue1q2w3e4r') where  user='siyue';
+update  user  set  user  =  'siyue' where  user='root';
+exit;exit;
+docker restart mysql;
 
 cd docker 
 git pull
 docker-compose up
 
 
-°³µÄcentos vpsÉÏÃæ²»ÖªµÀÌí¼ÓÁË¶àÉÙ¸öÕË»§£¬½ñÌìÏëÇåÀíÒ»ÏÂ£¬µ«ÊÇÒÔÇ°»¹Î´²é¿´¹ılinuxÓÃ»§ÁĞ±í£¬googleÁËÒ»ÏÂ£¬ÕÒµ½·½±ãµÄ·Å£º
-Ò»°ãÇé¿öÏÂÊÇ
+ä¿ºçš„centos vpsä¸Šé¢ä¸çŸ¥é“æ·»åŠ äº†å¤šå°‘ä¸ªè´¦æˆ·ï¼Œä»Šå¤©æƒ³æ¸…ç†ä¸€ä¸‹ï¼Œä½†æ˜¯ä»¥å‰è¿˜æœªæŸ¥çœ‹è¿‡linuxç”¨æˆ·åˆ—è¡¨ï¼Œgoogleäº†ä¸€ä¸‹ï¼Œæ‰¾åˆ°æ–¹ä¾¿çš„æ”¾ï¼š
+ä¸€èˆ¬æƒ…å†µä¸‹æ˜¯
 
-cat /etc/passwd ¿ÉÒÔ²é¿´ËùÓĞÓÃ»§µÄÁĞ±í
-w ¿ÉÒÔ²é¿´µ±Ç°»îÔ¾µÄÓÃ»§ÁĞ±í
-cat /etc/group ²é¿´ÓÃ»§×é
+cat /etc/passwd å¯ä»¥æŸ¥çœ‹æ‰€æœ‰ç”¨æˆ·çš„åˆ—è¡¨
+w å¯ä»¥æŸ¥çœ‹å½“å‰æ´»è·ƒçš„ç”¨æˆ·åˆ—è¡¨
+cat /etc/group æŸ¥çœ‹ç”¨æˆ·ç»„
 
-µ«ÊÇÕâÑù³öÀ´µÄ½á¹ûÒ»´ó¶Ñ£¬¿´ÆğÀ´ºÙ¸ºÔğ£¬ÓÚÊÇ¼ÌĞøgoogle
-ÕÒµ½¸ö¼òÃ÷µÄlayoutÃüÁî
+ä½†æ˜¯è¿™æ ·å‡ºæ¥çš„ç»“æœä¸€å¤§å †ï¼Œçœ‹èµ·æ¥å˜¿è´Ÿè´£ï¼Œäºæ˜¯ç»§ç»­google
+æ‰¾åˆ°ä¸ªç®€æ˜çš„layoutå‘½ä»¤
 
 cat /etc/passwd|grep -v nologin|grep -v halt|grep -v shutdown|awk -F":" '{ print $1"|"$3"|"$4 }'|more
 
-ÕâÑùÒ»À´£¬show³öÀ´µÄ¾ÍÖ»ÊÇÓÃ»§ÁĞ±íºÍÒ»µãµã¶«Î÷ÁË~~~~
+è¿™æ ·ä¸€æ¥ï¼Œshowå‡ºæ¥çš„å°±åªæ˜¯ç”¨æˆ·åˆ—è¡¨å’Œä¸€ç‚¹ç‚¹ä¸œè¥¿äº†~~~~
