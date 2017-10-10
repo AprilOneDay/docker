@@ -84,11 +84,12 @@ su -c "setenforce 0"
 docker ps | awk  '{print $1}' | xargs docker stop
 docker rm $(docker ps -a -q)
 docker rmi docker_mysql
+docker rmi docker_slave1
 cd
 rm -rf docker 
 git clone https://github.com/AprilOneDay/docker.git
 cd docker
-docker-compose up 
+docker-compose up; 
 docker-compose up -d
 docker exec -it php /bin/bash
 chmod -R 777 /var/www/html/data

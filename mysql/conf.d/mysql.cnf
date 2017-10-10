@@ -27,7 +27,7 @@ password=siyue1q2w3e4r
 default-character-set=utf8
 
 [mysqld]
-skip-name-resolve
+# skip-name-resolve
 explicit_defaults_for_timestamp=true
 
 log-bin=mysql-bin

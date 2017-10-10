@@ -36,7 +36,7 @@
         restart: always
         privileged: true
         links:
-            - mysql:mysql2
+            - mysql:mysql
         volumes:
             - ./src/:/var/www/html/:rw
             - ./src/data:/var/www/html/data:rw
