@@ -12,7 +12,7 @@
             - ./mysql/data/:/var/lib/mysql/:rw
             - ./mysql/log/:/var/log/mysql/:rw
         environment:
-            MYSQL_ROOT_PASSWORD: "1q2w3e4r"
+            MYSQL_ROOT_PASSWORD: "Rr0o%V0nO!7PzsrEXkhBA9M2VbAuXZer"
         container_name: mysql
 
     php:

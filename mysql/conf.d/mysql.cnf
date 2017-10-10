@@ -22,3 +22,4 @@
 [mysqld]
 skip-name-resolve
 explicit_defaults_for_timestamp=true
+set-variable=local-infile=0

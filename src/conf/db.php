@@ -5,7 +5,7 @@ return [
     'db_host'        => '74.121.150.93', // 服务器地址
     'db_name'        => 'blog', // 数据库名
     'db_user'        => 'root', // 用户名
-    'db_pwd'         => '1q2w3e4r', // 密
+    'db_pwd'         => 'Rr0o%V0nO!7PzsrEXkhBA9M2VbAuXZer', // 密
     'db_prefix'      => 'dh_', // 数据库表前缀
     'db_port'        => '3306', // 端口
     'db_dsn'         => '',
