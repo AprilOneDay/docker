@@ -13,7 +13,7 @@
 		<ul>
 			<li><a href="/">全部</a></li>
 			{loop $listClass $key $value}
-			<li><a href="{F:url('index',array('tag'=>$value['tag']))}">{$tagCopy[$value['tag']]} ({$value['num']})</a></li>
+			<li><a href="{F:url('/index/index/index',array('tag'=>$value['tag']))}">{$tagCopy[$value['tag']]} ({$value['num']})</a></li>
 			{/loop}
 			<div class="clearfix"></div>
 		</ul>
