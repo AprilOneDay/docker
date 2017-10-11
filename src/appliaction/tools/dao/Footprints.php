@@ -55,30 +55,28 @@ class Footprints
      * [增加浏览记录]
      * @date   2017-09-21T11:47:00+0800
      * @author ChenMingjiang
-     * @param  integer                  $uid  [店铺uid]
+     * @param  integer                  $shopUid  [店铺uid]
      * @param  integer                  $type [类型]
      * @param  [type]                   $id   [访问id]
      */
-    public function addHot($uid = 0, $type = 1, $id)
+    public function addHot($shopUid = 0, $type = 1, $id)
     {
         //记录总访问记录
-        if ($uid) {
-            $map['uid']  = $uid;
+        if ($shopUid) {
+            $map['uid']  = $shopUid;
             $map['time'] = date('Y-m-d', TIME);
 
             $id = table('ShopHotLog')->where($map)->field('id')->find('one');
             if ($id) {
                 table('ShopHotLog')->where(array('id' => $id))->save(array('num' => array('add', 1)));
             } else {
-                $data['uid']  = $uid;
+                $data['uid']  = $shopUid;
                 $data['time'] = date('Y-m-d', TIME);
 
                 table('ShopHotLog')->add($data);
             }
-
         }
 
-        $data['time'] = date('Y-m-d', TIME);
         //商品访问记录
         if ($type == 1) {
             table('GoodsCar')->where(array('id' => $id))->save(array('hot' => array('add', 1)));

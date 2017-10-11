@@ -104,7 +104,7 @@ class Mysqli
         }
 
         $this->where = '';
-        $this->field = '';
+        $this->field = '*';
         $this->limit = '';
         $this->group = '';
         $this->order = '';
@@ -223,13 +223,12 @@ class Mysqli
      * @param  [type]                   $field [description]
      * @return [type]                          [description]
      */
-    public function field($field)
+    public function field($field = '*')
     {
         $newField = '';
         $field    = is_array($field) ? $field : explode(',', $field);
-
         foreach ($field as $k => $v) {
-            if (stripos($v, 'as') === false && stripos($v, 'count(*)') === false && stripos($v, '`') === false && stripos($v, '.') === false) {
+            if (stripos($v, 'as') === false && stripos($v, '*') === false && stripos($v, '`') === false && stripos($v, '.') === false && stripos($v, 'concat') === false) {
                 $newField .= '`' . $v . '`,';
             } else {
                 $newField .= $v . ',';
@@ -371,8 +370,6 @@ class Mysqli
             throw new Exception('请选择数据表');
         }
 
-        $this->field != '' ?: $this->field = '*';
-
         if (!$this->limit && $value != 'array' && !$isArray) {
             $this->limit(1);
         }
@@ -411,6 +408,7 @@ class Mysqli
         //单字段数组模式
         elseif ($value == 'one' && $isArray) {
             while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+                $this->field = str_replace('`', '', $this->field);
                 if (count($row) > 1) {
                     throw new Exception('sql模块中one只能查询单个字段内容请设置field函数');
                 }

@@ -17,11 +17,20 @@ class User extends \app\app\controller\Init
 
         $user = table('UserShop')->where(array('uid' => $this->uid))->field('name,avatar,credit_level,status')->find();
 
-        $user['avatar']                = imgUrl($user['avatar'], 'avatar', 0, getConfig('config.app', 'imgUrl'));
-        $user['credit_level']          = dao('User')->getShopCredit($shop['credit_level']);
-        $data['user']                  = $user;
-        $data['tot_read_total']        = (int) dao('Comment')->getNotReadTotal($this->uid); //获取未读信息条数
+        $user['avatar']         = imgUrl($user['avatar'], 'avatar', 0, getConfig('config.app', 'imgUrl'));
+        $user['credit_level']   = dao('User')->getShopCredit($shop['credit_level']);
+        $data['user']           = $user;
+        $data['tot_read_total'] = (int) dao('Comment')->getNotReadTotal($this->uid); //获取未读信息条数
+        //未完成预约数量
         $data['not_appointment_total'] = table('Orders')->where(array('seller_uid' => $this->uid, 'order_status' => 2, 'status' => 1))->count();
+        //今日浏览量
+        $data['today_hot_total'] = (int) table('ShopHotLog')->where(array('uid' => $this->uid, 'time' => date('Y-m-d', TIME)))->field('num')->find('one');
+        //今日订单
+        $todaystart = strtotime(date('Y-m-d' . '00:00:00', TIME)); //获取今天00:00
+        $todayend   = strtotime(date('Y-m-d' . '00:00:00', TIME + 3600 * 24)); //获取今天24:00
+
+        $data['today_orders_total'] = table('Orders')->where(array('seller_uid' => $this->uid, 'status' => 1, 'created' => array('between', $todaystart, $todayend)))->count();
+        $data['not_pay_money']      = 0;
         $this->appReturn(array('data' => $data));
 
     }
@@ -82,7 +91,7 @@ class User extends \app\app\controller\Init
             table('UserShop')->commit();
             $this->appReturn(array('msg' => '保存成功'));
         } else {
-            $data                  = table('UserShop')->where(array('uid' => $this->uid))->field()->find();
+            $data                  = table('UserShop')->where(array('uid' => $this->uid))->find();
             $data['avatar']        = $this->appImg($data['avatar'], 'avatar');
             $data['ablum']         = $this->appImgArray($data['ablum'], 'shop');
             $data['ablum_num']     = count($data['ablum_num']);
@@ -138,16 +147,16 @@ class User extends \app\app\controller\Init
                 $this->appReturn(array('status' => false, 'msg' => '参数错误'));
             }
 
-            $result = table('UserShop')->where(array('uid' => $this->uid))->save(array('status' => $status));
+            $result = table('UserShop')->where(array('uid' => $this->uid))->save('status', $status);
             //开启店铺商品
             if ($status == 1) {
-                table('GoodsCar')->where(array('uid' => $this->uid))->save(array('is_show', 1));
-                table('GoodsService')->where(array('uid' => $this->uid))->save(array('is_show', 1));
+                table('GoodsCar')->where(array('uid' => $this->uid))->save('is_show', 1);
+                table('GoodsService')->where(array('uid' => $this->uid))->save('is_show', 1);
             }
             //屏蔽店铺商品
             else {
-                table('GoodsCar')->where(array('uid' => $this->uid))->save(array('is_show', 0));
-                table('GoodsService')->where(array('uid' => $this->uid))->save(array('is_show', 0));
+                table('GoodsCar')->where(array('uid' => $this->uid))->save('is_show', 0);
+                table('GoodsService')->where(array('uid' => $this->uid))->save('is_show', 0);
             }
 
             if ($result) {

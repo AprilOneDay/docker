@@ -157,8 +157,9 @@ class Car extends \app\app\controller\Init
             $this->appReturn(array('status' => false, 'msg' => '参数错误'));
         }
 
-        $map['id']     = $id;
-        $map['status'] = 1;
+        $map['id']      = $id;
+        $map['status']  = 1;
+        $map['is_show'] = 1;
 
         $data = table('GoodsCar')->where($map)->find();
         if (!$data) {
@@ -221,9 +222,9 @@ class Car extends \app\app\controller\Init
         }
 
         //增加浏览记录
-        dao('Footprints')->add($this->uid, 1, $data['id'], $data['uid']);
+        dao('Footprints')->add($data['uid'], 1, $data['id'], $data['uid']);
         //增加数据库访问记录
-        dao('Footprints')->addHot($this->uid, 1, $data['id']);
+        dao('Footprints')->addHot($data['uid'], 1, $data['id']);
         $this->appReturn(array('msg' => '获取数据成功', 'data' => $data));
     }
 

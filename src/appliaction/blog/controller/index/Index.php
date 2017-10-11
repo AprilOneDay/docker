@@ -69,7 +69,7 @@ class Index extends denha\Controller
         $map[$article . '.is_show'] = 1;
         $map[$article . '.id']      = $id;
 
-        $field           = "$article.id,$article.title,$article.created,$article.description,$article.hot,$articleBlog.content";
+        $field           = "$article.id,$article.title,$article.created,$article.description,$article.hot,$article.origin,$articleBlog.content";
         $data            = table('Article')->join($articleBlog, "$article.id = $articleBlog.id", 'left')->where($map)->field($field)->find();
         $data['comment'] = (int) table('VisitorComment')->where(array('goods_id' => $data['id']))->count();
 

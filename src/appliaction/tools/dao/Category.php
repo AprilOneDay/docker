@@ -42,18 +42,17 @@ class Category
         if (stripos(',', $id) !== false) {
             $map['id'] = array('in', $id);
         } elseif (is_array($id)) {
-            $map['id'] = array('in', implode(',', $id));
-
+            $map['id'] = array('in', $id);
         } else {
             $map['id'] = $id;
         }
 
         $name = table('Category')->where($map)->field('name')->find('one', true);
         if (count($name) == 1) {
-            return $name[0];
+            return (string) $name[0];
         }
 
-        return $name;
+        return (array) $name;
     }
 
 }
