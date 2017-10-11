@@ -29,12 +29,12 @@ class Comment extends \app\app\controller\Init
         }
 
         if (!$content) {
-
+            $this->ajaxReturn(array('status' => false, 'msg' => '输入评论内容'));
         }
 
-        $result = dao('VisitorComment', 'blog')->add($nickname, 1, $goodsId, $content);
+        $result = dao('VisitorComment', 'blog')->add($nickname, $mail, 1, $goodsId, $content);
         if ($result['status']) {
-            session('user', array('nickname' => $nickname, 'mail' => $mail));
+            cookie('user', array('nickname' => $nickname, 'mail' => $mail), 3600 * 24 * 30);
         }
         $this->ajaxReturn($result);
     }

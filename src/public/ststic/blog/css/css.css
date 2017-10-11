@@ -20,6 +20,10 @@ body{ background: #f0f2f7; }
 .news-content .content .origin a{color: #ccc;}
 .news-content .content .origin a:hover{ color: #99ccff; }
 
+.news-content .content .code span{ font-size: 1.5rem; font-weight: bolder; color: red; }
+.news-content .content .code .img{ text-align: center; }
+.news-content .content .code .img img{ max-width: 80%; }
+
 .index-content{ padding-bottom: 20px; }
 
 .index-search{ margin-top: 25px; border: 1px solid #e1e1e1; padding: 20px; }
@@ -53,7 +57,7 @@ body{ background: #f0f2f7; }
 .footer .link li a{ color: #999; }
 .footer .link li a:hover{ color: #336899; }
 
-.footer-ico li{ margin-left: 0.5rem;  }
+.footer-ico li{ margin-right: 1rem;  }
 .footer-ico li a{ color: #fff; }
 .footer-ico li a:hover{ color:#336899; }
 

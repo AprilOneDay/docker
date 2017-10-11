@@ -273,7 +273,15 @@ function getConfig($path = 'config', $name = '')
     return null;
 }
 
-//创建getUrl
+/**
+ * 创建getUrl
+ * @date   2017-10-11T15:44:44+0800
+ * @author ChenMingjiang
+ * @param  string                   $location [请求地址]
+ * @param  array                    $params   [参数数组]
+ * @param  boolean                  $isGet    [开启伪静态 true关闭 false开启]
+ * @return [type]                             [description]
+ */
 function url($location = '', $params = array(), $isGet = false)
 {
     $locationUrl = URL . '/' . MODULE;
@@ -281,10 +289,10 @@ function url($location = '', $params = array(), $isGet = false)
         $locationUrl .= '/' . CONTROLLER . '/' . ACTION;
     } elseif (stripos($location, '/') === false && $location != '') {
         $locationUrl .= '/' . CONTROLLER . '/' . $location;
-    } elseif (stripos($location, '/') != 1) {
-        $locationUrl .= '/' . $location;
+    } elseif (stripos($location, '/') === 0) {
+        $locationUrl = URL . $location;
     } else {
-        $locationUrl = $location;
+        $locationUrl .= '/' . $location;
     }
 
     $param = '';
@@ -303,16 +311,18 @@ function url($location = '', $params = array(), $isGet = false)
         }
     }
 
-    // var_dump($param);
-
     return $locationUrl . $param;
 }
 
 //保存Cookie
-function cookie($name = '', $value = '', $expire = '86400', $encode = false)
+function cookie($name = '', $value = '', $expire = 3600 * 2, $encode = false)
 {
     if (!$name) {
         return false;
+    }
+
+    if (is_array($value)) {
+        $value = json_encode($value);
     }
 
     //加密
@@ -328,13 +338,12 @@ function getCookie($name, $encode = false)
     $data = '';
     if (isset($_COOKIE[$name])) {
         $data = $_COOKIE[$name];
-        if (is_array($data)) {
-            foreach ($data as $key => $value) {
-                $data[$key] = $encode ? auth($value, 'DECODE') : $value;
-            }
-        } else {
-            $data = $encode ? auth($data, 'DECODE') : $data;
+
+        $data = $encode ? auth($data, 'DECODE') : $data;
+        if (stripos($data, '{') !== false) {
+            $data = json_decode($data, true);
         }
+
     }
 
     return $data;

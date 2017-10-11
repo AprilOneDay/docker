@@ -33,37 +33,6 @@
 		<div class="index-content container-fluid">
 			<div class="left col-md-9 col-xs-12">
 				<div class="news-content">
-					<h2>{$data['title']}</h2>
-					<div class="desc pull-left">
-						<dt>
-							<dl><i class="fa fa-eye"></i> 热度 {$data['hot']}</dl>
-							<dl><i class="fa fa-fire"></i> 评论 {$data['comment']}</dl>
-							<dl class="hidden-sm hidden-xs"><i class="fa fa-clock-o"></i> 时间 {F:date('Y-m-d',$data['created'])}</dl>
-						</dt>
-					</div>
-					<div class="clearfix"></div>
-					<div class="content">
-						{$data['content']}
-	
-						<div class="code">
-							<div class="img">
-							<span>微信关注 获取最新文章</span>
-							<div class="clearfix"></div>
-								<img src="{F:getConfig('config','ststic')}/blog/images/qrcode.jpg"  style="width: 180px" class="hidden-sm hidden-xs">
-								<img src="{F:getConfig('config','ststic')}/blog/images/qrcode.jpg"  class="hidden-md hidden-lg">
-							</div>
-						</div>
-
-						<div class="origin">
-							<span>文章来源：</span>
-							{if $data['origin']}
-							<a href="{$data['origin']}" target="_blank">{$data['origin']}</a>
-							{else}
-							<a href="http://{$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']}" target="_blank">http://{$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']}</a>
-							{/if}
-						</div>
-
-					</div>
 				</div>
 				<div class="clearfix"></div>
 				{if $comment}
@@ -126,8 +95,8 @@
 					</ul>
 				</div>
 				{/if}
-				<div class="alert alert-info" role="alert" style="margin-top: 2rem;">发表评价:</div>
-				 	<form  class="form-horizontal remark" action="{F:url('comment/add')}">
+				<div class="alert alert-info" role="alert" style="margin-top: 2rem;">联系我:</div>
+				 	<form  class="form-horizontal remark" action="{F:url('message/add')}">
 			 		 	<input type="hidden" class="form-control" name="goods_id"  value="{$data['id']}">
 				 		<div class="form-group">
 						    <label for="inputEmail3" class="col-sm-2 control-label">称呼</label>

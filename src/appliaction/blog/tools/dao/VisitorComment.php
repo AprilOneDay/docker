@@ -7,10 +7,10 @@ namespace app\blog\tools\dao;
 class VisitorComment
 {
     //发表评论
-    public function add($nickname = '', $type = 0, $goodsId = 0, $content, $dataContent = array())
+    public function add($nickname = '', $mail = '', $type = 0, $goodsId = 0, $content, $dataContent = array())
     {
 
-        if (!$nickname || !$goodsId || !$type) {
+        if (!$nickname || !$type) {
             return array('status' => false, 'msg' => '参数错误');
         }
 
@@ -20,12 +20,22 @@ class VisitorComment
 
         $data              = $dataContent;
         $data['nickname']  = $nickname;
+        $data['mail']      = $mail;
         $data['goods_id']  = $goodsId;
         $data['content']   = $content;
         $data['parent_id'] = 0;
         $data['created']   = TIME;
         $data['type']      = $type;
         $data['ip']        = getIP();
+
+        $map['ip']       = $data['ip'];
+        $map['nickname'] = $nickname;
+        $map['content']  = $content;
+
+        $id = table('VisitorComment')->where($map)->field('id')->find('one');
+        if ($id) {
+            return array('status' => false, 'msg' => '请勿发布重复内容');
+        }
 
         $result = table('VisitorComment')->add($data);
         if (!$result) {
