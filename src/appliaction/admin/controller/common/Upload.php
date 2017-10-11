@@ -10,7 +10,7 @@ class Upload extends denha\Controller
         $img  = post('data', 'text', '');
         $path = post('path', 'text', '');
 
-        $reslut = dao('upload')->upBase64Img($img, $path);
+        $reslut = dao('Upload')->upBase64Img($img, $path);
 
         if ($reslut['status']) {
             $reslut['data'] = imgUrl($reslut['data'], $path);
