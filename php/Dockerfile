@@ -146,8 +146,4 @@ RUN docker-php-ext-install curl
 #    && echo "xdebug.xdebug.remote_host=127.0.0.1" >> /usr/local/etc/php/conf.d/xdebug.ini
 #    && echo "xdebug.xdebug.remote_port=9000" >> /usr/local/etc/php/conf.d/xdebug.ini
 
-# 增加权限控制
-RUN usermod -u 1000 www-data
-RUN mkdir -p  /var/www/html/data/
-RUN chmod -R 777 /var/www/html/data
 

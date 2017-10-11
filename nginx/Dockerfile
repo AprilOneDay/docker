@@ -4,6 +4,8 @@
   
 FROM nginx:latest
 
+MAINTAINER siyue 350375092@qq.com  
+
 # 增加执行权限
 RUN mkdir -p  /var/www/html/data/
 RUN chmod -R 777 /var/www/html/data
