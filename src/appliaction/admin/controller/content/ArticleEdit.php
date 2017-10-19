@@ -18,6 +18,7 @@ class ArticleEdit extends \app\admin\controller\Init
                 $this->edit_1();
                 break;
             case '2':
+
                 # code...
                 break;
             default:

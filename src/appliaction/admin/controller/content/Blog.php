@@ -44,7 +44,7 @@ class Blog extends \app\admin\controller\Init
         $page  = new denha\Pages($total, $pageNo, $pageSize, url('', $param));
 
         $other = array(
-            'tag'             => getVar('tags', 'console.article'),
+            'tag'             => getVar('tags', 'admin.article'),
             'isShowCopy'      => array(0 => '隐藏', 1 => '显示'),
             'isRecommendCopy' => array(1 => '推荐', 0 => '不推荐'),
         );

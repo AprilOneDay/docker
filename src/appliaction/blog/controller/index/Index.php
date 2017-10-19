@@ -42,7 +42,7 @@ class Index extends denha\Controller
 
         $this->assign('keyword', $keyword);
         $this->assign('listClass', $listClass);
-        $this->assign('tagCopy', getVar('tags', 'console.article'));
+        $this->assign('tagCopy', getVar('tags', 'admin.article'));
         $this->assign('randList', $this->rank());
         $this->assign('page', $pages->loadPc());
         $this->assign('list', $list);
@@ -90,7 +90,7 @@ class Index extends denha\Controller
         $this->assign('user', $user);
         $this->assign('comment', $comment);
         $this->assign('listClass', $listClass);
-        $this->assign('tagCopy', getVar('tags', 'console.article'));
+        $this->assign('tagCopy', getVar('tags', 'admin.article'));
         $this->assign('randList', $this->rank());
         $this->assign('data', $data);
         $this->show();
