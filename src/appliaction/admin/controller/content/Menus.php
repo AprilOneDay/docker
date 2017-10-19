@@ -1,5 +1,5 @@
 <?php
-namespace app\admin\controller\setting;
+namespace app\admin\controller\content;
 
 class Menus extends \app\admin\controller\Init
 {
@@ -18,16 +18,14 @@ class Menus extends \app\admin\controller\Init
      */
     public function index()
     {
-        $map['del_status'] = 0;
 
-        $result = table('ConsoleMenus')->where($map)->order('sort asc,id asc')->find('array');
+        $result = table('Column')->where($map)->order('sort asc,id asc')->find('array');
 
         if ($result) {
             $tree = new \app\console\tools\util\MenuTree();
             $tree->setConfig('id', 'parentid', '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
             $list = $tree->getLevelTreeArray($result);
             foreach ($list as $key => $value) {
-                $list[$key]['status']  = $value['status'] ? '√' : '×';
                 $list[$key]['is_show'] = $value['is_show'] ? '√' : '×';
             }
 
@@ -52,33 +50,28 @@ class Menus extends \app\admin\controller\Init
     public function edit()
     {
         if (IS_POST) {
-            $id = post('id', 'intval', 0);
+            $id      = post('id', 'intval', 0);
+            $add     = post('add', 'intval', 1);
+            $content = post('content', 'text', '');
 
-            $data['name']      = post('name', 'text', '');
-            $data['parameter'] = post('parameter', 'text', '');
-            $data['url']       = post('url', 'text', '');
-            $data['icon']      = post('icon', 'text', '');
+            $data['name']  = post('name', 'text', '');
+            $data['bname'] = post('bname', 'text', '');
+            $data['url']   = post('url', 'text', '');
 
-            $data['type']     = max(post('type', 'intval', 0), 1);
             $data['parentid'] = post('parentid', 'intval', 0);
-            $data['status']   = post('status', 'intval', 0);
             $data['is_show']  = post('is_show', 'intval', 0);
-            $data['is_white'] = post('is_white', 'intval', 0);
             $data['sort']     = post('sort', 'intval', 0);
 
-            $data['module']     = strtolower(post('module', 'text', ''));
-            $data['controller'] = strtolower(post('controller', 'text', ''));
-            $data['action']     = strtolower(post('action', 'text', ''));
-            $data['created']    = TIME;
+            $data['bname'] ?: $data['bname'] = $data['name'];
 
-            $data['url'] = (string) $data['url'] ?: '/' . $this->type[$data['type']] . $data['module'] . '/' . $data['controller'] . '/' . $data['action'] . $data['parameter'];
+            $data['module']     = strtolower(post('module', 'text', 'content'));
+            $data['controller'] = strtolower(post('controller', 'text', 'article'));
+            $data['action']     = strtolower(post('action', 'text', 'lists'));
 
-            if (!$data['name']) {
+            $data['url'] = (string) $data['url'] ?: '/' . $data['module'] . '/' . $data['controller'] . '/' . $data['action'] . $data['parameter'];
+
+            if ($add == 1 && !$data['name']) {
                 $this->ajaxReturn(['status' => false, 'msg' => '请填写菜单名称']);
-            }
-
-            if (!$data['module'] || !$data['controller'] || !$data['action']) {
-                $this->ajaxReturn(['status' => false, 'msg' => '请填写模块/控制器/方法名称']);
             }
 
             if ($id) {
@@ -86,17 +79,32 @@ class Menus extends \app\admin\controller\Init
                     $this->ajaxReturn(['status' => false, 'msg' => '上级栏目选择错误,不可选择自己为上级栏目']);
                 }
 
-                $result = table('ConsoleMenus')->where(array('id' => $id))->save($data);
+                $result = table('Column')->where(array('id' => $id))->save($data);
                 if ($result) {
                     $this->ajaxReturn(['status' => true, 'msg' => '修改成功']);
                 } else {
                     $this->ajaxReturn(['status' => false, 'msg' => '修改失败']);
                 }
             } else {
-                $result = table('ConsoleMenus')->add($data);
+
+                $data['created'] = TIME;
+                if ($add == 2 && $content) {
+                    $content = explode(PHP_EOL, $content);
+                    foreach ($content as $key => $value) {
+                        if (stripos($value, '|') !== false) {
+                            $value         = explode('|', $value);
+                            $data['name']  = $value[0];
+                            $data['bname'] = $value[1];
+                        } else {
+                            $data['name'] = $data['bname'] = $value;
+                        }
+                        $result = table('Column')->add($data);
+                    }
+                } else {
+                    $result = table('Column')->add($data);
+                }
+
                 if ($result) {
-                    //超级管理员增加默认权限
-                    table('ConsoleGroup')->where(array('id' => 1))->save(array('power' => array('concat', ',' . $result)));
                     $this->ajaxReturn(array('status' => true, 'msg' => '添加成功', 'id' => $result));
                 } else {
                     $this->ajaxReturn(array('status' => false, 'msg' => '添加失败'));
@@ -106,10 +114,10 @@ class Menus extends \app\admin\controller\Init
         } else {
             $id       = get('id', 'intval', 0);
             $parentid = get('parentid', 'intval', 0);
-            $rs       = table('ConsoleMenus')->where(['id' => $id])->find();
+            $rs       = table('Column')->where(['id' => $id])->find();
 
             if (!$id) {
-                $rs = array('is_show' => 1, 'is_white' => 0, 'status' => 1);
+                $rs = array('is_show' => 1);
             }
 
             if ($id == 0 && $parentid != 0) {
@@ -117,6 +125,7 @@ class Menus extends \app\admin\controller\Init
                 $rs['sort']     = 0;
             }
 
+            $this->assign('modelIdCopy', getVar('model', 'admin.article'));
             $this->assign('treeList', $this->treeList());
             $this->assign('data', $rs);
             $this->show();
@@ -142,7 +151,7 @@ class Menus extends \app\admin\controller\Init
             $map       = array();
             $map['id'] = array('in', $value);
 
-            $result = table('ConsoleMenus')->where($map)->save('sort', $key);
+            $result = table('Column')->where($map)->save('sort', $key);
             if (!$result) {
                 $this->ajaxReturn(array('status' => false, 'msg' => '更新失败'));
             }
@@ -165,7 +174,7 @@ class Menus extends \app\admin\controller\Init
             $this->ajaxReturn(['status' => false, 'msg' => '参数错误']);
         }
 
-        $result = table('ConsoleMenus')->where(['id' => $id])->save(['del_status' => 1]);
+        $result = table('Column')->where(['id' => $id])->save(['del_status' => 1]);
 
         if ($result) {
             $this->ajaxReturn(array('status' => true, 'msg' => '删除成功'));
@@ -174,6 +183,7 @@ class Menus extends \app\admin\controller\Init
         $this->ajaxReturn(array('status' => false, 'msg' => '删除失败'));
 
     }
+
     /**
      * [children 获取菜单子集]
      * @date   2016-09-30T10:37:55+0800
@@ -203,7 +213,7 @@ class Menus extends \app\admin\controller\Init
     public function treeList()
     {
         //格式化菜单
-        $result = table('ConsoleMenus')->field('id,parentid,name,icon,module,controller,action')->find('array');
+        $result = table('Column')->field('id,parentid,name,bname')->find('array');
         if ($result) {
             $tree = new \app\console\tools\util\MenuTree();
             $tree->setConfig('id', 'parentid');

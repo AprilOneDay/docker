@@ -43,7 +43,7 @@ class Comment
             'type'     => 1,
             'goods_id' => $goodsId,
         );
-        dao('Message')->send($data['to_uid'], 'comment_user', $sendData, $sendJump);
+        dao('Message')->send($data['to_uid'], 'comment', $sendData, $sendJump, 0, 2);
         return array('status' => true, 'msg' => '评论成功');
     }
 
@@ -89,12 +89,15 @@ class Comment
             'type'     => 1,
             'goods_id' => $comment['goods_id'],
         );
-        dao('Message')->send($data['to_uid'], 'comment_user', $sendData, $sendJump);
+        dao('Message')->send($toUid, 'comment', $sendData, $sendJump, $uid, 2);
         return array('status' => true, 'msg' => '评论成功');
     }
 
     public function getNotReadTotal($uid)
     {
+        if (!$uid) {
+            return 0;
+        }
 
         $map['to_uid']           = $uid;
         $map['is_to_uid_reader'] = 0;

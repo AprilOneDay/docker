@@ -64,7 +64,7 @@ class Blog extends \app\admin\controller\Init
 
             $data['title']       = post('title', 'text', '');
             $data['description'] = post('description', 'text', '');
-            $data['thumb']       = post('thumb', 'text', '');
+            $data['thumb']       = post('thumb', 'img', '');
             $data['origin']      = post('origin', 'text', '');
 
             $data['tag']          = max(post('tag', 'intval', 0), 1);

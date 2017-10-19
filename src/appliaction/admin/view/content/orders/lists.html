@@ -69,12 +69,14 @@
 											<th style="width:200px;">订单总价</th>
 											<th style="width:200px;">买家</th>
 											<th style="width:200px;">卖家</th>
+											<th style="width:100px;">卖家类型</th>
+											<th style="width:100px;">佣金状态</th>
 											<th style="width:100px;">录入状态</th>
 											<th style="width:100px;">审核状态</th>
 											<th style="width:100px;">订单状态</th>
-											<th style="width:120px;">发布时间</th>
+											<th style="width:160px;">发布时间</th>
 											<th style="width:50px;">来源</th>
-											<th style="width:80px; text-align:center;">操作</th>
+											<th style="width:160px; text-align:center;">操作</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -83,9 +85,11 @@
 											<td>{$value['id']}</td>
 											<td>{$other['typeCopy'][$value['type']]}</td>
 											<td>{$value['order_sn']}</td>
-											<td>{$value['acount']} {if $value['type'] == 1}万{/if}</td>
+											<td>{$value['acount']}</td>
 											<td>{$value['user']['nickname']}</td>
 											<td>{$value['seller']['nickname']}</td>
+											<td>{$other['userTypeCopy'][$value['seller']['type']]}</td>
+											<td>{$other['isPercentageCopy'][$value['is_percentage']]}</td>
 											<td>{$other['isTempCopy'][$value['is_temp']]}</td>
 											<td>{$other['statusCopy'][$value['status']]}</td>
 											<td>{$other['orderStatusCopy'][$value['order_status']]}</td>
@@ -93,6 +97,10 @@
 											<td>{$other['originCopy'][$value['origin']]}</td>
 											<td align='center'>
 												<a data-href="{F:url('detail',array('order_sn'=>$value['order_sn']))}"  data-height="70%" data-width="70%"  data-title="订单详情"  class="btn-open">详情</a>
+												{if $value['seller']['type'] == 2 && $value['status'] == 1 && $value['order_status'] >= 3 &&  $value['is_percentage'] == 0 && $value['type'] == 1}
+												<span> | </span>
+												<a data-href="{F:url('clearing_commission')}" class="btn-ajax-post" data-order_sn="{$value['order_sn']}" data-tips="卖家：{$value['seller']['nickname']}<br/>订单编号:{$value['order_sn']}<br/>确定该订单:收取佣金{$value['acount']*$commission/100}？<br/>确定后不可撤销">收取佣金</a>
+												{/if}
 											</td>
 										</tr>
 										{/loop}

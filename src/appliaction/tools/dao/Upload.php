@@ -59,7 +59,7 @@ class Upload
 
         $type ?: $type = 'jpg,png,gif,jpeg';
 
-        $path = ROOT_PATH . 'public' . DS . 'uploadfile' . DS . $path . DS;
+        $path = PUBLIC_PATH . 'uploadfile' . DS . $path . DS;
         is_dir($path) ? '' : mkdir($path, 0077, true);
 
         foreach ($files as $key => $value) {
@@ -85,6 +85,7 @@ class Upload
         //上传文件
         foreach ($move as $key => $value) {
             $result = move_uploaded_file($value['tmp_name'], $path . $value['name']);
+
             if ($result) {
                 $data['name'][$key] = $value['name'];
             }

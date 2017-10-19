@@ -36,16 +36,18 @@ class Category extends \app\admin\controller\Init
     {
 
         if (IS_POST) {
-            $id = post('id', 'intval', 0);
+            $id      = post('id', 'intval', 0);
+            $add     = post('add', 'intval', 1);
+            $content = post('content', 'text', '');
 
             $data['parentid'] = post('parentid', 'intval', 0);
             $data['sort']     = post('sort', 'intval', 0);
             $data['is_show']  = post('is_show', 'intval', 1);
 
             $data['name']  = post('name', 'text', '');
-            $data['thumb'] = post('thumb', 'text', '');
+            $data['thumb'] = post('thumb', 'img', '');
 
-            if (!$data['name']) {
+            if ($add == 1 && !$data['name']) {
                 $this->ajaxReturn(array('status' => false, 'msg' => '请输入分类名称'));
             }
 
@@ -55,7 +57,17 @@ class Category extends \app\admin\controller\Init
                     $this->ajaxReturn(array('status' => true, 'msg' => '修改成功'));
                 }
             } else {
-                $result = table('Category')->add($data);
+                if ($add == 2 && $content) {
+                    $content = explode(PHP_EOL, $content);
+                    foreach ($content as $key => $value) {
+                        if ($value) {
+                            $data['name'] = trim($value);
+                            $result       = table('Category')->add($data);
+                        }
+                    }
+                } else {
+                    $result = table('Category')->add($data);
+                }
                 if ($result) {
                     $this->ajaxReturn(array('status' => true, 'msg' => '添加成功'));
                 }

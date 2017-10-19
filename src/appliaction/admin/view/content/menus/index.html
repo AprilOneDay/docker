@@ -15,7 +15,7 @@
 					<div class="col-sm-12">
 						<div class="console-title console-title-border clearfix">
 							<div class="pull-left">
-								<h5>菜单列表</h5>
+								<h5>栏目列表</h5>
 							</div>
 							<div class="pull-right">
 								<a class="btn btn-primary btn-open" data-href="{F:url('edit')}"  data-height="750px">添加菜单</a>
@@ -30,12 +30,6 @@
 												<th style="width:70px;">#</th>
 												<th style="width:75px;">ID</th>
 												<th>菜单名称</th>
-												<th style="width:120px;">模块</th>
-												<th style="width:120px;">控制器</th>
-												<th style="width:120px;">方法</th>
-												<th style="width:120px;">附加参数</th>
-												<th style="width:80px; text-align:center;">排序</th>
-												<th style="width:80px; text-align:center;">状态</th>
 												<th style="width:80px; text-align:center;">显示</th>
 												<th style="width:160px; text-align:center;">编辑/操作</th>
 											</tr>
@@ -43,15 +37,11 @@
 										<tbody>
 											{loop $list $key $value}
 										 	<tr>
-										 		<td align="center"><input type="text" class="form-control" value="{$value['sort']}" name="id[{$value['id']}]" data-checked='{F:json_encode($checkValue)}'></td>
+										 		<td align="center"><input type="text" class="form-control" value="{$value['sort']}" name="id[{$value['id']}]"></td>
 												<td>{$value['id']}</td>
-												<td><span>{$value['delimiter']}</span>{$value['name']}</td>
-												<td>{$value['module']}</td>
-												<td>{$value['controller']}</td>
-												<td>{$value['action']}</td>
-												<td>{$value['parameter']}</td>
-												<td align='center'>{$value['sort']}</td>
-												<td align='center'>{$value['status']}</td>
+												<td>
+													<a href="{$value['url']}?param[column_id]={$value['id']}" target="iframe0" style="display: block;width: 100%;"><span>{$value['delimiter']}</span>{$value['name']}</a>
+												</td>
 												<td align='center'>{$value['is_show']}</td>
 												<td align='center'>
 													<a class="btn-open" data-href="{F:url('edit',array('parentid'=>$value['id']))}" data-title="编辑菜单" data-height="800px" data-parentId="list.id">添加子菜单</a>

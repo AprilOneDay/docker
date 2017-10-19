@@ -5,27 +5,22 @@ class User
 {
     /**
      * 注册
-     * @date   2017-09-18T13:52:36+0800
+     * @date   2017-10-13T09:14:10+0800
      * @author ChenMingjiang
-     * @param  array                    $data      [description]
-     * @param  string                   $password2 [description]
-     * @param  integer                  $isAgree   [description]
-     * @param  string                   $code      [description]
-     * @return [type]                              [description]
+     * @param  array                    $data       [主注册信息]
+     * @param  string                   $password2  [确认密码]
+     * @param  integer                  $isAgree    [授权同意]
+     * @param  string                   $code       [验证码]
+     * @param  array                    $thirdParty [第三方登录信息]
+     * @return [type]                               [description]
      */
-    public function register($data = array(), $password2 = '', $isAgree = 0, $code = '')
+    public function register($data = array(), $password2 = '', $isAgree = 0, $code = '', $thirdParty = array())
     {
         $data['password'] = trim(strtolower($data['password']));
+        $password2        = trim(strtolower($password2));
+
         if (!in_array($data['type'], array(1, 2))) {
             return array('status' => false, 'msg' => '请选择商家/个人注册');
-        }
-
-        if (!$data['username']) {
-            return array('status' => false, 'msg' => '请输入用户名');
-        }
-
-        if (!preg_match("/^[a-zA-Z0-9_]+$/", $data['username'])) {
-            return array('status' => false, 'msg' => '用户名请勿使用特殊字符汉字字符');
         }
 
         if (!$data['mobile']) {
@@ -40,9 +35,9 @@ class User
             return array('status' => false, 'msg' => '两次密码不一致');
         }
 
-        if (!preg_match("/^1[34578]{1}\d{9}$/", $data['mobile'])) {
-            return array('status' => false, 'msg' => '请输入正确的电话号码');
-        }
+        /*if (!preg_match("/^1[34578]{1}\d{9}$/", $data['mobile'])) {
+        return array('status' => false, 'msg' => '请输入正确的电话号码');
+        }*/
 
         if (!$data['type']) {
             return array('status' => false, 'msg' => '请选择注册类型');
@@ -62,6 +57,36 @@ class User
             return array('status' => false, 'msg' => '手机号已注册');
         }
 
+        if (!$data['username']) {
+            return array('status' => false, 'msg' => '请输入用户名');
+        }
+
+        if (!preg_match("/^[a-zA-Z0-9_]+$/", $data['username'])) {
+            return array('status' => false, 'msg' => '用户名请勿使用特殊字符汉字字符');
+        }
+
+        //检测验证码
+        if ($code) {
+            $reslutCode = dao('Sms')->checkVerification($data['mobile'], $code);
+            if (!$reslutCode['status']) {
+                return $reslutCode;
+            }
+        }
+
+        //检测第三方登录
+        if ($thirdParty) {
+            $map = array();
+            foreach ($thirdParty as $key => $value) {
+                $map[$key] = $value;
+            }
+
+            $isThirdParty = table('UserThirdParty')->where($map)->field('uid')->find('one');
+
+            if ($isThirdParty) {
+                return array('status' => false, 'msg' => '已存在第三方授权记录,请直接登录');
+            }
+        }
+
         $data['nickname'] = $data['username'];
         $data['salt']     = rand(10000, 99999);
         $data['password'] = md5($data['password'] . $data['salt']);
@@ -74,16 +99,54 @@ class User
         }
 
         if ($data['type'] == 2) {
-            table('UserShop')->add(array('uid' => $reslut, 'name' => $data['username']));
+            table('UserShop')->add(array('uid' => $reslut, 'name' => $data['username'], 'credit_level' => 50));
         } else {
             //发送站内信
             dao('Message')->send($reslut, 'register_user');
         }
 
+        //增加第三方登录信息
+        if ($thirdParty) {
+            $thirdParty['uid'] = $reslut;
+            table('UserThirdParty')->add($thirdParty);
+        }
+
         //增加积分明细
         dao('Integral')->add($reslut, 1);
-
         return array('status' => true, 'msg' => '注册成功');
+    }
+
+    /**
+     * 第三方登录
+     * @date   2017-10-13T09:47:47+0800
+     * @author ChenMingjiang
+     * @return [type]                   [description]
+     */
+    public function thirdPartyLogin($value, $imei = '')
+    {
+        $map['weixin_id'] = $value;
+
+        $uid = table('UserThirdParty')->where($map)->field('uid')->find('one');
+        if (!$uid) {
+            return array('status' => false, 'msg' => '尚未注册');
+        }
+
+        $user = table('User')->where('id', $uid)->field('type,password,salt,id')->find();
+
+        $data['token']      = md5(TIME . $user['salt']);
+        $data['time_out']   = TIME + 3600 * 24 * 2;
+        $data['type']       = $user['type'];
+        $data['login_ip']   = getIP();
+        $data['login_time'] = TIME;
+        $data['imei']       = $imei;
+
+        $reslut = table('User')->where(array('id' => $uid))->save($data);
+
+        if (!$reslut) {
+            return array('status' => false, 'msg' => '登录失败');
+        }
+
+        return array('status' => true, 'msg' => '登录成功', 'data' => $data);
     }
 
     /**
@@ -94,7 +157,7 @@ class User
      * @param  [type]                   $password [description]
      * @return [type]                             [description]
      */
-    public function login($account, $password, $imei = '')
+    public function login($account, $password, $imei = '', $type = 1)
     {
         $password = trim(strtolower($password));
         if (!$account) {
@@ -104,10 +167,10 @@ class User
         if (!$password) {
             return array('status' => false, 'msg' => '请输入手机号码');
         }
+        $map['type']    = $type;
+        $map['_string'] = "(mobile = '$account' or username = '$account')";
+        $user           = table('User')->where($map)->field('type,password,salt,id')->find();
 
-        $map['mobile']   = array('or', $account);
-        $map['username'] = $account;
-        $user            = table('User')->where($map)->field('type,password,salt,id')->find();
         if (!$user) {
             return array('status' => false, 'msg' => '该用户不存在');
         }
@@ -121,9 +184,10 @@ class User
         $data['type']       = $user['type'];
         $data['login_ip']   = getIP();
         $data['login_time'] = TIME;
-        $data['imei']       = $imei;
+        $data['imei']       = (string) $imei;
 
-        $reslut = table('User')->where(array('id' => $user['id']))->save($data);
+        $reslut      = table('User')->where(array('id' => $user['id']))->save($data);
+        $data['uid'] = $user['id'];
 
         if (!$reslut) {
             return array('status' => false, 'msg' => '登录失败');

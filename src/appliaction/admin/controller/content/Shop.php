@@ -45,7 +45,7 @@ class Shop extends \app\admin\controller\Init
             }
         } else {
             $data              = table('UserShop')->where(array('id' => $id))->find();
-            $data['ide_ablum'] = imgUrl($data['ide_ablum'], 'ide');
+            $data['ide_ablum'] = (array) imgUrl($data['ide_ablum'], 'ide');
             $data['ablum']     = imgUrl($data['ablum'], 'shop');
             $data['avatar']    = imgUrl($data['avatar'], 'avatar');
 

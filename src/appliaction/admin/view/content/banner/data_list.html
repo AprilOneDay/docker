@@ -35,10 +35,11 @@
 					                    </form> -->
 					<div class="console-form">
 						<div class="mt8">
-							<form>
+							<form class="form-horizontal" action="{F:url('update_sort')}">
 								<table class="table table-hover">
 									<thead>
 										<tr>
+											<th style="width:75px;">#</th>
 											<th style="width:75px;">ID</th>
 											<th>图片</th>
 											<th>简介</th>
@@ -48,18 +49,22 @@
 									<tbody>
 										{loop $list $key $value}
 									 	<tr v-for="list in list">
+									 		<td align="center"><input type="text" class="form-control" value="{$value['sort']}" name="id[{$value['id']}]" ></td>
 											<td>{$value['id']}</td>
 											<td><img src="{$value['path']}" width="150" height="100"></td>
 											<td>{$value['description']}</td>
 											<td align='center'>
 												<a data-href="{F:url('data_edit',array('id'=>$value['id']))}"  data-height="500px" data-width="500px"  data-title="编辑信息"  class="btn-open">编辑</a>
-												<a href="javascript:;">删除</a>
+												<a class="btn-ajax-post" data-href="{F:url('del_data')}" data-id="{$value['id']}" data-tips="确定删除该图片？">删除</a>
 											</td>
 										</tr>
 										{/loop}
 									</tbody>
 									<page :pages="pages" v-on:getPages="getPages"></page>
 								</table>
+								<div class="modal-footer pull-left">
+									<button type="button" class="btn btn-primary btn-comply">更新排序</button>
+								</div>
 							</form>
 						</div>
 					</div>

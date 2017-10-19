@@ -28,12 +28,12 @@ class Index extends \app\admin\controller\Init
         $map['del_status'] = 0;
         $map['parentid']   = $id;
 
-        $list = table('ConsoleMenus')->where($map)->field('id,name,icon,url')->order('sort desc')->find('array');
+        $list = table('ConsoleMenus')->where($map)->field('id,name,icon,url')->order('sort asc')->find('array');
         foreach ($list as $key => $value) {
             //隐藏未授权栏目信息
             if (in_array($value['id'], $this->power)) {
                 $map['parentid']     = $value['id'];
-                $list[$key]['child'] = table('ConsoleMenus')->where($map)->field('id,name,icon,url')->order('sort desc')->find('array');
+                $list[$key]['child'] = table('ConsoleMenus')->where($map)->field('id,name,icon,url')->order('sort asc')->find('array');
                 foreach ($list[$key]['child'] as $k => $v) {
                     if (!in_array($v['id'], $this->power)) {
                         unset($list[$key]['child'][$k]);
