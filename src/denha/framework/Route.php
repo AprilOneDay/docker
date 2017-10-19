@@ -6,6 +6,14 @@ class Route
     public static $path;
     public static $class;
 
+    //后台快捷路由
+    public static function admin()
+    {
+        $uri   = self::parseUri();
+        $array = explode('/', $uri);
+
+    }
+
     //app 路由结构
     //v1/user/index/index/2/ be appliaction/app/controller/v1/user/Index_2.php 中 index
     public static function app()

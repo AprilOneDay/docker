@@ -32,8 +32,8 @@ class Mysqli
         if ($dbConfig) {
             $this->dbConfig = $dbConfig;
         } else {
-            if (getConfig('db.' . APP)) {
-                $this->dbConfig = getConfig('db.' . APP);
+            if (getConfig('db.' . APP_CONFIG)) {
+                $this->dbConfig = getConfig('db.' . APP_CONFIG);
             } else {
                 $this->dbConfig = getConfig('db');
             }
@@ -163,6 +163,8 @@ class Mysqli
                                     $v[1] = is_array($v[1]) ? implode(',', $v[1]) : $v[1];
                                     $newWhere .= $k . '  ' . $v[0] . ' (' . $v[1] . ') AND ';
                                 }
+                            } elseif ($v[0] == 'instr') {
+                                $newWhere .= $v[0] . '(`' . $k . '`,\'' . $v[1] . '\') AND ';
                             } elseif ($v[0] == 'between') {
                                 $newWhere .= $k . '  ' . $v[0] . ' \'' . $v[1] . '\' AND \'' . $v[2] . '\' AND ';
                             } elseif ($v[0] == 'or') {
@@ -490,7 +492,6 @@ class Mysqli
         foreach ($data as $key => $value) {
             $result = $this->add($value);
         }
-
         return $result;
     }
 
@@ -514,10 +515,13 @@ class Mysqli
             if (is_array($data)) {
                 foreach ($data as $k => $v) {
                     if (is_array($v)) {
+                        $v[0] = strtolower($v[0]);
                         if ($v[0] == 'add') {
                             $newField .= '`' . $k . '`  = `' . $k . '` + ' . $v[1] . ',';
                         } elseif ($v[0] == 'less') {
                             $newField .= '`' . $k . '`  = `' . $k . '` - ' . $v[1] . ',';
+                        } elseif ($v[0] == 'concat') {
+                            $newField .= '`' . $k . '`  = CONCAT(`' . $k . '`,\'\',\'' . $v[1] . '\'),';
                         }
                     } else {
                         $newField .= '`' . $k . '`=\'' . $v . '\',';
@@ -531,10 +535,10 @@ class Mysqli
 
         $this->field = $newField;
 
-        $sql = 'UPDATE ' . $this->table . ' SET ' . $this->field;
-        $sql .= $this->where ? $this->where : '';
+        $this->_sql = 'UPDATE ' . $this->table . ' SET ' . $this->field;
+        $this->_sql .= $this->where ? $this->where : '';
 
-        $result = $this->query($sql);
+        $result = $this->query();
         return $result;
     }
 
@@ -549,8 +553,8 @@ class Mysqli
         if (!$this->where) {
             return false;
         }
-        $sql    = 'DELETE FROM ' . $this->table . $this->where;
-        $result = $this->query($sql);
+        $this->_sql = 'DELETE FROM ' . $this->table . $this->where;
+        $result     = $this->query();
         return $result;
     }
 
@@ -596,6 +600,7 @@ class Mysqli
         $this->sqlInfo['sql']  = $this->_sql;
 
         Trace::addSqlInfo($this->sqlInfo);
+        $this->sqlLog(); //记录sql
 
         if ($result) {
             return $result;
@@ -603,5 +608,36 @@ class Mysqli
             throw new Exception('SQL ERROR :' . $this->_sql);
         }
 
+    }
+
+    /**
+     * 保存sql记录
+     * @date   2017-10-18T13:45:16+0800
+     * @author ChenMingjiang
+     * @return [type]                   [description]
+     */
+    public function sqlLog()
+    {
+        if ($this->sqlInfo && $this->dbConfig['db_sqlLog']) {
+            $path = DATA_PATH . 'sql_log' . DS . $this->dbConfig['db_name'] . DS;
+            is_dir($path) ? '' : mkdir($path, 0077, true);
+            if (stripos($this->sqlInfo['sql'], 'select') === 0) {
+                $path .= date('Y_m_d_H', TIME) . '_select.text';
+                $content = $this->sqlInfo['sql'] . '|' . $this->sqlInfo['time'];
+            } elseif (stripos($this->sqlInfo['sql'], 'update') === 0) {
+                $path .= date('Y_m_d_H', TIME) . '_update.text';
+                $content = $this->sqlInfo['sql'] . ';';
+            } elseif (stripos($this->sqlInfo['sql'], 'delete') === 0) {
+                $path .= date('Y_m_d_H', TIME) . '_delete.text';
+                $content = $this->sqlInfo['sql'] . ';';
+            } elseif (stripos($this->sqlInfo['sql'], 'insert') === 0) {
+                $path .= date('Y_m_d_H', TIME) . '_add.text';
+                $content = $this->sqlInfo['sql'] . ';';
+            }
+
+            $file = fopen($path, 'a');
+            fwrite($file, $content . PHP_EOL);
+            fclose($file);
+        }
     }
 }

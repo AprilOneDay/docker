@@ -120,6 +120,12 @@ class Trace
     //获取基本信息
     private static function baseInfo()
     {
+        if (getConfig('db.' . APP_CONFIG)) {
+            $dbConfig = getConfig('db.' . APP_CONFIG);
+        } else {
+            $dbConfig = getConfig('db');
+        }
+
         $base = array(
             '请求信息' => date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']) . ' ' . $_SERVER['SERVER_PROTOCOL'] . ' ' . $_SERVER['REQUEST_METHOD'] . ' : ' . strip_tags($_SERVER['REQUEST_URI']),
             '运行时间' => (microtime(true)) - $GLOBALS['_beginTime'] . ' s',
@@ -130,6 +136,7 @@ class Trace
             //'缓存信息' => n('cache_read') . ' gets ' . n('cache_write') . ' writes ',
             //'配置加载' => count(c()),
             '会话信息' => 'SESSION_ID=' . session_id(),
+            '数据库'    => $dbConfig['db_name'],
         );
 
         return $base;

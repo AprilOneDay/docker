@@ -14,4 +14,5 @@ class Log
             return include FARM_PATH . DS . 'trace' . DS . '404.html';
         }
     }
+
 }

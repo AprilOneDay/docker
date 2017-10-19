@@ -14,16 +14,17 @@ class Start
      * @param  string                   $route  [路由模式 mca smca ca]
      * @return [type]                           [description]
      */
-    public static function up($client = '', $route = 'mca')
+    public static function up($route = 'mca')
     {
+        //var_dump($client);die;
         //执行创建文件
         get('build') == false ?: self::bulid();
 
-        self::$client = $client;
+        self::$client = APP_CONFIG;
         //获取配置文档信息
         self::$config = include CONFIG_PATH . 'config.php';
-        if (is_file(CONFIG_PATH . 'config.' . $client . '.php')) {
-            self::$config = array_merge(include (CONFIG_PATH . 'config.php'), include (CONFIG_PATH . 'config.' . $client . '.php'));
+        if (is_file(CONFIG_PATH . 'config.' . APP_CONFIG . '.php')) {
+            self::$config = array_merge(include (CONFIG_PATH . 'config.php'), include (CONFIG_PATH . 'config.' . APP_CONFIG . '.php'));
         }
 
         define('TRACE', self::$config['trace']); //定义Trace

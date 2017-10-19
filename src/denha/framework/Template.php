@@ -20,7 +20,6 @@ class Template
         $this->content = fread($file, filesize($this->viewPath));
         $this->stampInclude();
 
-        $this->stampIf();
         $this->stampForeach();
 
         //{$xxx} be echo $xxx;
@@ -29,7 +28,14 @@ class Template
         $this->content = preg_replace('/' . $this->left . '\?\?(.*?)' . $this->right . '/is', '<?php echo !isset(\1) ? null : \1; ?>', $this->content);
         //替换php函数 {F:XXX}  be echo XXX;
         $this->content = preg_replace('/' . $this->left . 'F:(.*?)' . $this->right . '/', '<?php echo \1; ?>', $this->content);
-
+        //替换{if XXX}
+        $this->content = preg_replace('/' . $this->left . 'if(.*?)' . $this->right . '/is', '<?php if(\1){; ?>', $this->content);
+        //替换{else}
+        $this->content = preg_replace('/' . $this->left . 'else' . $this->right . '/is', '<?php }else{ ?>', $this->content);
+        //替换{elseif XXX}
+        $this->content = preg_replace('/' . $this->left . 'elseif(.*?)' . $this->right . '/is', '<?php }elseif(\1){ ?>', $this->content);
+        //替换{/if}
+        $this->content = preg_replace('/' . $this->left . '\/if' . $this->right . '/is', '<?php } ?>', $this->content);
         $this->saveFile();
 
     }
@@ -73,37 +79,6 @@ class Template
             }
         }
 
-    }
-
-    public function stampIf()
-    {
-        $regular = '#' . $this->left . 'if\s(.*?)' . $this->right . '#is';
-        preg_match_all($regular, $this->content, $matches);
-        if ($matches) {
-            foreach ($matches[0] as $key => $value) {
-                //替换模板变量
-                $this->content = str_replace($matches[0][$key], '<?php if(' . $matches[1][$key] . '){ ?>', $this->content);
-            }
-            $this->content = str_replace($this->left . '/if' . $this->right, '<?php } ?>', $this->content);
-        }
-        //替换elseif
-        $regular2 = '#' . $this->left . 'elseif\s(.*?)' . $this->right . '#is';
-        preg_match_all($regular2, $this->content, $matches2);
-        if ($matches2) {
-            foreach ($matches2[0] as $key => $value) {
-                //替换模板变量
-                $this->content = str_replace($matches2[0][$key], '<?php }elseif(' . $matches[1][$key] . '){ ?>', $this->content);
-            }
-        }
-        //替换else
-        $regular3 = '/' . $this->left . 'else' . $this->right . '/is';
-        preg_match_all($regular3, $this->content, $matches3);
-        if ($matches3) {
-            foreach ($matches3[0] as $key => $value) {
-                //替换模板变量
-                $this->content = str_replace($matches3[0][$key], '<?php }else{ ?>', $this->content);
-            }
-        }
     }
 
     public function stampForeach()

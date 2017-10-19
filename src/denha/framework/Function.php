@@ -79,7 +79,8 @@ function post($name, $type = '', $default = '')
             case 'json':
                 $data = $data === '' ? $default : json_decode($data, true);
                 break;
-                # code...
+            case 'img':
+                $data = stripos($data, 'default') !== false ? $default : $data;
                 break;
             default:
                 # code...
@@ -126,6 +127,9 @@ function get($name, $type = '', $default = '')
                 break;
             case 'jsonp':
                 $data = $data === '' ? $default : get('callback') . '(' . json_encode($data, true) . ')';
+            case 'img':
+                $data = stripos($data, 'default') !== false ? $default : $data;
+                break;
             default:
                 # code...
                 break;
@@ -231,7 +235,7 @@ function getVar($filename, $path, $ext = EXT)
 
     $name = md5($filename . $path);
     if (isset($_vars[$name])) {
-        return $name;
+        return $_vars[$name];
     } else {
         if (($length = stripos($path, '.')) === false) {
             $filePath = APP_PATH . 'tools' . DS . 'var' . DS . $path . DS . $filename . $ext;
@@ -315,7 +319,7 @@ function url($location = '', $params = array(), $isGet = false)
 }
 
 //保存Cookie
-function cookie($name = '', $value = '', $expire = 3600 * 2, $encode = false)
+function cookie($name = '', $value = '', $expire = 3600, $encode = false)
 {
     if (!$name) {
         return false;
@@ -360,25 +364,31 @@ function imgUrl($name, $path = '', $size = 0, $host = false)
     }
 
     foreach ($imgName as $key => $value) {
-        if ($path) {
-            $url = '/uploadfile/' . $path . '/' . $value;
+        if (!$value) {
+            $url = '/ststic/default.png';
+            $url = !$host ? URL . $url : $host . $url;
         } else {
-            $url = '/uploadfile/' . $value;
-        }
+            if ($path) {
+                $url = '/uploadfile/' . $path . '/' . $value;
+            } else {
+                $url = '/uploadfile/' . $value;
+            }
 
-        $url = !$host ? URL . $url : $host . $url;
+            $url = !$host ? URL . $url : $host . $url;
 
-        //这块有点影响网速 设置超时 后续会改为检测数据库
-        $opts = array(
-            'http' => array(
-                'method'  => "GET",
-                'timeout' => 1, //单位秒
-            ),
+            //这块有点影响网速 设置超时 后续会改为检测数据库
+            /*$opts = array(
+        'http' => array(
+        'method'  => "GET",
+        'timeout' => 1, //单位秒
+        ),
         );
 
         if (!file_get_contents($url, false, stream_context_create($opts))) {
-            $url = '/ststic/console/images/nd.jpg';
-            $url = !$host ? URL . $url : $host . $url;
+        $url = '/ststic/default.png';
+        $url = !$host ? URL . $url : $host . $url;
+        }*/
+
         }
 
         $data[] = $url;
@@ -530,7 +540,7 @@ function deUnicode($name, $code = 'UTF-8')
  */
 function mbDetectEncoding($content = '', $mbEncode = "UTF-8")
 {
-    $encode = mb_detect_encoding($content, array("ASCII", "UTF-8", "GB2312", "GBK", "BIG5", "EUC-CN"));
+    $encode = mb_detect_encoding($content, array("ASCII", "UTF-8", "GB2312", "GBK", "BIG5", "EUC-CN", "UCS2"));
     if ($encode != $mbEncode) {
         $encode  = $encode == "EUC-CN" ? "GB2312" : $encode;
         $content = mb_convert_encoding($content, $mbEncode, $encode);
