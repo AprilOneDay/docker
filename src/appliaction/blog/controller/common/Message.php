@@ -19,7 +19,7 @@ class Message extends \app\app\controller\Init
 
         $this->assign('user', $user);
         $this->assign('listClass', $listClass);
-        $this->assign('tagCopy', getVar('tags', 'console.article'));
+        $this->assign('tagCopy', getVar('tags', 'admin.article'));
         $this->assign('randList', $this->rank());
         $this->show();
     }

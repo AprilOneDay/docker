@@ -1,12 +1,19 @@
 $(function() {
 
     init();
-   /* $(window).resize(function() {
-       init();
-    });*/
-
     //监听product-nav-scene的宽度变化
     $(".product-nav-scene").bind("DOMNodeInserted",function(e){
+        $('.content-main').width(($(document).width() - $('.sidebar-inner').width() - $('.product-nav-scene').width()) );
+        return true;
+    })
+    //监听content-main的宽度变化
+    $(".content-main").bind("DOMNodeInserted",function(e){
+        $('.content-main').width(($(document).width() - $('.sidebar-inner').width() - $('.product-nav-scene').width()) -2);
+        return true;
+    })
+
+    //监听出现滚动条
+    $(window).scroll(function () {
         $('.content-main').width(($(document).width() - $('.sidebar-inner').width() - $('.product-nav-scene').width()) );
         return true;
     })
@@ -17,10 +24,11 @@ $(function() {
         $('.product-nav-scene').height($(document).height() - $('.border-top').height() - 2)
         $('.content-main').height($(document).height() - $('.border-top').height() - 2);
         if($('.product-nav-scene').css('display') == 'block'){
-            $('.content-main').width(($(document).width() - $('.sidebar-inner').width() - $('.product-nav-scene').width()) );
+            $('.content-main').width(($(document).width() - $('.sidebar-inner').width() - $('.product-nav-scene').width()) - 2);
         }else{
-            $('.content-main').width(($(document).width() - $('.sidebar-inner').width()) );
+            $('.content-main').width(($(document).width() - $('.sidebar-inner').width()) - 2 );
         }
+
     }
 
     //收缩一级导航
@@ -143,9 +151,13 @@ $(function() {
             layer.msg(reslut.msg);
             if(reslut.status){
                 setTimeout(function(){
-                    parent.location.reload();
                     var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
-                    parent.layer.close(index);
+                    if(index){
+                        parent.location.reload();
+                        parent.layer.close(index);
+                    }else{
+                        location.reload();   
+                    }
                 },1000);
             }
         })
@@ -153,6 +165,7 @@ $(function() {
 
     //提交post信息
     $('.btn-ajax-post').click(function(){
+        var tips = $(this).attr('data-tips');
         var attr = $(this).context.attributes;
         var url = $(this).attr('data-href');
         var data = new Object();
@@ -162,12 +175,26 @@ $(function() {
             }
         }
 
-        $.post(url,data,function(reslut){
-            layer.msg(reslut.msg);
-            if(reslut.status){
+        if(tips){
+            layer.confirm(tips, {
+              btn: ['确定','取消'] //按钮
+            }, function(){
+               $.post(url,data,function(reslut){
+                    layer.msg(reslut.msg);
+                    if(reslut.status){
+                   setTimeout(function(){location.reload();},1000);
+                    }
+                })
+            }, function(){});
+        }else{
+            $.post(url,data,function(reslut){
+                layer.msg(reslut.msg);
+                if(reslut.status){
                setTimeout(function(){location.reload();},1000);
-            }
-        })
+                }
+            })
+        }
+
     })
 
     //get提交

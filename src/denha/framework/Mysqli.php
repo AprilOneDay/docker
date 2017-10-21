@@ -1,6 +1,8 @@
 <?php
 namespace denha;
 
+use denha;
+
 class Mysqli
 {
 
@@ -195,8 +197,14 @@ class Mysqli
      * @param  string                   $float [description]
      * @return [type]                          [description]
      */
-    public function join($table, $where, $float = 'left')
+    public function join($table, $where = '', $float = 'left')
     {
+        if ($table == $this->table) {
+            denha\Log::error('关联表名字一样');
+        }
+
+        $where ?: $where = $this->table . '.id =' . $table . '.id';
+
         $this->join = ' ' . $float . ' JOIN ' . $table . ' ON ' . $where;
         return $this;
     }
@@ -475,8 +483,7 @@ class Mysqli
         }
         $this->field = $newField;
 
-        $sql = 'INSERT INTO `' . $this->table . '` SET ' . $this->field;
-        $sql .= $this->where ? $this->where : '';
+        $sql    = 'INSERT INTO `' . $this->table . '` SET ' . $this->field;
         $result = $this->query($sql);
         $result = mysqli_insert_id($this->link);
         return $result;

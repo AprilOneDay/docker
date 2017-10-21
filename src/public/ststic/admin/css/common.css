@@ -19,7 +19,7 @@ ul{ margin: 0px; padding: 0px;  }
 li{ list-style: none; }
 
 .container-fluid{ padding: 0px; }
-
+.form-horizontal .radio{ margin-bottom: 15px; }
 .form-control{border-radius: 0; font-size: 12px; height: 32px; padding: 6px; transition: none 0s ease 0s ;}
 .form-control:focus {box-shadow: none;}
 .btn{border-radius: 0; font-size: 12px;height: 32px;line-height: 14px; padding: 8px 16px;}

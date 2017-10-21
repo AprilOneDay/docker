@@ -14,7 +14,7 @@ class Column
             $map = array();
         }
 
-        $tree = new \app\console\tools\util\MenuTree();
+        $tree = new \app\admin\tools\util\MenuTree();
         $tree->setConfig('id', 'parentid', '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
         $result = table('Column')->where($map)->order('sort asc,id asc')->find('array');
 
@@ -22,7 +22,7 @@ class Column
 
         //print_r($result);
         foreach ($treeList as $key => $value) {
-            $list[$value['id']] = $value['delimiter'] . $value['name'];
+            $list[$value['id']] = isset($value['delimiter']) ? $value['delimiter'] . $value['name'] : $value['name'];
         }
 
         return $list;

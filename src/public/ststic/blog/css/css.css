@@ -15,6 +15,8 @@ body{ background: #f0f2f7; }
 .desc dl i{margin-right: 5px;}
 
 .news-content h2{font-weight: 600;}
+
+.news-content .content img{ max-width: 90%; text-align: center; }
 .news-content .content p{ font-size: 1.4rem; }
 .news-content .content .origin{margin-top: 3rem; color: #ccc;}
 .news-content .content .origin a{color: #ccc;}
@@ -37,6 +39,8 @@ body{ background: #f0f2f7; }
 .title{ width: 70px; text-align: center;line-height: 30px;  cursor: pointer;}
 .article .article-content{ border: 1px solid #e1e1e1;  padding: 20px;}
 .article .article-content li{float: left; width: 100%;  line-height: 25px; white-space:nowrap; overflow:hidden;text-overflow:ellipsis;}
+
+.bars{ margin-top: 0.2rem; }
 
 .comment{ margin-top: 2rem; }
 .comment li{ border-bottom: 1px solid #e1e1e1; padding:1rem 0; }

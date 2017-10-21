@@ -1,5 +1,5 @@
 <?php
-namespace app\console\tools\util;
+namespace app\admin\tools\util;
 
 /**
  * 通用的树型类，可以生成任何树型结构
@@ -17,7 +17,7 @@ class MenuTree
      * @param string $name  设置名称
      * @param string $value 设置值
      */
-    public function setConfig($id, $pid, $blank, $delimiter)
+    public function setConfig($id = 0, $pid = 0, $blank = '', $delimiter = '')
     {
         if ($id) {
             $this->id = $id;

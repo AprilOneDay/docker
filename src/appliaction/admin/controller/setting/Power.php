@@ -24,7 +24,7 @@ class Power extends \app\admin\controller\Init
 
         $list = table('ConsoleMenus')->where($map)->field('id,name,parentid,module,controller,action')->order('sort asc,id asc')->find('array');
 
-        $tree = new \app\console\tools\util\MenuTree();
+        $tree = new \app\admin\tools\util\MenuTree();
         $tree->setConfig('id', 'parentid', '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
         $list = $tree->getLevelTreeArray($list);
 

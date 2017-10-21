@@ -48,8 +48,8 @@ class ArticleList extends \app\admin\controller\Init
 
         $other = array(
             'tag'             => getVar('tags', 'console.article'),
-            'isShowCopy'      => array(0 => '隐藏', 1 => '显示'),
-            'isRecommendCopy' => array(1 => '推荐', 0 => '不推荐'),
+            'isShowCopy'      => array(0 => '未审核', 1 => '已审核'),
+            'isRecommendCopy' => array(0 => '未推荐', 1 => '已推荐'),
             'columnListCopy'  => dao('Column', 'admin')->columnList($param['column_id']),
         );
 
