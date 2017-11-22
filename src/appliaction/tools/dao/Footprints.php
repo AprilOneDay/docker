@@ -66,9 +66,9 @@ class Footprints
             $map['uid']  = $shopUid;
             $map['time'] = date('Y-m-d', TIME);
 
-            $id = table('ShopHotLog')->where($map)->field('id')->find('one');
-            if ($id) {
-                table('ShopHotLog')->where(array('id' => $id))->save(array('num' => array('add', 1)));
+            $hotLogId = table('ShopHotLog')->where($map)->field('id')->find('one');
+            if ($hotLogId) {
+                table('ShopHotLog')->where(array('id' => $hotLogId))->save(array('num' => array('add', 1)));
             } else {
                 $data['uid']  = $shopUid;
                 $data['time'] = date('Y-m-d', TIME);

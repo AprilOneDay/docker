@@ -1,4 +1,7 @@
 <?php
+/**
+ * 广告管理
+ */
 namespace app\tools\dao;
 
 class Banner

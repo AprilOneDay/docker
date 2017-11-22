@@ -1,6 +1,6 @@
 <?php
 /**
- * 百度抓取
+ * 聊天模块
  */
 namespace app\tools\dao;
 

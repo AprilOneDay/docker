@@ -7,26 +7,50 @@ $(function() {
         return true;
     })
     //监听content-main的宽度变化
-    $(".content-main").bind("DOMNodeInserted",function(e){
-        $('.content-main').width(($(document).width() - $('.sidebar-inner').width() - $('.product-nav-scene').width()) -2);
+    /*$(".content-main").bind("DOMNodeInserted",function(e){
+        $('.content-main').width(($(document).width() - $('.sidebar-inner').width() - $('.product-nav-scene').width()) - 10);
         return true;
-    })
-
+    })*/
+    /*$(window).keyup(function(event){
+        //按下F12
+        if(event.keyCode == 123){
+         
+            if($('.product-nav-scene').css('display') == 'block'){
+                $('.content-main').width(($(document).width() - 150 - 150));
+            }else{
+                console.log($(document).width());
+                $('.content-main').width(($(document).width() - 150));
+            }
+        }
+    });*/
     //监听出现滚动条
-    $(window).scroll(function () {
+    /*$(window).scroll(function () {
         $('.content-main').width(($(document).width() - $('.sidebar-inner').width() - $('.product-nav-scene').width()) );
         return true;
-    })
+    })*/
+    $(window).resize(function(){
+        if($('.product-nav-scene').css('display') == 'block'){
+            $('.content-main').width(($(document).width() - 150 - 150));
+        }else{
+            $('.content-main').width(($(document).width() - 150));
+        }
+    });
+
+   
 
     //主页容器固定高宽
     function init(){
+        //一级栏目高度
         $('.sidebar-inner').height($(document).height() - $('.border-top').height() - 2);
+        //二级栏目高度
         $('.product-nav-scene').height($(document).height() - $('.border-top').height() - 2)
+        //主体显示高度
         $('.content-main').height($(document).height() - $('.border-top').height() - 2);
+        //二级栏目如果可见
         if($('.product-nav-scene').css('display') == 'block'){
-            $('.content-main').width(($(document).width() - $('.sidebar-inner').width() - $('.product-nav-scene').width()) - 2);
+            $('.content-main').width(($(document).width() - 150 - 150));
         }else{
-            $('.content-main').width(($(document).width() - $('.sidebar-inner').width()) - 2 );
+            $('.content-main').width(($(document).width() - 150));
         }
 
     }
@@ -91,6 +115,18 @@ $(function() {
         })
     })
 
+    //tips提示
+    $('[config-tooltip]').mouseover(function(){
+        var msg = $(this).attr('config-tooltip');
+        layer.tips(msg, this, {
+          tips: [1, '#3595CC'],
+          time: 10000
+        });
+    })
+    $('[config-tooltip]').mouseout(function(){
+        layer.closeAll('tips');
+    })
+
     //绑定checkbox
     $('.checkbox').each(function(){
         var data  = $(this).val();
@@ -106,10 +142,10 @@ $(function() {
 
    //打开弹出
     $('.btn-open').click(function() {
-        var href = $(this).attr('data-href');
-        var title = $(this).attr('data-title');
-        var width = $(this).attr('data-width');
-        var height = $(this).attr('data-height');
+        var href = $(this).attr('config-href');
+        var title = $(this).attr('config-title');
+        var width = $(this).attr('config-width');
+        var height = $(this).attr('config-height');
 
         if (!title) {
             title = $(this).text();
@@ -139,38 +175,51 @@ $(function() {
 
     //提交信息
     $('.btn-comply').click(function(){
-        var form = $(this).parents('.form-horizontal');
-        var data = form.serializeArray();
-        var url  = form.attr('action');
+        var form     = $(this).parents('.form-horizontal');
+        var data     = form.serializeArray();
+        var url      = form.attr('action');
+        var trueUrl  = $(this).attr('config-true-url'); //执行成功跳转地址
+        var falseUrl = $(this).attr('config-false-url'); //执行失败跳转地址
         if(data.length < 1){
             return layer.msg('请上传参数');
         }
 
 
-        $.post(url,data,function(reslut){
-            layer.msg(reslut.msg);
-            if(reslut.status){
+        $.post(url,data,function(result){
+            layer.msg(result.msg);
+            if(result.status){
                 setTimeout(function(){
                     var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
                     if(index){
                         parent.location.reload();
                         parent.layer.close(index);
                     }else{
-                        location.reload();   
+                        if(trueUrl){
+                            window.location.href= trueUrl;
+                        }else{
+                            location.reload();   
+                        }
                     }
                 },1000);
+            }else if(!result.status && falseUrl){
+                setTimeout(function(){
+                    window.location.href= falseUrl;
+                },1000);
             }
-        })
+        },"json")
     })
 
     //提交post信息
     $('.btn-ajax-post').click(function(){
-        var tips = $(this).attr('data-tips');
-        var attr = $(this).context.attributes;
-        var url = $(this).attr('data-href');
+        var attr     = $(this).context.attributes;  //获取执行参数
+        var tips     = $(this).attr('config-tips');   //预先提示文案
+        var url      = $(this).attr('config-href');   //执行地址
+        var isReload = $(this).attr('config-reload'); //是否刷新当前页面
+        var trueUrl  = $(this).attr('config-true-url'); //执行成功跳转地址
+        var falseUrl = $(this).attr('config-false-url'); //执行失败跳转地址
         var data = new Object();
         for (var i = 0; i < attr.length; i++) {
-            if(attr[i].localName.indexOf('data') !== -1 && attr[i].localName != 'data-href'){
+            if(attr[i].localName.indexOf('data') !== -1 ){
                 data[attr[i].localName.substr(5,attr[i].localName.length)] =  attr[i].value;
             }
         }
@@ -179,30 +228,66 @@ $(function() {
             layer.confirm(tips, {
               btn: ['确定','取消'] //按钮
             }, function(){
-               $.post(url,data,function(reslut){
-                    layer.msg(reslut.msg);
-                    if(reslut.status){
-                   setTimeout(function(){location.reload();},1000);
+               $.post(url,data,function(result){
+                    layer.msg(result.msg);
+                    if(result.status){
+                        setTimeout(function(){
+                            if(trueUrl){
+                                window.location.href= trueUrl;
+                            }else{
+                                location.reload();
+                            }
+                        },1000);
+                        
+                    }else if(!result.status && falseUrl){
+                        setTimeout(function(){
+                            window.location.href= falseUrl;
+                        },1000);
                     }
-                })
+
+                    if(isReload){
+                        setTimeout(function(){
+                            location.reload();
+                        },1000);
+                    }   
+                },"json")
             }, function(){});
         }else{
-            $.post(url,data,function(reslut){
-                layer.msg(reslut.msg);
-                if(reslut.status){
-               setTimeout(function(){location.reload();},1000);
+            $.post(url,data,function(result){
+                if(result.msg){
+                    layer.msg(result.msg);
                 }
-            })
+
+                if(result.status){
+                    setTimeout(function(){
+                        if(trueUrl){
+                            window.location.href= trueUrl;
+                        }else{
+                            location.reload();
+                        }
+                    },1000);
+                }else if(!result.status && falseUrl){
+                    setTimeout(function(){
+                        window.location.href= falseUrl;
+                    },1000);
+                }
+
+                if(isReload){
+                    setTimeout(function(){
+                        location.reload();
+                    },1000);
+                }
+            },"json")
         }
 
     })
 
     //get提交
     $('.btn-ajax-get').click(function(){
-        var url = $(this).attr('data-url');
-        $.get(url,function(reslut){
-            layer.msg(reslut.msg);
-            if(reslut.status){
+        var url = $(this).attr('config-href');
+        $.get(url,function(result){
+            layer.msg(result.msg);
+            if(result.status){
                 location.reload();
             }
         },"json");
@@ -216,36 +301,36 @@ $(function() {
         var name    = $(this).attr('data-name');
         var maxNum  = Math.max($(this).attr('data-max'),1);
         var path    = $(this).attr('data-path'); 
-        var content = '<input type="file" style="display:none;" id="'+name+'" multiple="multiple"><div class="img-list" style="margin-top:20px;"><ul></ul></div>';
+        var content = '<input type="file" style="display:none;" id="'+name+'"  multiple="multiple"><div class="img-list" style="margin-top:20px;"><ul></ul></div>';
         var value   = $(this).attr('data-value');
         if(value != ''){
             value =  jQuery.parseJSON(value);
         }
-            
+
         if(maxNum == 1){
             var ablum   = '';
         }else{
             var ablum   = new Array();
         }
        
-        $(this).parent().append(content);
+        $(_this).parent().append(content);
 
         //渲染初始图片
         for(var i=0;i<value.length;i++){
-            var content = '<li style="float:left;width:150px;height:100px;margin-left:10px;"><img src="'+value[i]+'" width="150" height="100" style="border:1px solid #ccc;"> <a style="float:right;margin-top:-100px;margin-right:2px;cursor: pointer;" class="btn-del-img"><i class="glyphicon glyphicon-remove"></i></a></li>';
-            $('.img-list ul').append(content);
+            var content = '<li style="float:left;width:150px;height:100px;margin-left:10px;margin-top:10px;"><img src="'+value[i]+'" width="150" height="100" style="border:1px solid #ccc;"> <a style="float:right;margin-top:-100px;margin-right:2px;cursor: pointer;" class="btn-del-img"><i class="glyphicon glyphicon-remove"></i></a></li>';
+            $(_this).parent().find('.img-list ul').append(content);
         }
 
 
         //上传
-        $(this).click(function(){
-            $('input[type=file]').wrap('<form>').closest('form').get(0).reset();
-            $('input[type=file]').trigger('click');
+        $(_this).click(function(){
+            $('input[id='+name+']').wrap('<form>').closest('form').get(0).reset();
+            $('input[id='+name+']').trigger('click');
         })
 
         //转换图片url
         $('#'+name).change(function(e){
-            var imgLength = $('.img-list').find('img').length;
+            var imgLength = $(_this).parent().find('.img-list ul img').length;
             var files = e.target.files || e.dataTransfer.files;
             if(maxNum  && maxNum < files.length + imgLength){
                  return layer.msg('最多只能传'+maxNum+'张图片');
@@ -255,41 +340,36 @@ $(function() {
                 var reader = new FileReader();
                 reader.readAsDataURL(files[i]); 
                 reader.onload = function(e){
-
                     $.post('/common/upload/up_base64_img',{data:e.target.result,path:path},function(result){
                         if(result.status){
-                            var content = '<li style="float:left;width:150px;height:100px;margin-left:10px;"><img src="'+result.data+'" width="150" height="100" style="border:1px solid #ccc;"> <a style="float:right;margin-top:-100px;margin-right:2px;cursor: pointer;" class="btn-del-img"><i class="glyphicon glyphicon-remove"></i></a></li>';
-                            $('.img-list ul').append(content);  
+                            var content = '<li style="float:left;width:150px;height:100px;margin-left:10px;margin-top:10px;"><img src="'+result.data+'" width="150" height="100" style="border:1px solid #ccc;"> <a style="float:right;margin-top:-100px;margin-right:2px;cursor: pointer;" class="btn-del-img"><i class="glyphicon glyphicon-remove"></i></a></li>';
+                            $(_this).parent().find('.img-list ul').append(content);  
                         }
 
                         //删除照片
                         $('.btn-del-img').click(function(){
+                            //console.log($(this).parent().html());
                             $(this).parent().remove();
                             bindValue();    
                         })
 
                         bindValue();    
                     },"json");
-
-
-                   
                 }
             }
-
         })
-
         //绑定初始值
         bindValue();
-
         //删除照片
         $('.btn-del-img').click(function(){
             $(this).parent().remove();
             bindValue();
         })
 
+        //绑定input
         function bindValue(){
             var data = new Array();
-            $('.img-list').find('img').each(function(){
+            $(_this).parent().find('.img-list').find('img').each(function(){
                 var path  = $(this).attr('src');
                 path  = path.substring(path.lastIndexOf("/")+1,path.length);
                 if(path != 'nd.jpg'){
@@ -297,11 +377,11 @@ $(function() {
                 }
                 
             })
+
             var content = '<input type="hidden" name="'+name+'" value="'+data.join(',')+'" />';
             $('input[name='+name+']').remove();
-            $('.btn-ablum').parent().append(content);
+            $(_this).parent().append(content);
         }
-
     })
 
     //渲染编辑器
@@ -316,32 +396,149 @@ $(function() {
 
     //渲染时间插件
     $('.data-time').each(function(){
-        var id      = $(this).attr('id');
-        var time    = $(this).val();                    //int
-        var min     = $(this).attr('data-min');         // string int
-        var max     = $(this).attr('data-max');         // string int
-        var format    = $(this).attr('data-format');
-        var type    = $(this).attr('data-type');        //year month date time datetime
+        var time       = $(this).val() * 1000;                    //int
+        var min        = $(this).attr('data-min');         // string int
+        var max        = $(this).attr('data-max');         // string int
+        var format     = $(this).attr('data-format');
+        var type       = $(this).attr('data-type');        //year month date time datetime
+        var isNull     = $(this).attr('data-isnull');        //year month date time datetime
 
 
         if(!format){ format  = 'yyyy-MM-dd'; }
         if(!min){ min = '1900-1-1';}
         if(!max){ max = '2099-12-31';}
         if(!type){ type = 'date';}
+        if(!time){ time = new Date();}
+        if(!isNull){
+            laydate.render({
+              elem: this, //指定元素
+              value:new Date(time),
+              format:format,
+              type:type,
+              min:min,
+              max:max,
+            });
+        }else{
+            laydate.render({
+              elem: this, //指定元素
+              format:format,
+              type:type,
+              min:min,
+              max:max,
+            });
+        }
+        
+    })
 
-        laydate.render({
-          elem: '#'+id, //指定元素
-          value:new Date(time),
-          format:format,
-          type:type,
-          min:min,
-          max:max,
-        });
+    //动态加载更多
+    $('.btn-loadmore').on('click',function(){
+        var url   = $(this).attr('config-href');
+        var page  = $(this).attr('config-page');
+        var elem  = $(this).attr('config-elem');
+        var text  = $(this).attr('config-text');
+        var _this = this;
+
+        if(!url){
+            return layer.msg('请绑定需要加载url');
+        }
+
+        if(!elem){
+            return layer.msg('请绑定需要渲染对象');
+        }
+
+        $.post(url,{pageNo:page},function(result){
+            if(result.length > 1){
+                $(_this).attr('config-page',parseInt(page)+1);
+                $(elem).append(result);
+            }else{
+                if(text){
+                    $(_this).html(text);
+                }
+            }
+        },'html')
     })
 
     //关闭弹窗
-    $('#btn-close').click(function(){
+    $('#btn-close').on('click',function(){
         var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
         parent.layer.close(index);
     });
+
+    //上传文件
+    $('.btn-files').each(function(){  
+        var _this    = this;
+        var name     = $(this).attr('data-name');
+        var path     = $(this).attr('data-path'); 
+        var content  = '<input type="file" style="display:none;" id="'+name+'"  multiple="multiple">';
+        var progress = '<div class="progress" style="margin:0px; margin-top:5px;"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 1%;">1%</div></div>';
+        var value   = $(this).attr('data-value');
+        if(value != ''){
+            value =  jQuery.parseJSON(value);
+        }
+       
+        $(_this).parent().append(content);
+
+        //上传
+        $(_this).click(function(){
+            $('input[id='+name+']').wrap('<form>').closest('form').get(0).reset();
+            $('input[id='+name+']').trigger('click');
+        })
+
+        $('#'+name).change(function(e){
+            //移除之前的上传进度条
+            $(_this).parent().find('.progress').remove();
+            //添加现在的进度条
+            $(_this).parent().append(progress);
+            //获取资源
+            var files = e.target.files || e.dataTransfer.files;
+            //资源赋值
+            var formData = new FormData();
+            formData.append('file', files[0]);
+            formData.append('path', path);
+           
+            //ajax异步上传  
+            $.ajax({  
+                url: '/common/upload/up_file',  
+                type: 'POST',  
+                data: formData,
+                dataType: 'json',  
+                contentType: false, //必须false才会自动加上正确的Content-Type  
+                processData: false,  //必须false才会避开jQuery对 formdata 的默认处理  
+                xhr: function(){ //获取ajaxSettings中的xhr对象，为它的upload属性绑定progress事件的处理函数  
+                    myXhr = $.ajaxSettings.xhr();  
+                    if(myXhr.upload){ //检查upload属性是否存在  
+                        //绑定progress事件的回调函数  
+                        myXhr.upload.addEventListener('progress',progressHandlingFunction, false);   
+                    }  
+                    return myXhr; //xhr对象返回给jQuery使用  
+                },  
+                success: function(result){
+                    if(!result.status){
+                        $(_this).parent().find('.progress').remove();
+                    }else{
+                        var inputContent = '<input type="text" value="'+result.data.name[0]+'" name="'+name+'" class="form-control pull-left" style="width: 30rem;margin-left: 10px;margin-right: 10px;">';  
+                        $(_this).after(inputContent);
+
+                    }
+
+                    return layer.msg(result.msg);               
+                },  
+            });  
+
+            //上传进度回调函数：  
+            function progressHandlingFunction(e) { 
+                if (e.lengthComputable) {  
+                    $('progress').attr({value : e.loaded, max : e.total}); //更新数据到进度条  
+                    var percent = e.loaded/e.total*100; 
+                    $('.progress-bar').css('width',percent+'%');
+                    $('.progress-bar').text(percent+'%'); 
+                }  
+            } 
+
+        });
+
+        
+  
+        
+    })
 })

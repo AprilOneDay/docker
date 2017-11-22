@@ -1,4 +1,7 @@
 <?php
+/**
+ * 收藏模块管理
+ */
 namespace app\tools\dao;
 
 class Collection

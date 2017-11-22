@@ -1,4 +1,7 @@
 <?php
+/**
+ * 短信模块
+ */
 namespace app\tools\dao;
 
 class Sms
@@ -106,7 +109,7 @@ class Sms
         }
 
         if (!$result) {
-            return array('status' => false, 'msg' => '发送失败,请联系管理员', 'result' => $result, 'url' => $url);
+            return array('status' => false, 'msg' => '发送失败,请重试或联系管理员', 'result' => $result, 'url' => $url);
         }
 
         $resultData = str_replace(PHP_EOL, '', $result);
@@ -205,9 +208,6 @@ class Sms
         $map['mobile'] = $mobile;
         $sms           = table('SmsVerify')->where($map)->field('id,created')->find();
         if ($sms) {
-            if (TIME - $sms['created'] <= 360) {
-                $this->appReturn(array('status' => false, 'msg' => '请等待' . (360 - (TIME - $sms['created'])) . '秒'));
-            }
 
             $data['code']    = $code;
             $data['created'] = TIME;

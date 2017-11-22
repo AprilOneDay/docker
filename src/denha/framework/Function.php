@@ -56,7 +56,13 @@ function post($name, $type = '', $default = '')
         }
 
     } else {
-        $data = isset($_POST[$name]) ? $_POST[$name] : '';
+        //数组信息通过 xx.xxx 来获取
+        if (stripos($name, '.') !== false) {
+            $name = explode('.', $name);
+            $data = isset($_POST[$name[0]][$name[1]]) ? $_POST[$name[0]][$name[1]] : '';
+        } else {
+            $data = isset($_POST[$name]) ? $_POST[$name] : '';
+        }
     }
 
     if ($name != 'all' && !is_array($data)) {
@@ -81,6 +87,15 @@ function post($name, $type = '', $default = '')
                 break;
             case 'img':
                 $data = stripos($data, 'default') !== false ? $default : $data;
+                if (stripos($data, 'http') !== false) {
+                    $data = pathinfo($data, PATHINFO_BASENAME);
+                }
+                break;
+            case 'time':
+                if (stripos($data, '-') !== false) {
+                    $data = strtotime($data);
+                }
+                # code...
                 break;
             default:
                 # code...
@@ -212,14 +227,29 @@ function dao($name, $app = '')
             return $_dao[$value];
         }
     }
-
-    die('Dao方法：' . $class . '不存在');
+    throw new Exception('Dao方法：' . $class . '不存在');
+    //die('Dao方法：' . $class . '不存在');
 }
 
 //包含文件
 function comprise($path)
 {
     include VIEW_PATH . $path . '.html';
+}
+
+//如果没有写入权限尝试修改权限 如果修改后还是失败 则跳过
+function isWritable($path)
+{
+    if (!is_writable($path)) {
+        chmod($path, 0755);
+        if (!is_writable($path)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    return true;
 }
 
 //获取配置常量
@@ -286,15 +316,16 @@ function getConfig($path = 'config', $name = '')
  * @param  boolean                  $isGet    [开启伪静态 true关闭 false开启]
  * @return [type]                             [description]
  */
-function url($location = '', $params = array(), $isGet = false)
+function url($location = '', $params = array(), $url = '', $isGet = false)
 {
-    $locationUrl = URL . '/' . MODULE;
+
+    $locationUrl = MODULE ? $url . '/' . MODULE : $url;
     if ($location === '') {
         $locationUrl .= '/' . CONTROLLER . '/' . ACTION;
     } elseif (stripos($location, '/') === false && $location != '') {
         $locationUrl .= '/' . CONTROLLER . '/' . $location;
     } elseif (stripos($location, '/') === 0) {
-        $locationUrl = URL . $location;
+        $locationUrl = $url . $location;
     } else {
         $locationUrl .= '/' . $location;
     }
@@ -309,7 +340,11 @@ function url($location = '', $params = array(), $isGet = false)
                     $param .= '&' . $key . '=' . $value;
                 }
             } else {
-                $param .= '/' . $key . '/' . $value;
+                if (key($params) === $key && stripos($locationUrl, '?') === false) {
+                    $param .= '/s/' . $key . '/' . $value;
+                } else {
+                    $param .= '/' . $key . '/' . $value;
+                }
             }
 
         }
@@ -357,7 +392,7 @@ function getCookie($name, $encode = false)
 function imgUrl($name, $path = '', $size = 0, $host = false)
 {
 
-    if (stripos($name, ',') !== false) {
+    if (stripos($name, ',') !== false && !is_array($name)) {
         $imgName = explode(',', $name);
     } else {
         $imgName = is_array($name) ? $name : (array) $name;
@@ -366,7 +401,7 @@ function imgUrl($name, $path = '', $size = 0, $host = false)
     foreach ($imgName as $key => $value) {
         if (!$value) {
             $url = '/ststic/default.png';
-            $url = !$host ? URL . $url : $host . $url;
+            $url = !$host ? $url : $host . $url;
         } else {
             if ($path) {
                 $url = '/uploadfile/' . $path . '/' . $value;
@@ -374,7 +409,7 @@ function imgUrl($name, $path = '', $size = 0, $host = false)
                 $url = '/uploadfile/' . $value;
             }
 
-            $url = !$host ? URL . $url : $host . $url;
+            $url = !$host ? $url : $host . $url;
 
             //这块有点影响网速 设置超时 后续会改为检测数据库
             /*$opts = array(
@@ -398,6 +433,18 @@ function imgUrl($name, $path = '', $size = 0, $host = false)
     return $data;
 }
 
+/**
+ * 根骨图片地址获取到图片名称
+ * @date   2017-10-27T08:53:23+0800
+ * @author ChenMingjiang
+ * @param  [type]                   $path [description]
+ * @return [type]                         [description]
+ */
+function fromImgaUrlGetImgaName($path)
+{
+    (!$path && stripos($path, 'nd.jpg') === false) ?: (string) ltrim($param['thumb'], substr($param['thumb'], 0, strripos($param['thumb'], '/') + 1));
+}
+
 function imgFetch($path)
 {
     (!$path && stripos($path, 'nd.jpg') === false) ?: (string) ltrim($param['thumb'], substr($param['thumb'], 0, strripos($param['thumb'], '/') + 1));
@@ -412,6 +459,15 @@ function session($name = '', $value = '')
         if (isset($_SESSION[$name])) {
             unset($_SESSION[$name]);
         }
+    }
+    //读取session
+    elseif ($value == '') {
+        $data = isset($_SESSION[$name]) ? $_SESSION[$name] : '';
+        if (is_object($data)) {
+            $data = (array) $data;
+        }
+        session_write_close(); //关闭session
+        return $data;
     }
     //保存
     else {
@@ -663,6 +719,97 @@ function getIP()
         $ip = $_SERVER['REMOTE_ADDR'];
     }
     return $ip;
+}
+
+//获取用户浏览器版本信息
+function getBrowser($agent = '')
+{
+    $agent ?: $agent = $_SERVER['HTTP_USER_AGENT'];
+    $browseragent    = ''; //浏览器
+    $browserversion  = ''; //浏览器的版本
+    if (ereg('MSIE ([0-9].[0-9]{1,2})', $agent, $version)) {
+        $browserversion = $version[1];
+        $browseragent   = "Internet Explorer";
+    } else if (ereg('Opera/([0-9]{1,2}.[0-9]{1,2})', $agent, $version)) {
+        $browserversion = $version[1];
+        $browseragent   = "Opera";
+    } else if (ereg('Firefox/([0-9.]{1,5})', $agent, $version)) {
+        $browserversion = $version[1];
+        $browseragent   = "Firefox";
+    } else if (ereg('Chrome/([0-9.]{1,3})', $agent, $version)) {
+        $browserversion = $version[1];
+        $browseragent   = "Chrome";
+    } else if (ereg('Safari/([0-9.]{1,3})', $agent, $version)) {
+        $browseragent   = "Safari";
+        $browserversion = "";
+    } else {
+        $browserversion = "";
+        $browseragent   = "Unknown";
+    }
+    return $browseragent . " " . $browserversion . ' ';
+}
+
+//获取用户操作系统
+function getSystem($agent = '')
+{
+    $agent ?: $agent = $_SERVER['HTTP_USER_AGENT'];
+    $browserplatform == '';
+    if (eregi('win', $agent) && strpos($agent, '95')) {
+        $browserplatform = "Windows 95";
+    } elseif (eregi('win 9x', $agent) && strpos($agent, '4.90')) {
+        $browserplatform = "Windows ME";
+    } elseif (eregi('win', $agent) && ereg('98', $agent)) {
+        $browserplatform = "Windows 98";
+    } elseif (eregi('win', $agent) && eregi('nt 5.0', $agent)) {
+        $browserplatform = "Windows 2000";
+    } elseif (eregi('win', $agent) && eregi('nt 5.1', $agent)) {
+        $browserplatform = "Windows XP";
+    } elseif (eregi('win', $agent) && eregi('nt 6.0', $agent)) {
+        $browserplatform = "Windows Vista";
+    } elseif (eregi('win', $agent) && eregi('nt 6.1', $agent)) {
+        $browserplatform = "Windows 7";
+    } elseif (eregi('win', $agent) && ereg('32', $agent)) {
+        $browserplatform = "Windows 32";
+    } elseif (eregi('win', $agent) && eregi('nt', $agent)) {
+        $browserplatform = "Windows NT";
+    } elseif (eregi('Mac OS', $agent)) {
+        $browserplatform = "Mac OS";
+    } elseif (eregi('linux', $agent)) {
+        $browserplatform = "Linux";
+    } elseif (eregi('unix', $agent)) {
+        $browserplatform = "Unix";
+    } elseif (eregi('sun', $agent) && eregi('os', $agent)) {
+        $browserplatform = "SunOS";
+    } elseif (eregi('ibm', $agent) && eregi('os', $agent)) {
+        $browserplatform = "IBM OS/2";
+    } elseif (eregi('Mac', $agent) && eregi('PC', $agent)) {
+        $browserplatform = "Macintosh";
+    } elseif (eregi('PowerPC', $agent)) {
+        $browserplatform = "PowerPC";
+    } elseif (eregi('AIX', $agent)) {
+        $browserplatform = "AIX";
+    } elseif (eregi('HPUX', $agent)) {
+        $browserplatform = "HPUX";
+    } elseif (eregi('NetBSD', $agent)) {
+        $browserplatform = "NetBSD";
+    } elseif (eregi('BSD', $agent)) {
+        $browserplatform = "BSD";
+    } elseif (ereg('OSF1', $agent)) {
+        $browserplatform = "OSF1";
+    } elseif (ereg('IRIX', $agent)) {
+        $browserplatform = "IRIX";
+    } elseif (eregi('FreeBSD', $agent)) {
+        $browserplatform = "FreeBSD";
+    } elseif (stripos($agent, 'iphone') || stripos($agent, 'ipad')) {
+        $browserplatform = 'ios';
+    } elseif (stripos($agent, 'android')) {
+        $browserplatform = 'android';
+    } elseif (stripos($agent, 'MicroMessenger')) {
+        $browserplatform = 'MicroMessenger';
+    }
+
+    if ($browserplatform == '') {$browserplatform = "Unknown";}
+    return $browserplatform . ' ';
 }
 
 //百度转腾讯坐标转换

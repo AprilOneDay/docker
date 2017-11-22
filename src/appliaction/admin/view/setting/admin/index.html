@@ -17,7 +17,7 @@
 							<h5>管理员列表</h5>
 						</div>
 						<div class="pull-right">
-							<a class="btn btn-primary btn-open"  data-href="{F:url('edit')}"  data-height="600px" data-width="356px">添加管理员</a>
+							<a class="btn btn-primary btn-open"  config-href="{F:url('edit')}"  config-height="600px" config-width="356px">添加管理员</a>
 						</div>
 					</div>
 					<div class="console-form">
@@ -43,7 +43,7 @@
 											<td>{$value['id']}</td>
 											<td>{$value['username']}</td>
 											<td>{$value['nickname']}</td>
-											<td>{$value['group']}</td>
+											<td>{$groupList[$value['group']]}</td>
 											<td>{$value['mobile']}</td>
 											<td>{F:date('Y-m-d H:i',$value['created'])}</td>
 											<td>{F:date('Y-m-d H:i',$value['login_time'])}</td>
@@ -55,7 +55,7 @@
 												{/if}
 											</td>
 											<td align='center'>
-												<a data-title="编辑管理员" class="btn-open"  data-href="{F:url('edit',array('id'=>$value['id']))}"  data-height="600px" data-width="356px">编辑</a>
+												<a config-title="编辑管理员" class="btn-open"  config-href="{F:url('edit',array('id'=>$value['id']))}"  config-height="600px" config-width="356px">编辑</a>
 												<span class="text-explode">|</span>
 												<a @click="del(list.id)">删除</a>
 											</td>

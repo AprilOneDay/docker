@@ -19,6 +19,7 @@ class User extends \app\admin\controller\Init
         $pageSize = 20;
         $offer    = max(($pageNo - 1), 0) * $pageSize;
 
+        $map['type']       = 1;
         $map['del_status'] = 0;
         $param['field']    = 'id';
 
@@ -40,6 +41,35 @@ class User extends \app\admin\controller\Init
         $this->assign('list', $list);
         $this->assign('pages', $page->loadConsole());
         $this->assign('param', $param);
+        $this->show();
+    }
+
+    public function editPost()
+    {
+        $id = get('id', 'intval', 0);
+        if (!$id) {
+            denha\Log::error('参数错误');
+        }
+
+        $data['status'] = post('status', 'intval', 0);
+
+        $result = table('User')->where('id', $id)->save($data);
+        if (!$result) {
+            $this->ajaxReturn(array('status' => false, 'msg' => '操作失败'));
+        }
+
+        $this->ajaxReturn(array('msg' => '操作成功'));
+    }
+
+    public function edit()
+    {
+        $id = get('id', 'intval', 0);
+
+        if ($id) {
+            $data = table('User')->where('id', $id)->find();
+        }
+
+        $this->assign('data', $data);
         $this->show();
     }
 }

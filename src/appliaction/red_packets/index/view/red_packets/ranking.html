@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>华侨城</title>
+	<meta name="keywords" content="华侨城"/>
+	<meta name="description" content="华侨城"/>
+
+	<meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+	<meta name="baidu-site-verification" content="IOphv8ZngJ" />
+	<link rel="stylesheet" href="{F:getConfig('config','vendor')}/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="{F:getConfig('config','vendor')}/bootstrap/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="{F:getConfig('config','vendor')}/pace/themes/blue/pace-theme-minimal.css" />
+	<link rel="stylesheet" href="{F:getConfig('config','ststic')}/red_packets/css/common.css" />
+	<link rel="stylesheet" href="{F:getConfig('config','ststic')}/red_packets/css/css.css" />
+	
+</head>
+<body>
+	<div class="ranking">
+		<div class="back"><a href="{F:url('index')}"><img src="{F:getConfig('config','ststic')}/red_packets/images/back.png"></a></div>
+		<div class="info">
+			您总共{$user['allIntegral']}积分，当前排名第{$user['ranking']}名！
+		</div>
+
+		<div class="list">
+			<table class="table">
+				<tr>
+					<th>排名</th>
+					<th>小伙伴</th>
+					<th>积分</th>
+				</tr>
+				<tbody id="boxscroll">
+					{loop $list $key $value}
+					<tr>
+						<td>{F:sprintf('%02d',$key+1)}</td>
+						<td>{$value['user']['nickname']}</td>
+						<td>{$value['integral']}</td>
+					</tr>
+					{/loop}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<script type="text/javascript" src="{F:getConfig('config','ststic')}/red_packets/js/jquery-1.12.3.min.js"></script>
+	<script type="text/javascript" src="{F:getConfig('config','ststic')}/red_packets/js/common.js"></script>
+	<script type="text/javascript" src="{F:getConfig('config','vendor')}/pace/pace.min.js"></script>
+	<script type="text/javascript" src="{F:getConfig('config','vendor')}/layer/layer.js"></script>
+	<script type="text/javascript" src="{F:getConfig('config','vendor')}/nicescroll/jquery.nicescroll.min.js"></script>
+	<script type="text/javascript">
+		$('.ranking').css('height',window.screen.height);
+		$('#boxscroll').niceScroll({
+		    cursorcolor: "#dcdee0", //滚动条的颜色   
+		    cursoropacitymax: 1, //滚动条的透明度，从0-1   
+		    touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备   
+		    cursorwidth: "3px", //滚动条的宽度   
+		    cursorborder: "0", // 游标边框css定义    
+		    cursorborderradius: "1px", //以像素为光标边界半径  圆角   
+		    autohidemode: true, //是否隐藏滚动条  true的时候默认不显示滚动条，当鼠标经过的时候显示滚动条   
+		    zindex: "auto", //给滚动条设置z-index值    
+		    railpadding: {
+		        top: 0,
+		        right: -4,
+		        left: 0,
+		        bottom: 0
+		    }, //滚动条的位置
+		});
+	</script>
+</body>
+</html>

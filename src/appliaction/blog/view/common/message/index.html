@@ -47,7 +47,7 @@
 									<i class="fa fa-clock-o"></i> 时间 {F:date('Y-m-d',$value['created'])}
 								</div>
 								<div class="pull-right">
-									<a href="javascript:;" class="btn-ajax-post" data-href="{F:url('report/add')}" data-goods_id="{$value['id']}">举报</a>
+									<a href="javascript:;" class="btn-ajax-post" config-href="{F:url('report/add')}" data-goods_id="{$value['id']}">举报</a>
 									<a href="javascript:;" data-to_id="{$value['id']}" data-parent_id="{$value['id']}" class="btn-show-reply">回复[{$value['total']}]</a>
 								</div>
 							</div>

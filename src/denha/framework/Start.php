@@ -16,7 +16,6 @@ class Start
      */
     public static function up($route = 'mca')
     {
-        //var_dump($client);die;
         //执行创建文件
         get('build') == false ?: self::bulid();
 
@@ -54,18 +53,16 @@ class Start
 
         $action = lcfirst(parsename(ACTION, 1));
 
+        //如果是POST提交 并且存在 function xxxPost方法 则自动调用该方法
+        !(IS_POST && method_exists($object, $action . 'Post')) ?: $action .= 'Post';
+
         if (!method_exists($object, $action)) {
             throw new Exception('Class : ' . Route::$class . ' NOT FIND [ ' . $action . ' ] ACTION');
         }
 
-        get('api') == false ?: self::apiDoc(Route::$class, $action);
-
+        //待开发 自动生成api接口文档
+        //get('api') == false ?: self::apiDoc(Route::$class, $action);
         $action = $object->$action();
-
-        if (self::$config['trace']) {
-            Trace::run();
-        }
-
     }
 
     /**

@@ -1,3 +1,16 @@
+#安装docker
+yum -y install docker 
+#docker开启启动
+systemctl  enable docker.service
+#安装docker-compose
+sudo curl -L https://github.com/docker/compose/releases/download/1.17.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+#启动docker
+systemctl start docker
+#进入文件路径
+#启动docker-compose
+docker-compose up
+
 docker 启动Mysql
 docker run -e MSYQL_ROOT_PASSWORD=admin --name mysql_bname -v /data/mysql/data:/var/lib/mysql -p 3306:3306 -d mysql:5.6
 
@@ -55,6 +68,7 @@ cd /
 cd var/www/html
 vi index.php
 
+#docker复制本地
 docker cp apache2:/root/etc//local/apache2/conf/httpd.conf ~/www/apache2/conf/httpd.conf
 docker cp apache2:/usr/local/apache2/logs/ ~/www/apache2/logs
 docker cp apache2:/usr/local/apache2/htdocs/ ~/www/src
@@ -63,7 +77,16 @@ docker cp php:/usr/local/php ~/www/php
 docker cp apache:/usr/local/apache2/ ~/www/
 docker cp mysql:/etc/mysql/ ~/www/
 docker cp mysql:/var/lib/mysql ~/www/data/
-docker cp nginx:/etc/nginx ~/docker/nginx/
+docker cp nginx:/etc/nginx ~/www/test/nginx/
+
+#从宿主机拷文件到docker里面
+docker cp ~/www/nginx/conf/mime.types nginx:/etc/nginx/mime.types
+
+#vim安装
+apt-get update
+apt-get install vim
+apt-get install vim-gnome
+#---end
 
 docker run -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7
 
@@ -90,7 +113,6 @@ rm -rf docker
 git clone https://github.com/AprilOneDay/docker.git
 cd docker
 docker-compose up
-docker-compose up -d
 docker exec -it php /bin/bash
 chmod -R 777 /var/www/html/data
 chmod -R 777 /var/www/html/public/uploadfile
@@ -103,16 +125,18 @@ git pull
 docker-compose up -d
 docker exec -it php /bin/bash
 chmod -R 777 /var/www/html/data
-chmod -R 777 /var/www/html/public/uploadfile
+chmod -R 777 /var/www/html/public_html/uploadfile
 exit
+
 # 修改mysql密码
 docker exec -it mysql /bin/bash
-mysql -usiyue -p1qq2ww3ee4rr
+mysql -uroot -p1qq2ww3ee4rr
 use  mysql;
-update  user  set  authentication_string  =  password('siyue1q2w3e4r') where  user='siyue';
-update  user  set  user  =  'siyue' where  user='root';
+update  user  set  authentication_string  =  password('cnwtoo_kdqc123') where  user='root';
+update  user  set  user  =  'kdqc' where  user='root';
 exit;exit;
 docker restart mysql;
+docker restart nginx;
 
 docker-compose up -d
 docker exec -it mysql /bin/bash

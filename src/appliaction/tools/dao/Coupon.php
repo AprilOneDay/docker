@@ -1,8 +1,18 @@
 <?php
+/**
+ * 抵扣券管理模块
+ */
 namespace app\tools\dao;
 
 class Coupon
 {
+    /**
+     * 增加抵扣卷模板
+     * @date   2017-10-25T16:29:23+0800
+     * @author ChenMingjiang
+     * @param  integer                  $uid   [description]
+     * @param  array                    $param [description]
+     */
     public function add($uid = 0, $param = array())
     {
         $data['uid']         = $uid;
@@ -78,15 +88,14 @@ class Coupon
         $coupon    = table('Coupon')->tableName();
 
         $field = "$coupon.title,$coupon.uid as shop_uid,$coupon.start_time,$coupon.end_time,$coupon.type,$coupon.full,$coupon.less,$coupon.discount,$coupon.category,$couponLog.use_time,$couponLog.uid,$couponLog.id,$couponLog.origin";
-        $list  = table('CouponLog')->join($coupon, "$coupon.id = $couponLog.coupon_id", 'left')->where($map)->limit($offer, $pageSize)->field($field)->order("$couponLog.use_time asc,$coupon.end_time desc")->find('array');
-
+        $list  = table('CouponLog')->join($coupon, "$coupon.id = $couponLog.coupon_id")->where($map)->limit($offer, $pageSize)->field($field)->order("$couponLog.id desc,$couponLog.use_time asc,$coupon.end_time desc")->find('array');
         foreach ($list as $key => $value) {
             $list[$key]['status'] = dao('Time')->hdStatus($value['start_time'], $value['end_time']);
             if ($value['use_time']) {
                 $list[$key]['status'] = 3;
             }
             $list[$key]['shop_name']   = dao('User')->getInfo($value['shop_uid'], 'nickname');
-            $list[$key]['origin_copy'] = $value['origin'] == 1 ? '积分兑换' : '消费赠送';
+            $list[$key]['origin_copy'] = $value['origin'] == 2 ? '积分兑换' : '消费赠送';
         }
 
         $list = $list ? $list : array();
@@ -104,7 +113,8 @@ class Coupon
         $field = "$coupon.title,$coupon.uid as shop_uid,$coupon.start_time,$coupon.end_time,$coupon.type,$coupon.full,$coupon.less,$coupon.discount,$coupon.category,$couponLog.use_time,$couponLog.uid,$couponLog.id";
         $data  = table('CouponLog')->join($coupon, "$coupon.id = $couponLog.coupon_id", 'left')->where($map)->field($field)->find();
 
-        $data['status'] = dao('Time')->hdStatus($value['start_time'], $value['end_time']);
+        //status 1未使用 2已过期 3已使用
+        $data['status'] = dao('Time')->hdStatus($data['start_time'], $data['end_time']);
         if ($data['use_time']) {
             $data['status'] = 3;
         }
@@ -148,13 +158,23 @@ class Coupon
         return $listTmp;
     }
 
-    public function send($uid, $id, $couponId)
+    /**
+     * 发送抵扣卷
+     * @date   2017-10-24T16:45:48+0800
+     * @author ChenMingjiang
+     * @param  [type]                   $uid      [获取抵扣卷id]
+     * @param  [type]                   $giftId   [礼包id]
+     * @param  [type]                   $couponId [抵扣卷模板id]
+     * @param  [type]                   $origin   [获得抵扣卷方式 1兑换 2赠送]
+     * @return [type]                             [description]
+     */
+    public function send($uid, $couponId, $origin = 2, $giftId = 0)
     {
-        if (!$uid || !$id || !$couponId) {
+        if (!$uid || !$couponId) {
             return array('status' => false, 'msg' => '参数错误');
         }
 
-        $coupon = table('Coupon')->where($map)->order('RAND()')->find();
+        $coupon = table('Coupon')->where('id', $couponId)->order('RAND()')->find();
         if (!$coupon) {
             return array('status' => false, 'msg' => '暂无相关抵扣卷');
         }
@@ -163,7 +183,7 @@ class Coupon
         $data['coupon_id'] = $couponId;
         $data['uid']       = $uid;
         $data['created']   = TIME;
-        $data['origin']    = 2;
+        $data['origin']    = $origin;
 
         table('CouponLog')->startTrans();
         $result = table('CouponLog')->add($data);
@@ -172,11 +192,52 @@ class Coupon
             return array('status' => false, 'msg' => '领取失败', 'sql' => table('CouponLog')->getSql());
         }
 
-        $result = table('Gift')->where('id', $id)->save('status', 1);
-        if (!$result) {
-            return array('status' => false, 'msg' => '状态修改失败');
+        //存在礼包id 标记为已领取
+        if ($giftId) {
+            $result = table('Gift')->where('id', $giftId)->save('status', 1);
+            if (!$result) {
+                return array('status' => false, 'msg' => '状态修改失败');
+            }
         }
 
         return array('status' => true, 'msg' => '领取成功');
+    }
+
+    /**
+     * 用户自己使用
+     * @date   2017-10-25T14:17:13+0800
+     * @author ChenMingjiang
+     * @return [type]                   [description]
+     */
+    public function userUse($id = 0, $uid = 0)
+    {
+
+        if (!$id || !$uid) {
+            return array('status' => false, 'msg' => '参数错误');
+        }
+
+        $data = $this->logDetail($id);
+
+        if (!$data) {
+            return array('status' => false, 'msg' => '抵扣券信息不存在');
+        }
+
+        if ($data['uid'] != $uid) {
+            return array('status' => false, 'msg' => '非法操作');
+        }
+
+        if ($data['status'] != 1) {
+            return array('status' => false, 'msg' => '抵扣券不可用');
+        }
+
+        $data             = array();
+        $data['use_time'] = TIME;
+
+        $result = table('CouponLog')->where('id', $id)->save($data);
+        if (!$result) {
+            return array('status' => false, 'msg' => '使用失败');
+        }
+
+        return array('status' => true, 'msg' => '使用成功');
     }
 }

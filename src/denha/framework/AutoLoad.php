@@ -21,10 +21,10 @@ class AutoLoad
     //查找文件
     private static function findFile($class)
     {
-
         $map       = strstr(trim($class), '\\');
         $namespace = substr($class, 0, strpos($class, '\\'));
         $class     = str_replace('\\', DS, ltrim($class, $namespace));
+
         if (isset(self::$namespaceAlias[$namespace])) {
             if (is_file(self::$namespaceAlias[$namespace] . $class . EXT)) {
                 return self::$namespaceAlias[$namespace] . $class . EXT;
@@ -37,12 +37,14 @@ class AutoLoad
     //  注册自动加载机制利用SPL自动加载器来注册loader
     public static function register($autoload = '')
     {
+
         // 注册系统自动加载
         spl_autoload_register($autoload ?: 'denha\\AutoLoad::autoload', true, true);
-        // 注册命名空间定义
+        // 注册命名空间定义方法
         self::addNamespace([
-            'denha' => FARM_PATH,
-            'app'   => APP_PATH,
+            'denha'  => FARM_PATH,
+            'app'    => APP_PATH,
+            'vendor' => APP_PATH,
         ]);
 
     }

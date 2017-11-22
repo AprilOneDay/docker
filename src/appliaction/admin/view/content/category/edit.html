@@ -56,7 +56,7 @@
 							<div class="col-sm-5">
 								<textarea class="form-control" rows="5" name="content">{??$data['name']}</textarea>
 							</div>
-							<label class="clo-sm-2">如：<br/>菜单名称<br/>关于我们<br/>XXXX</label>
+							<label class="clo-sm-2">如：<br/>菜单名称|别名<br/>关于我们|about us<br/>竖线以及后面的名称可留空</label>
 						</div>
 						<div class="form-group add1">
 							<label class="control-label col-sm-3">
@@ -64,7 +64,16 @@
 								<span>分类名称</span>
 							</label>
 							<div class="col-sm-8">
-								<input type="text" value="{??$data['name']}" name="name" placeholder="菜单名称" class="form-control">	
+								<input type="text" value="{??$data['name']}" name="name" placeholder="分类名称" class="form-control">	
+							</div>
+						</div>
+						<div class="form-group add1">
+							<label class="control-label col-sm-3">
+								<span class="text-danger">*</span>
+								<span>分类别名</span>
+							</label>
+							<div class="col-sm-8">
+								<input type="text" value="{??$data['bname']}" name="bname" placeholder="分类别名" class="form-control">	
 							</div>
 						</div>
 						<div class="form-group">

@@ -16,16 +16,30 @@ class Chart extends \app\admin\controller\Init
 
         $offer = max(($pageNo - 1), 0) * $pageSize;
 
-        if ($param['field'] && $param['keyword']) {
-            if ($param['field'] == 'content') {
-                $map['content'] = array('instr', $param['keyword']);
-            }
-        }
-
         if ($param['type'] === '0') {
             $map['_string'] = "( uid = 0 or to_uid = 0)";
         } elseif ($param['type'] === '1') {
             $map['_string'] = "( uid != 0 and to_uid != 0)";
+        }
+
+        if ($param['field'] && $param['keyword']) {
+            if ($param['field'] == 'content') {
+                $map['content'] = array('instr', $param['keyword']);
+            } elseif ($param['field'] == 'nickname') {
+                $uid = table('User')->where(array('nickname' => array('instr', $param['keyword'])))->field('id')->find('one');
+                if ($uid) {
+                    $map['uid'] = $uid;
+                }
+
+            }
+        }
+
+        //接受者筛选
+        if ($param['to_field'] && $param['to_keyword']) {
+            $toUid = table('User')->where(array('nickname' => array('instr', $param['to_keyword'])))->field('id')->find('one');
+            if ($toUid) {
+                $map['to_uid'] = $toUid;
+            }
         }
 
         $list  = table('ChatLog')->where($map)->limit($offer, $pageSize)->order('id desc')->find('array');

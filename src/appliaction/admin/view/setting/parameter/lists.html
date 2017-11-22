@@ -19,7 +19,7 @@
 								<h5>参数配置</h5>
 							</div>
 							<div class="pull-right">
-								<a class="btn btn-primary btn-open" data-href="{F:url('edit')}"  data-height="750px">添加配置</a>
+								<a class="btn btn-primary btn-open" config-href="{F:url('edit')}"  config-height="750px">添加配置</a>
 							</div>
 						</div>
 						<div class="console-form">
@@ -50,7 +50,7 @@
 										{/if}			
 									</div>
 									<label class="control-label col-sm-2 pull-left">
-										<a href="javascript:;" class="btn-open" data-href="{F:url('edit',array('id'=>$value['id']))}"  data-height="750px">编辑</a> |
+										<a href="javascript:;" class="btn-open" config-href="{F:url('edit',array('id'=>$value['id']))}"  config-height="750px">编辑</a> |
 										<a href="javascript:;">删除</a>
 									</label>
 								</div>
@@ -58,9 +58,9 @@
 							</fieldset>
 						</div>
 					</div>
-					<div class="modal-footer pull-left">
-						<button type="button" class="btn btn-primary btn-comply">保存</button>
-						<button type="button" class="btn btn-default" id="btn-close">取消</button>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary btn-comply pull-left">保存</button>
+						<button type="button" class="btn btn-default pull-left" id="btn-close">取消</button>
 					</div>
 							</div>
 						</div>

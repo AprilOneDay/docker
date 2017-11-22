@@ -1,4 +1,7 @@
 <?php
+/**
+ * 分类模块管理
+ */
 namespace app\tools\dao;
 
 class Category
@@ -17,7 +20,7 @@ class Category
 
         if (!isset($_category[$id])) {
             $map['parentid'] = $id;
-            $list            = table('Category')->where($map)->field('id,name')->find('array');
+            $list            = table('Category')->where($map)->field('id,name')->order('name asc,sort asc')->find('array');
 
             $_category[$id] = null;
 
@@ -39,15 +42,9 @@ class Category
      */
     public function getName($id)
     {
-        if (stripos(',', $id) !== false) {
-            $map['id'] = array('in', $id);
-        } elseif (is_array($id)) {
-            $map['id'] = array('in', $id);
-        } else {
-            $map['id'] = $id;
-        }
 
-        $name = table('Category')->where($map)->field('name')->find('one', true);
+        $map['id'] = array('in', $id);
+        $name      = table('Category')->where($map)->field('name')->find('one', true);
         if (count($name) == 1) {
             return (string) $name[0];
         }

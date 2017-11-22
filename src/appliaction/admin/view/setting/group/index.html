@@ -17,7 +17,7 @@
 							<h5>管理分组列表</h5>
 						</div>
 						<div class="pull-right">
-							<a class="btn btn-primary btn-open"  data-href="{F:url('edit')}"  data-height="300px" data-width="356px">添加管理组</a>
+							<a class="btn btn-primary btn-open"  config-href="{F:url('edit')}"  config-height="300px" config-width="356px">添加管理组</a>
 						</div>
 					</div>
 					<div class="console-form">
@@ -28,7 +28,8 @@
 										<tr>
 											<th >ID</th>
 											<th>管理组</th>
-											<th>状态</th>
+											<th style="width: 100px; text-align: center;">权限等级</th>
+											<th style="width: 80px; text-align: center;">状态</th>
 											<th style="text-align:center; width: 160px;">编辑/操作</th>
 										</tr>
 									</thead>
@@ -37,7 +38,8 @@
 									 	<tr v-for="list in data.list">
 											<td>{$value['id']}</td>
 											<td>{$value['name']}</td>
-											<td>
+											<td align="center">{$value['level']} 级</td>
+											<td align="center">
 												{if $value['status']}
 													<p style="color:green">{$statusCopy[$value['status']]}</p>
 												{else}
@@ -45,9 +47,9 @@
 												{/if}
 											</td>
 											<td align='center'>
-												<a data-title="编辑管理员" class="btn-open"  data-href="{F:url('edit',array('id'=>$value['id']))}"  data-height="300px" data-width="356px">编辑</a>
+												<a config-title="编辑管理员" class="btn-open"  config-href="{F:url('edit',array('id'=>$value['id']))}"  config-height="300px" config-width="356px">编辑</a>
 												<span class="text-explode">|</span>
-												<a data-title="权限管理" class="btn-open"  data-href="{F:url('power/lists',array('id'=>$value['id']))}"  data-height="80%" data-width="80%">权限</a>
+												<a config-title="权限管理" class="btn-open"  config-href="{F:url('power/lists',array('id'=>$value['id']))}"  config-height="80%" config-width="80%">权限</a>
 											</td>
 										</tr>
 										{/loop}

@@ -45,7 +45,10 @@ class Category extends \app\admin\controller\Init
             $data['is_show']  = post('is_show', 'intval', 1);
 
             $data['name']  = post('name', 'text', '');
+            $data['bname'] = post('bname', 'text', '');
             $data['thumb'] = post('thumb', 'img', '');
+
+            $data['bname'] ?: $data['bname'] = $data['name'];
 
             if ($add == 1 && !$data['name']) {
                 $this->ajaxReturn(array('status' => false, 'msg' => '请输入分类名称'));
@@ -60,11 +63,16 @@ class Category extends \app\admin\controller\Init
                 if ($add == 2 && $content) {
                     $content = explode(PHP_EOL, $content);
                     foreach ($content as $key => $value) {
-                        if ($value) {
-                            $data['name'] = trim($value);
-                            $result       = table('Category')->add($data);
+                        if (stripos($value, '|') !== false) {
+                            $value         = explode('|', $value);
+                            $data['name']  = $value[0];
+                            $data['bname'] = $value[1];
+                        } else {
+                            $data['name'] = $data['bname'] = $value;
                         }
+                        $result = table('Category')->add($data);
                     }
+
                 } else {
                     $result = table('Category')->add($data);
                 }
@@ -103,7 +111,7 @@ class Category extends \app\admin\controller\Init
 
         $result = table('Category')->field('id,parentid,name')->find('array');
         if ($result) {
-            $tree = new \app\console\tools\util\MenuTree();
+            $tree = new \app\admin\tools\util\MenuTree();
             $tree->setConfig('id', 'parentid');
             $list = $tree->getLevelTreeArray($result);
             if (isset($list) && $list) {

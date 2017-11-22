@@ -7,7 +7,7 @@ namespace denha;
 class Trace
 {
     private static $tracePageTabs  = ['BASE' => '基本', 'FILE' => '文件', 'ERR|NOTIC' => '错误', 'SQL' => 'SQL', 'DEBUG' => '调试'];
-    private static $traceErrorType = [0 => '', 1 => 'ERROR', 2 => 'WARNING', 4 => 'PARSE', 8 => 'NOTICE', 100 => 'SQL'];
+    private static $traceErrorType = [0 => '', 1 => 'FATAL ERROR', 2 => 'WARNING', 4 => 'PARSE', 8 => 'NOTICE', 100 => 'SQL'];
 
     public static $errorInfo = array(); //错误信息
     public static $sqlInfo   = array(); //sql执行信息
@@ -51,14 +51,14 @@ class Trace
     //捕获Notice错误信息
     public static function catchNotice($level, $message, $file, $line)
     {
-        //var_dump($level);die;
-        if ($level && $level != 2048) {
-            $info = self::$traceErrorType[$level] . ' : ' . $message . ' from ' . $file . ' in ' . $line;
+        if ($level) {
+            $type = isset(self::$traceErrorType[$level]) ? self::$traceErrorType[$level] : 'unknown';
+            $info = $type . ' : ' . $message . ' from ' . $file . ' on ' . $line;
             self::addErrorInfo($info);
         }
     }
 
-    //捕获Error错误信息 并显示
+    //捕获致命错误信息 并显示
     public static function catchError()
     {
         $e = error_get_last();
@@ -66,24 +66,51 @@ class Trace
             if (TRACE) {
                 return include FARM_PATH . DS . 'trace' . DS . 'error.html';
             } else {
+                if (getConfig('config', 'send_debug_mail')) {
+                    $title   = $_SERVER['HTTP_HOST'] . ' 有一个致命错误';
+                    $content = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . PHP_EOL . 'FATAL ERROR : ' . $e['message'] . ' from ' . $e['file'] . ' on line ' . $e['line'];
+                    dao('Mail')->send(getConfig('config', 'send_mail'), $title, $content);
+                }
                 header("http/1.1 404 not found");
                 header("status: 404 not found");
                 return include FARM_PATH . DS . 'trace' . DS . '404.html';
             }
-
         }
     }
 
-    //捕获未处理的自定义错误信息
+    //捕获未处理的自定义错误信息 并显示
     public static function catchApp($error)
     {
+        $e['type']    = 0;
+        $e['message'] = $error->getMessage();
+        $e['file']    = $error->getFile();
+        $e['line']    = $error->getLine();
+        $e['trace']   = '';
+
+        if ($error->getTrace()) {
+            foreach ($error->getTrace() as $key => $value) {
+                $e['trace'] .= ($key + 1) . ' File :' . $value['file'];
+                if ($value['class']) {
+                    $e['trace'] .= ' From Class :' . $value['class'];
+                }
+
+                if ($value['class']) {
+                    $e['trace'] .= ' In Function :' . $value['function'];
+                }
+
+                $e['trace'] .= ' on line ' . $value['line'] . PHP_EOL;
+            }
+        }
+
         if (TRACE) {
-            $e['type']    = 0;
-            $e['message'] = $error->getMessage();
-            $e['file']    = $error->getFile();
-            $e['line']    = $error->getLine();
             return include FARM_PATH . DS . 'trace' . DS . 'error.html';
         } else {
+            //暂时不需提醒
+            /*if (getConfig('config', 'send_debug_mail')) {
+            $title   = $_SERVER['HTTP_HOST'] . ' 有一个致命错误';
+            $content = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . PHP_EOL . $e['message'] . ' from ' . $e['file'] . ' on line ' . $e['line'] . PHP_EOL . $e['trace'];
+            dao('Mail')->send(getConfig('config', 'send_mail'), $title, $content);
+            }*/
             header("http/1.1 404 not found");
             header("status: 404 not found");
             return include FARM_PATH . DS . 'trace' . DS . '404.html';

@@ -96,10 +96,10 @@
 											<td>{F:date('Y-m-d H:i',$value['created'])}</td>
 											<td>{$other['originCopy'][$value['origin']]}</td>
 											<td align='center'>
-												<a data-href="{F:url('detail',array('order_sn'=>$value['order_sn']))}"  data-height="70%" data-width="70%"  data-title="订单详情"  class="btn-open">详情</a>
+												<a config-href="{F:url('detail',array('order_sn'=>$value['order_sn']))}"  config-height="70%" config-width="70%"  config-title="订单详情"  class="btn-open">详情</a>
 												{if $value['seller']['type'] == 2 && $value['status'] == 1 && $value['order_status'] >= 3 &&  $value['is_percentage'] == 0 && $value['type'] == 1}
 												<span> | </span>
-												<a data-href="{F:url('clearing_commission')}" class="btn-ajax-post" data-order_sn="{$value['order_sn']}" data-tips="卖家：{$value['seller']['nickname']}<br/>订单编号:{$value['order_sn']}<br/>确定该订单:收取佣金{$value['acount']*$commission/100}？<br/>确定后不可撤销">收取佣金</a>
+												<a config-href="{F:url('clearing_commission')}" class="btn-ajax-post" data-order_sn="{$value['order_sn']}" config-tips="卖家：{$value['seller']['nickname']}<br/>订单编号:{$value['order_sn']}<br/>确定该订单:收取佣金{$value['acount']*$commission/100}？<br/>确定后不可撤销">收取佣金</a>
 												{/if}
 											</td>
 										</tr>

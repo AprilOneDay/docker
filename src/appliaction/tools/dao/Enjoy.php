@@ -45,6 +45,45 @@ class Enjoy
     }
 
     /**
+     * 判断用户是否喜欢
+     * @date   2017-11-17T14:32:00+0800
+     * @author ChenMingjiang
+     * @param  [type]                   $uid   [description]
+     * @param  [type]                   $type  [description]
+     * @param  [type]                   $value [description]
+     * @return boolean                         [description]
+     */
+    public function isLike($uid = 0, $type = 0, $value = 0)
+    {
+        if (!$uid || !$type || !$value) {
+            return false;
+        }
+
+        $map['type']  = $type;
+        $map['uid']   = $uid;
+        $map['value'] = $value;
+
+        return (bool) table('Enjoy')->where($map)->field('id')->find();
+    }
+
+    /**
+     * 获取喜欢总数
+     * @date   2017-11-17T14:31:47+0800
+     * @author ChenMingjiang
+     * @param  [type]                   $type  [description]
+     * @param  [type]                   $value [description]
+     * @return [type]                          [description]
+     */
+    public function count($type, $value)
+    {
+        $map['type']  = $type;
+        $map['value'] = $value;
+
+        $count = (int) table('Enjoy')->where($map)->count();
+        return (int) $count;
+    }
+
+    /**
      * 取消喜欢
      * @date   2017-09-25T15:43:54+0800
      * @author ChenMingjiang

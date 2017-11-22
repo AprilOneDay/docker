@@ -42,6 +42,11 @@ class Template
 
     public function saveFile()
     {
+        //如果没有写入权限尝试修改权限 如果修改后还是失败 则跳过
+        if (!isWritable(DATA_PATH)) {
+            return false;
+        }
+
         $cacheMd5       = md5($this->viewPath);
         $this->loadPath = DATA_PATH . $cacheMd5 . '.php';
         $file           = fopen($this->loadPath, 'w');
@@ -67,7 +72,7 @@ class Template
                 }
                 //相对路径
                 else {
-                    $path = APP_PATH . APP . DS . 'view' . DS . MODULE . DS . CONTROLLER . DS . $value . '.html';
+                    $path = APP_PATH . APP . DS . 'view' . DS . MODULE . DS . $value . '.html';
                 }
 
                 if (is_file($path)) {

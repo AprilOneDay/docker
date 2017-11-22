@@ -1,6 +1,6 @@
 <?php
 /**
- * 百度抓取
+ * 日志记录模块
  */
 namespace app\tools\dao;
 

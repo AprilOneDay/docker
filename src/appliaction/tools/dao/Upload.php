@@ -1,4 +1,7 @@
 <?php
+/**
+ * 上传模块
+ */
 namespace app\tools\dao;
 
 /**
@@ -19,7 +22,7 @@ class Upload
             $type = $match[2];
             if (!file_exists($path)) {
                 //检查是否有该文件夹，如果没有就创建，并给予最高权限
-                mkdir($path, 0700, true);
+                mkdir($path, 0755, true);
             }
             $fileName = md5(uniqid('', true)) . ".{$type}";
             $newFile  = $path . $fileName;
@@ -31,7 +34,7 @@ class Upload
             }
         }
 
-        return array('status' => false, 'msg' => '参数错误');
+        return array('status' => false, 'msg' => '请上传正确的图片');
     }
 
     /**
@@ -60,7 +63,7 @@ class Upload
         $type ?: $type = 'jpg,png,gif,jpeg';
 
         $path = PUBLIC_PATH . 'uploadfile' . DS . $path . DS;
-        is_dir($path) ? '' : mkdir($path, 0077, true);
+        is_dir($path) ? '' : mkdir($path, 0755, true);
 
         foreach ($files as $key => $value) {
             if ($value['size'] >= $size * 1024 * 1024) {
@@ -68,7 +71,10 @@ class Upload
             }
 
             $ext = ltrim($value['type'], substr($value['type'], 0, stripos($value['type'], '/') + 1));
-            //$ext = end(pathinfo($value['tmp_name']));
+            if ($ext == 'et-stream') {
+                $ext = pathinfo($value['name']);
+                $ext = $ext['extension'];
+            }
 
             if (stripos($type, $ext) === false) {
                 return array('status' => false, 'msg' => $ext . '文件禁止上传');

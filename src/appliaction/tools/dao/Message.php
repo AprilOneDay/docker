@@ -22,7 +22,7 @@ class Message
             return false;
         }
 
-        $data['content'] = $this->getContent($flag, $param);
+        $data['content'] = $this->analysisTemplate($flag, $param);
         if (!$data['content']) {
             return false;
         }
@@ -34,7 +34,7 @@ class Message
         $data['jump_app'] = $jumpData ? json_encode($jumpData) : '';
 
         //如果存在相同推送内容信息则直接更新时间
-        $map['type']       = $type;
+        $map['type']       = array('!=', 1);
         $map['uid']        = $uid;
         $map['to_uid']     = $toUid;
         $map['content']    = $data['content'];
@@ -48,6 +48,35 @@ class Message
             $reslut = table('UserMessage')->add($data);
         }
 
+        //发送推送信息
+        dao('JPush')->sendByRegId($toUid, $data['content'], $data['content'], $jumpData);
+
+    }
+
+    /**
+     * 替换动态参数
+     * @date   2017-10-16T12:49:51+0800
+     * @author ChenMingjiang
+     * @param  [type]                   $content [description]
+     * @param  [type]                   $param   [description]
+     * @return [type]                            [description]
+     */
+    private function analysisTemplate($flag, $param)
+    {
+        $content = $this->getContent($flag);
+        if (!$content) {
+            return '';
+        }
+
+        if (!$param) {
+            return $content;
+        }
+
+        foreach ($param as $key => $value) {
+            $content = str_replace('{' . $key . '}', $value, $content);
+        }
+
+        return $content;
     }
 
     /**
@@ -58,7 +87,7 @@ class Message
      * @param  array                    $data [description]
      * @return [type]                         [description]
      */
-    public function getContent($flag, $data = array())
+    public function getContent($flag, $param)
     {
         $content = '';
         switch ($flag) {
@@ -66,10 +95,28 @@ class Message
                 $content = '恭喜你成为会员,祝你购车愉快';
                 break;
             case 'comment':
-                $content = '会员' . $data['nickname'] . ',给你留言了,请尽快查看哦！';
+                $content = '会员{nickname},给你留言了,请尽快查看哦！';
                 break;
             case 'newComment':
                 $content = '你有新的消息';
+                break;
+            case 'user_appointment_success':
+                $content = '商家：[{nickname}]已确认你的预约，准时到达，商家电话：{mobile}';
+                break;
+            case 'user_appointment_fail':
+                $content = '商家：[{nickname}]拒绝了你的预约';
+                break;
+            case 'user_appointment_edit_time':
+                $content = '商家：[{nickname}]修改了预约时间,请及时确认';
+                break;
+            case 'user_get_coupon':
+                $content = '你有一张代金券可以免费领取,确认订单即可领取';
+                break;
+            case 'seller_appointment_success':
+                $content = '你有新的预约订单';
+                break;
+            case 'seller_appointment_refuse_time':
+                $content = '会员{nickname}，拒绝了你设置的预约时间';
                 break;
             default:
                 # code...
@@ -78,4 +125,5 @@ class Message
 
         return $content;
     }
+
 }

@@ -7013,9 +7013,8 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
             }
 
             //编辑器不能为空内容
-
             if (domUtils.isEmptyNode(me.body)) {
-                me.body.innerHTML = '<p>' + (browser.ie ? '' : '<br/>') + '</p>';
+                me.body.innerHTML = '' + (browser.ie ? '' : '<br/>') + '';
             }
             //如果要求focus, 就把光标定位到内容开始
             if (options.focus) {
@@ -7351,7 +7350,7 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
                 return  node.tagName == 'DIV' && node.getAttribute('cdata_tag');
             }
             //给文本或者inline节点套p标签
-            if (me.options.enterTag == 'p') {
+            /*if (me.options.enterTag == 'p') {
 
                 var child = this.body.firstChild, tmpNode;
                 if (!child || child.nodeType == 1 &&
@@ -7381,7 +7380,7 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
                         child = child.nextSibling;
                     }
                 }
-            }
+            }*/
             me.fireEvent('aftersetcontent');
             me.fireEvent('contentchange');
 
@@ -9964,10 +9963,10 @@ var LocalStorage = UE.LocalStorage = (function () {
 ///import core
 ///plugin 编辑器默认的过滤转换机制
 
-UE.plugins['defaultfilter'] = function () {
+/*UE.plugins['defaultfilter'] = function () {
     var me = this;
     me.setOpt({
-        'allowDivTransToP':true,
+        'allowDivTransToP':false,
         'disabledTableInTable':true
     });
     //默认的过滤处理
@@ -10189,7 +10188,7 @@ UE.plugins['defaultfilter'] = function () {
 
     });
 };
-
+*/
 
 // plugins/inserthtml.js
 /**
@@ -10470,8 +10469,8 @@ UE.commands['inserthtml'] = {
 UE.plugins['autotypeset'] = function(){
 
     this.setOpt({'autotypeset': {
-        mergeEmptyline: true,           //合并空行
-        removeClass: true,              //去掉冗余的class
+        mergeEmptyline: false,           //合并空行
+        removeClass: false,              //去掉冗余的class
         removeEmptyline: false,         //去掉空行
         textAlign:"left",               //段落的排版方式，可以是 left,right,center,justify 去掉这个属性表示不执行排版
         imageBlockLine: 'center',       //图片的浮动方式，独占一行剧中,左右浮动，默认: center,left,right,none 去掉这个属性表示不执行排版
@@ -10482,7 +10481,7 @@ UE.plugins['autotypeset'] = function(){
         //可以去掉的标签
         removeTagNames: utils.extend({div:1},dtd.$removeEmpty),
         indent: false,                  // 行首缩进
-        indentValue : '2em',            //行首缩进的大小
+        indentValue : '0em',            //行首缩进的大小
         bdc2sb: false,
         tobdc: false
     }});
@@ -12932,16 +12931,16 @@ UE.plugins['horizontal'] = function(){
                     var tmp;
                     if(tmp = start.childNodes[range.startOffset - 1]){
                         if(tmp.nodeType == 1 && tmp.tagName == 'HR'){
-                            if(me.options.enterTag == 'p'){
+                            /*if(me.options.enterTag == 'p'){
                                 tmp = me.document.createElement('p');
                                 range.insertNode(tmp);
                                 range.setStart(tmp,0).setCursor();
 
-                            }else{
+                            }else{*/
                                 tmp = me.document.createElement('br');
                                 range.insertNode(tmp);
                                 range.setStartBefore(tmp).setCursor();
-                            }
+                            //}
                         }
                     }
 

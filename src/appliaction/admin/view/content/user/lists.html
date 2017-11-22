@@ -49,14 +49,14 @@
 											<td>{$value['mobile']}</td>
 											<td>{F:date('Y-m-d',$value['created'])}</td>
 											<td>
-												{if $value['status']}
-													<a href="javascript:;" style="color: green">启用</a>
-												{else}
-													<a href="javascript:;" style="color: red">禁用</a>
+												{if $value['status'] == 1}
+													<b style="color: green">启用</b>
+												{elseif $value['status'] == 2}
+													<b style="color: red">禁用</b>
 												{/if}
 											</td>
 											<td align='center'>
-												<a data-href="{F:url('edit',array('parentid'=>$value['id']))}"  data-height="500px" data-width="356px"  data-title="用户详情"  class="btn-open">详情</a>
+												<a config-href="{F:url('edit',array('id'=>$value['id']))}"  config-height="500px" config-width="356px"  config-title="用户详情"  config-tooltip="{$value['username']}" class="btn-open">详情</a>
 											</td>
 										</tr>
 										{/loop}

@@ -11,12 +11,12 @@
   		<div class="border-top">
 			<div class="border-top-left fl">
 				<ul>
-					<li><a class="logo">Denha</a></li>
+					<li><a class="logo">{F:getVar('web_name','admin.sys')}</a></li>
 				</ul>
 			</div>
 			<div class="border-top-right fr">
 				<ul>
-					<li><a href="javascript:;">{$this->consoleName}</a></li>
+					<li><a href="{F:url('/setting/personal/edit')}" target="iframe0">{$this->consoleName}</a></li>
 					<li><a href="{F:url('login/login_out')}">退出</a></li>
 				</ul>
 			</div>
@@ -75,7 +75,7 @@
 			</div>
 			
 			<div class="content-main fl" >
-				<iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="/setting/menus/index" frameborder="false" scrolling="auto" style="border:none" width="100%" height="auto" allowtransparency="true"></iframe>
+				<iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="/content/category/lists" frameborder="false" scrolling="auto" style="border:none" width="100%" height="auto" allowtransparency="true"></iframe>
 			</div>
 		</div>
 	{include /public/global_js}

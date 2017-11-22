@@ -14,7 +14,7 @@ class Group extends \app\admin\controller\Init
      */
     public function index()
     {
-        $list = table('ConsoleGroup')->find('array');
+        $list = table('ConsoleGroup')->order('level asc')->find('array');
 
         $this->assign('list', $list);
         $this->assign('statusCopy', array(0 => '关闭', 1 => '开启'));
@@ -33,6 +33,7 @@ class Group extends \app\admin\controller\Init
         if (IS_POST) {
 
             $data['name']   = post('name', 'text', '');
+            $data['level']  = post('level', 'intval', 0);
             $data['status'] = post('status', 'text', '');
 
             if (!$data['name']) {
@@ -66,10 +67,11 @@ class Group extends \app\admin\controller\Init
 
         } else {
             if ($id) {
-                $rs = table('ConsoleGroup')->field('id,name,status')->where(array('id' => $id))->find();
+                $rs = table('ConsoleGroup')->field('id,name,status,level')->where(array('id' => $id))->find();
                 $this->assign('data', $rs);
             } else {
                 $rs['status'] = 1;
+                $rs['level']  = 1;
                 $this->assign('data', $rs);
             }
 

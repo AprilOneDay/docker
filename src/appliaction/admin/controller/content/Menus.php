@@ -26,7 +26,7 @@ class Menus extends \app\admin\controller\Init
             $tree->setConfig('id', 'parentid', '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
             $list = $tree->getLevelTreeArray($result);
             foreach ($list as $key => $value) {
-                $list[$key]['is_show'] = $value['is_show'] ? '√' : '×';
+                $list[$key]['is_show_copy'] = $value['is_show'] ? '√' : '×';
             }
 
             $data = array(
@@ -54,9 +54,10 @@ class Menus extends \app\admin\controller\Init
             $add     = post('add', 'intval', 1);
             $content = post('content', 'text', '');
 
-            $data['name']  = post('name', 'text', '');
-            $data['bname'] = post('bname', 'text', '');
-            $data['url']   = post('url', 'text', '');
+            $data['name']     = post('name', 'text', '');
+            $data['bname']    = post('bname', 'text', '');
+            $data['url']      = post('url', 'text', '');
+            $data['jump_url'] = post('jump_url', 'text', '');
 
             $data['model_id'] = post('model_id', 'intval', 0);
             $data['parentid'] = post('parentid', 'intval', 0);
@@ -66,7 +67,7 @@ class Menus extends \app\admin\controller\Init
             $data['bname'] ?: $data['bname'] = $data['name'];
 
             $data['module']     = strtolower(post('module', 'text', 'content'));
-            $data['controller'] = strtolower(post('controller', 'text', 'article'));
+            $data['controller'] = strtolower(post('controller', 'text', 'article_list'));
             $data['action']     = strtolower(post('action', 'text', 'lists'));
 
             $data['url'] = (string) $data['url'] ?: '/' . $data['module'] . '/' . $data['controller'] . '/' . $data['action'] . $data['parameter'];
@@ -76,20 +77,30 @@ class Menus extends \app\admin\controller\Init
             }
 
             if ($id) {
+                if ($data['jump_url'] && stripos($data['jump_url'], '/cid/') === false) {
+                    $data['jump_url'] .= '/s/cid/' . $id;
+                }
+
+                $column = table('Column')->where('id', $id)->field('parentid,id')->find();
+                if (!$column) {
+                    $this->ajaxReturn(array('status' => false, 'msg' => '栏目不存在'));
+                }
+
                 if ($data['parentid'] == $id) {
                     $this->ajaxReturn(array('status' => false, 'msg' => '上级栏目选择错误,不可选择自己为上级栏目'));
                 }
 
                 $result = table('Column')->where(array('id' => $id))->save($data);
-                if ($result) {
-                    $this->ajaxReturn(array('status' => true, 'msg' => '修改成功'));
-                } else {
+                if (!$result) {
                     $this->ajaxReturn(array('status' => false, 'msg' => '修改失败'));
                 }
+
+                $this->ajaxReturn(array('status' => true, 'msg' => '修改成功'));
+
             } else {
 
                 $isArticle = table('Article')->where('column_id', $data['parentid'])->field('id')->find('one');
-                if ($isArticle) {
+                if ($isArticle && $data['parentid'] != 0) {
                     $this->ajaxReturn(array('status' => false, 'msg' => '清除父级栏目文章后，再添加栏目'));
                 }
 

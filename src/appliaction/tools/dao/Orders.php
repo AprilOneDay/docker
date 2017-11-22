@@ -1,10 +1,14 @@
 <?php
+/**
+ * 订单模块
+ */
 namespace app\tools\dao;
 
 class Orders
 {
     public function add($uid, $type, $ordersInfo = array(), $farePrice = 0, $couponPrice = 0, $message = '', $origin = 0, $version = 0)
     {
+
         if (!$uid || !$type) {
             return array('status' => false, 'msg' => '参数错误');
         }
@@ -15,8 +19,8 @@ class Orders
 
         //sellserUid => 商品lists
         foreach ($ordersInfo as $key => $value) {
-            $orderSn = $this->createOrderSn();
 
+            $orderSn                 = $this->createOrderSn();
             $data['uid']             = $uid;
             $data['type']            = $type;
             $data['status']          = 0;
@@ -33,15 +37,16 @@ class Orders
 
             table('Orders')->startTrans();
             $orderId = table('Orders')->add($data);
-
             if (!$orderId) {
                 table('Orders')->rollback();
                 return array('status' => false, 'msg' => '保存订单失败');
             }
 
             foreach ($value['list'] as $k => $v) {
+
                 $goodsInfo             = $v;
                 $goodsInfo['order_sn'] = $orderSn;
+
                 switch ($type) {
                     //增加汽车信息记录
                     case '1':
@@ -61,10 +66,16 @@ class Orders
                     default:
                         # code...
                         break;
-                }
 
+                }
             }
 
+        }
+
+        foreach ($ordersInfo as $key => $value) {
+            //发送站内信
+            $messageType = $type == 1 ? 2 : 3;
+            dao('Message')->send($key, 'seller_appointment_success', array(), array('type' => $messageType, 'order_sn' => $orderSn));
         }
 
         table('Orders')->commit();
@@ -81,7 +92,9 @@ class Orders
      */
     public function detail($map)
     {
+
         $orders = table('Orders')->where($map)->field('uid,seller_uid,type,order_status,status,acount,message,seller_message,order_sn,created')->find();
+
         if (!$orders) {
             return array('status' => false, 'msg' => '订单信息不存在');
         }
@@ -100,11 +113,11 @@ class Orders
 
         $data['orders'] = $orders;
         $data['goods']  = $ordersData;
-
         $data['user']   = dao('User')->getInfo($orders['uid'], 'nickname,avatar,mobile');
         $data['seller'] = dao('User')->getInfo($orders['seller_uid'], 'nickname,avatar,mobile');
 
         return array('status' => true, 'data' => $data);
+
     }
 
     /**
@@ -113,6 +126,7 @@ class Orders
     public function createOrderSn()
     {
         return date('y') . sprintf('%03d', date('z')) . substr(time(), -5) . substr(microtime(), 2, 5) . sprintf('%03d', rand(0, 999));
+
     }
 
     /**
@@ -123,6 +137,7 @@ class Orders
      */
     public function getAddAttachedInfo($type = 1, $id = array(), $other = array())
     {
+
         switch ($type) {
             case '1':
                 return $this->getAddAttachedInfo_1($id, $other);
@@ -134,11 +149,14 @@ class Orders
                 # code...
                 break;
         }
+
     }
 
     //获取汽车信息
+
     public function getAddAttachedInfo_1($id, $other)
     {
+
         is_array($id) ?: $id = (array) $id;
         if (count($other) == count($other, 1)) {
             $otherTmp[0] = $other;
@@ -150,7 +168,6 @@ class Orders
         $other = array_values($otherTmp);
 
         //卖家id => 商品详情数组
-
         foreach ($id as $key => $value) {
             $goods = table('GoodsCar')->where(array('id' => $value))->field('id,uid,type,title,thumb,price,produce_time,mileage')->find();
 
@@ -161,16 +178,21 @@ class Orders
             $dataInfo[$goods['uid']]['list'][$key]['ascription']           = $goods['type'];
             $dataInfo[$goods['uid']]['list'][$key]['produce_time']         = $goods['produce_time'];
             $dataInfo[$goods['uid']]['list'][$key]['mileage']              = $goods['mileage'];
-            $dataInfo[$goods['uid']]['list'][$key]['price_original']       = $dataInfo[$goods['uid']]['list'][$key]['price']       = $goods['price'];
+
+            $dataInfo[$goods['uid']]['list'][$key]['price_original'] = $dataInfo[$goods['uid']]['list'][$key]['price'] = $goods['price'];
+
             $dataInfo[$goods['uid']]['data']['acount_original'] += floatval($goods['price']);
         }
 
         return $dataInfo;
+
     }
 
     //获取汽车服务信息
+
     public function getAddAttachedInfo_2($id, $other)
     {
+
         is_array($id) ?: $id = (array) $id;
         if (count($other) == count($other, 1)) {
             $otherTmp[0] = $other;
@@ -182,32 +204,35 @@ class Orders
         $other = array_values($otherTmp);
 
         //卖家id => 商品详情数组
-        foreach ($id as $key => $value) {
-            $goods = table('GoodsService')->where(array('id' => $value))->field('id,uid,type,title,thumb,price')->find();
 
+        foreach ($id as $key => $value) {
+            $goods                                                         = table('GoodsService')->where(array('id' => $value))->field('id,uid,type,title,thumb,price')->find();
             !isset($other[$key]) ?: $dataInfo[$goods['uid']]['list'][$key] = $other[$key];
+            $dataInfo[$goods['uid']]['list'][$key]['type']                 = $goods['type'];
             $dataInfo[$goods['uid']]['list'][$key]['goods_id']             = $goods['id'];
             $dataInfo[$goods['uid']]['list'][$key]['title']                = $goods['title'];
             $dataInfo[$goods['uid']]['list'][$key]['thumb']                = $goods['thumb'];
             $dataInfo[$goods['uid']]['list'][$key]['price_original']       = $dataInfo[$goods['uid']]['list'][$key]['price']       = $goods['price'];
-
             $dataInfo[$goods['uid']]['data']['acount_original'] += floatval($goods['price']);
 
-            $myCar = table('MyCar')->where(array('id' => $other[$key]['my_car_id'], 'del_status' => 0))->find();
-            //echo table('MyCar')->getSql();
-            if (!$myCar) {
-                return false;
-            }
+            if ($other[$key]['my_car_id']) {
+                $myCar = table('MyCar')->where(array('id' => $other[$key]['my_car_id'], 'del_status' => 0))->find();
+                if (!$myCar) {
+                    return false;
+                }
 
-            $dataInfo[$goods['uid']]['list'][$key]['brand']        = dao('Category')->getName($myCar['brand']);
-            $dataInfo[$goods['uid']]['list'][$key]['style']        = $myCar['style'];
-            $dataInfo[$goods['uid']]['list'][$key]['produce_time'] = $myCar['produce_time'];
-            $dataInfo[$goods['uid']]['list'][$key]['buy_time']     = $myCar['buy_time'];
-            $dataInfo[$goods['uid']]['list'][$key]['mileage']      = $myCar['mileage'];
+                $dataInfo[$goods['uid']]['list'][$key]['brand']        = dao('Category')->getName($myCar['brand']);
+                $dataInfo[$goods['uid']]['list'][$key]['style']        = $myCar['style'];
+                $dataInfo[$goods['uid']]['list'][$key]['produce_time'] = $myCar['produce_time'];
+                $dataInfo[$goods['uid']]['list'][$key]['buy_time']     = $myCar['buy_time'];
+                $dataInfo[$goods['uid']]['list'][$key]['mileage']      = $myCar['mileage'];
+            }
 
             unset($dataInfo[$goods['uid']]['list'][$key]['my_car_id']);
         }
 
         return $dataInfo;
+
     }
+
 }

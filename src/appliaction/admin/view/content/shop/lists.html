@@ -57,14 +57,14 @@
 											<td>{$value['user']['mobile']}</td>
 											<td>{$other['isIdeCopy'][$value['is_ide']]}</td>
 											<td>
-												{if $value['status']}
-													<a href="javascript:;" style="color: green">营业中</a>
-												{else}
-													<a href="javascript:;" style="color: red">关闭中</a>
+												{if $value['status'] == 1}
+													<b style="color: green">营业中</b>
+												{elseif $value['status'] == 2}
+													<b style="color: red">已打烊</b>
 												{/if}
 											</td>
 											<td align='center'>
-												<a data-href="{F:url('edit',array('id'=>$value['id']))}"  data-width="90%"  data-title="店铺详情"  class="btn-open">详情</a>
+												<a config-href="{F:url('edit',array('id'=>$value['id']))}"  config-width="90%"  config-title="店铺详情"  class="btn-open">详情</a>
 											</td>
 										</tr>
 										{/loop}

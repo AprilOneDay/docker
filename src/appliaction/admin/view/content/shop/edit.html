@@ -37,11 +37,7 @@
 								<span for="myDate">店铺评分</span>
 							</label>
 							<div class="col-sm-8">
-								<select data-selected="{??$data['tag']}" name="tag" class="form-control w160">
-									{loop $other['tag'] $key $value}
-	                               		<option value="{$key}">{$value}</option>
-	                            	{/loop}
-								</select>
+								<input type="text" value="{??$data['credit_level']['value']}"  disabled class="form-control">	
 							</div>
 						</div>
 						<div class="form-group">
@@ -64,6 +60,19 @@
 								{loop $data['ide_ablum'] $key $value}
 									<img src="{$value}" width="150" height="100" style="margin-left: 10px;">
 								{/loop}
+							</div>
+						</div>
+						<div class="form-group radio" data-radio="{??$data['is_recommend']}">
+							<label class="control-label col-sm-3">店铺状态</label>
+							<div class="radio-inline">
+								<label>
+									<input type="radio" name="is_recommend"  value="1"> 推荐
+								</label>
+							</div>
+							<div class="radio-inline">
+								<label >
+									<input type="radio" name="is_recommend"  value="0"> 未推荐
+								</label>
 							</div>
 						</div>
 						<div class="form-group radio" data-radio="{??$data['is_ide']}">

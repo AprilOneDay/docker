@@ -27,7 +27,7 @@ class Pages
         }
         $this->allPage = (int) ceil($this->total / $this->pageSize);
         if ($this->pageNo > $this->allPage) {
-            die(message('请选择正确的页码', 'javascript:history.go(-1)'));
+            Log::error('请选择正确的页码');
         }
 
         $startPage = 1;

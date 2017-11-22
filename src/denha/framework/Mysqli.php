@@ -28,6 +28,7 @@ class Mysqli
     public $total;
     public $excID; //插入ID
     public $_sql; //最后执行sql
+    public $chilidSql; //子查询
 
     private function __construct($dbConfig = '')
     {
@@ -48,8 +49,8 @@ class Mysqli
         }
 
         $this->link = $this->openMysql();
-        mysqli_query($this->link, 'set names utf8');
-        mysqli_query($this->link, 'SET sql_mode =\'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION\'');
+        mysqli_query($this->link, 'set names utf8mb4');
+        mysqli_query($this->link, 'SET sql_mode =\'ANSI,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION\'');
     }
 
     //单例实例化 避免重复New暂用资源
@@ -105,12 +106,14 @@ class Mysqli
             $this->tablepre != '' ? $this->table = $this->tablepre . $this->table : '';
         }
 
-        $this->where = '';
-        $this->field = '*';
-        $this->limit = '';
-        $this->group = '';
-        $this->order = '';
-        $this->join  = '';
+        $this->where     = '';
+        $this->field     = '*';
+        $this->limit     = '';
+        $this->group     = '';
+        $this->order     = '';
+        $this->join      = '';
+        $this->chilidSql = false;
+        $this->having    = '';
         return $this;
     }
 
@@ -155,6 +158,11 @@ class Mysqli
                 if (is_array($where)) {
                     $newWhere = '';
                     foreach ($where as $k => $v) {
+
+                        if (strripos($k, '`') === false && $k != '_string') {
+                            $k = strripos($k, '.') !== false ? str_replace('.', '.`', $k) . '`' : '`' . $k . '`';
+                        }
+
                         if (is_array($v)) {
                             if ($v[0] == '>' || $v[0] == '<' || $v[0] == '>=' || $v[0] == '<=' || $v[0] == '!=' || $v[0] == 'like') {
                                 $newWhere .= $k . '  ' . $v[0] . ' \'' . $v[1] . '\' AND ';
@@ -166,7 +174,7 @@ class Mysqli
                                     $newWhere .= $k . '  ' . $v[0] . ' (' . $v[1] . ') AND ';
                                 }
                             } elseif ($v[0] == 'instr') {
-                                $newWhere .= $v[0] . '(`' . $k . '`,\'' . $v[1] . '\') AND ';
+                                $newWhere .= $v[0] . '(' . $k . ',\'' . $v[1] . '\') AND ';
                             } elseif ($v[0] == 'between') {
                                 $newWhere .= $k . '  ' . $v[0] . ' \'' . $v[1] . '\' AND \'' . $v[2] . '\' AND ';
                             } elseif ($v[0] == 'or') {
@@ -200,7 +208,7 @@ class Mysqli
     public function join($table, $where = '', $float = 'left')
     {
         if ($table == $this->table) {
-            denha\Log::error('关联表名字一样');
+            denha\Log::error('表与关联表名字相同');
         }
 
         $where ?: $where = $this->table . '.id =' . $table . '.id';
@@ -235,6 +243,11 @@ class Mysqli
      */
     public function field($field = '*')
     {
+        if (!$field) {
+            $this->field = '*';
+            return $this;
+        }
+
         $newField = '';
         $field    = is_array($field) ? $field : explode(',', $field);
         foreach ($field as $k => $v) {
@@ -317,21 +330,18 @@ class Mysqli
      */
     public function getField()
     {
-        $this->where = 'table_name = ' . "'" . $this->table . "'";
+        $this->where = ' where table_name = ' . "'" . $this->table . "'";
         $this->field = 'column_name';
         $this->table = 'information_schema.columns';
-        $this->limit = '99';
 
-        $sql    = "select " . $this->field . " from " . $this->table;
-        $result = $this->query($sql);
+        $this->_sql = "select " . $this->field . " from " . $this->table . $this->where;
+        $result     = $this->query();
 
-        $data = mysqli_fetch_array($result, MYSQLI_ASSOC);
-
-        foreach ($data as $key => $value) {
-            $varField[$key] = $value;
+        while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+            $data[] = $row['column_name'];
         }
 
-        return $varField;
+        return $data;
     }
 
     /**
@@ -340,12 +350,15 @@ class Mysqli
      * @author ChenMingjiang
      * @return [type]                   [description]
      */
-    public function count($field = 't')
+    public function count($field = '')
     {
 
         $this->limit(1);
-
-        $sql = 'SELECT  COUNT(*) AS ' . $field . '  FROM ' . $this->table;
+        if ($field) {
+            $sql = 'SELECT   ' . $field . '  FROM ' . $this->table;
+        } else {
+            $sql = 'SELECT  COUNT(*) AS  t  FROM ' . $this->table;
+        }
 
         if ($this->join) {
             $sql .= $this->join;
@@ -358,20 +371,67 @@ class Mysqli
             $sql .= $this->group;
         }
 
-        $sql .= $this->limit;
+        $result      = $this->query($sql);
+        $this->total = mysqli_num_rows($result);
 
-        $result = $this->query($sql);
-        $data   = mysqli_fetch_array($result, MYSQLI_NUM);
+        if ($field) {
+            return (int) $this->total;
+        }
+
+        $data = mysqli_fetch_array($result, MYSQLI_NUM);
 
         return $data[0];
     }
 
     /**
-     * 查询单条/多条信息
-     * @date   2017-03-19T16:18:52+0800
+     * 子查询 如果开启 则直接返回sql
+     * @date   2017-11-22T00:38:42+0800
      * @author ChenMingjiang
-     * @param  string                   $value [array:查询数据 one:查询单条单个字段内容]
+     * @param  boolean                  $value [description]
      * @return [type]                          [description]
+     */
+    public function childSql($value = false)
+    {
+        $this->chilidSql = $value;
+
+        return $this;
+    }
+
+    /**
+     * 子查询table
+     * @date   2017-11-22T00:45:38+0800
+     * @author ChenMingjiang
+     * @param  [type]                   $table [description]
+     * @return [type]                          [description]
+     */
+    public function childSqlQuery($table)
+    {
+        $this->table = '(' . $table . ') as child';
+
+        return $this;
+    }
+
+    /**
+     * hvaing
+     * @date   2017-11-22T01:18:55+0800
+     * @author ChenMingjiang
+     * @param  [type]                   $field [description]
+     * @return [type]                          [description]
+     */
+    public function having($field)
+    {
+        $this->having = ' HAVING ' . $field;
+        return $this;
+    }
+
+    /**
+     * 查询单条/多条信息
+     * @date   2017-11-22T00:35:19+0800
+     * @author ChenMingjiang
+     * @param  string                   $value   [array:查询数据 one:查询单条单个字段内容]
+     * @param  boolean                  $isArray [单字段 数组模式]
+     * @param  boolean                  $chilid  [子查询]
+     * @return [type]                            [description]
      */
     public function find($value = '', $isArray = false)
     {
@@ -393,10 +453,19 @@ class Mysqli
         empty($this->join) ?: $this->_sql .= $this->join;
         empty($this->where) ?: $this->_sql .= $this->where;
         empty($this->group) ?: $this->_sql .= $this->group;
+        empty($this->having) ?: $this->_sql .= $this->having;
         empty($this->order) ?: $this->_sql .= $this->order;
         empty($this->limit) ?: $this->_sql .= $this->limit;
 
+        //开启子查询直接返回sql
+        if ($this->chilidSql) {
+            return $this->_sql;
+        }
+
         $result = $this->query();
+        if (!$result) {
+            throw new Exception('查询sql错误:' . $this->_sql);
+        }
 
         //获取记录条数
         $this->total = mysqli_num_rows($result);
@@ -417,12 +486,12 @@ class Mysqli
         }
         //单字段数组模式
         elseif ($value == 'one' && $isArray) {
-            while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+            while ($row = mysqli_fetch_array($result, MYSQLI_NUM)) {
                 $this->field = str_replace('`', '', $this->field);
                 if (count($row) > 1) {
                     throw new Exception('sql模块中one只能查询单个字段内容请设置field函数');
                 }
-                $data[] = $row[$this->field];
+                $data[] = $row[0];
             }
 
             if (empty($data)) {
@@ -468,24 +537,21 @@ class Mysqli
     public function add($data = '')
     {
         $newField = '';
-        if (is_array($data)) {
-            $i = 0;
-            foreach ($data as $k => $v) {
-                if ($i == 0) {
-                    $newField .= '`' . $k . '` = \'' . $v . '\'';
-                } else {
-                    $newField .= ",`" . $k . '`=\'' . $v . '\'';
-                }
-                $i++;
-            }
-        } else {
-            $newField = $field;
+        $data     = is_array($data) ? $data : explode(',', $data);
+
+        foreach ($data as $k => $v) {
+            $v = str_replace('\'', '\\\'', $v);
+            $newField .= '`' . $k . '` = \'' . $v . '\',';
         }
+
+        $newField    = substr($newField, 0, -1);
         $this->field = $newField;
 
-        $sql    = 'INSERT INTO `' . $this->table . '` SET ' . $this->field;
-        $result = $this->query($sql);
-        $result = mysqli_insert_id($this->link);
+        $this->_sql = 'INSERT INTO `' . $this->table . '` SET ' . $this->field;
+        $result     = $this->query();
+        if ($result) {
+            $result = max(mysqli_insert_id($this->link), 1);
+        }
         return $result;
     }
 
@@ -517,21 +583,21 @@ class Mysqli
 
         $newField = '';
         if ($value !== '' && !is_array($data)) {
-            $newField = '`' . $data . '`=\'' . $value . '\'';
+            $newField = '`' . $data . '`=\'' . str_replace('\'', '\\\'', $value) . '\'';
         } else {
             if (is_array($data)) {
                 foreach ($data as $k => $v) {
                     if (is_array($v)) {
                         $v[0] = strtolower($v[0]);
                         if ($v[0] == 'add') {
-                            $newField .= '`' . $k . '`  = `' . $k . '` + ' . $v[1] . ',';
+                            $newField .= '`' . $k . '`  = `' . $k . '` + ' . str_replace('\'', '\\\'', $v[1]) . ',';
                         } elseif ($v[0] == 'less') {
-                            $newField .= '`' . $k . '`  = `' . $k . '` - ' . $v[1] . ',';
+                            $newField .= '`' . $k . '`  = `' . $k . '` - ' . str_replace('\'', '\\\'', $v[1]) . ',';
                         } elseif ($v[0] == 'concat') {
-                            $newField .= '`' . $k . '`  = CONCAT(`' . $k . '`,\'\',\'' . $v[1] . '\'),';
+                            $newField .= '`' . $k . '`  = CONCAT(`' . $k . '`,\'\',\'' . str_replace('\'', '\\\'', $v[1]) . '\'),';
                         }
                     } else {
-                        $newField .= '`' . $k . '`=\'' . $v . '\',';
+                        $newField .= '`' . $k . '`=\'' . str_replace('\'', '\\\'', $v) . '\',';
                     }
                 }
                 $newField = substr($newField, 0, -1);
@@ -560,6 +626,7 @@ class Mysqli
         if (!$this->where) {
             return false;
         }
+
         $this->_sql = 'DELETE FROM ' . $this->table . $this->where;
         $result     = $this->query();
         return $result;
@@ -606,15 +673,30 @@ class Mysqli
         $this->sqlInfo['time'] = $_endTime - $_beginTime; //获取执行时间
         $this->sqlInfo['sql']  = $this->_sql;
 
-        Trace::addSqlInfo($this->sqlInfo);
-        $this->sqlLog(); //记录sql
-
         if ($result) {
+            Trace::addSqlInfo($this->sqlInfo); //存入调试信息中
+            $this->addSqlLog(); //存入文件中
             return $result;
         } else {
-            throw new Exception('SQL ERROR :' . $this->_sql);
+            Trace::addErrorInfo('[SQL ERROR] ' . $this->_sql);
+            $this->addErrorSqlLog(); //存入文件
+            return false;
         }
 
+    }
+
+    public function addErrorSqlLog()
+    {
+        //如果没有写入权限尝试修改权限 如果修改后还是失败 则跳过
+        if (isWritable(DATA_PATH . 'sql_log')) {
+            $path = DATA_PATH . 'sql_log' . DS . $this->dbConfig['db_name'] . DS;
+            is_dir($path) ? '' : mkdir($path, 0755, true);
+            $path .= 'error_' . date('Y_m_d_H', TIME) . '.text';
+            $content = $this->sqlInfo['sql'] . ';' . PHP_EOL . '来源：' . getSystem() . getBrowser() . PHP_EOL . '--------------' . PHP_EOL;
+            $file    = fopen($path, 'a');
+            fwrite($file, $content . PHP_EOL);
+            fclose($file);
+        }
     }
 
     /**
@@ -623,22 +705,27 @@ class Mysqli
      * @author ChenMingjiang
      * @return [type]                   [description]
      */
-    public function sqlLog()
+    public function addSqlLog()
     {
+        //如果没有写入权限尝试修改权限 如果修改后还是失败 则跳过
+        if (!isWritable(DATA_PATH . 'sql_log')) {
+            return false;
+        }
+
         if ($this->sqlInfo && $this->dbConfig['db_sqlLog']) {
             $path = DATA_PATH . 'sql_log' . DS . $this->dbConfig['db_name'] . DS;
-            is_dir($path) ? '' : mkdir($path, 0077, true);
+            is_dir($path) ? '' : mkdir($path, 0755, true);
             if (stripos($this->sqlInfo['sql'], 'select') === 0) {
-                $path .= date('Y_m_d_H', TIME) . '_select.text';
+                $path .= 'select_' . date('Y_m_d_H', TIME) . '.text';
                 $content = $this->sqlInfo['sql'] . '|' . $this->sqlInfo['time'];
             } elseif (stripos($this->sqlInfo['sql'], 'update') === 0) {
-                $path .= date('Y_m_d_H', TIME) . '_update.text';
+                $path .= 'update_' . date('Y_m_d_H', TIME) . '.text';
                 $content = $this->sqlInfo['sql'] . ';';
             } elseif (stripos($this->sqlInfo['sql'], 'delete') === 0) {
-                $path .= date('Y_m_d_H', TIME) . '_delete.text';
+                $path .= 'delete_' . date('Y_m_d_H', TIME) . '.text';
                 $content = $this->sqlInfo['sql'] . ';';
             } elseif (stripos($this->sqlInfo['sql'], 'insert') === 0) {
-                $path .= date('Y_m_d_H', TIME) . '_add.text';
+                $path .= 'add_' . date('Y_m_d_H', TIME) . '.text';
                 $content = $this->sqlInfo['sql'] . ';';
             }
 

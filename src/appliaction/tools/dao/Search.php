@@ -1,4 +1,7 @@
 <?php
+/**
+ * 搜索模块
+ */
 namespace app\tools\dao;
 
 class Search

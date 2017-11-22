@@ -42,6 +42,7 @@
 										<tr>
 											<th style="width:75px;">ID</th>
 											<th>标题</th>
+											<th style="width:100px;">价格</th>
 											<th style="width:100px;">类型</th>
 											<th style="width:150px;">卖家</th>
 											<th style="width:120px;">发布时间</th>
@@ -54,18 +55,19 @@
 									 	<tr v-for="list in list">
 											<td>{$value['id']}</td>
 											<td>{$value['title']}</td>
+											<td>{$value['price']}</td>
 											<td>{$other['typeCopy'][$value['type']]}</td>
 											<td>{$value['nickname']}</td>
 											<td>{F:date('Y-m-d H:i',$value['created'])}</td>
 											<td>
-												{if $value['status']}
-													<a href="javascript:;" style="color: green">上架</a>
-												{else}
-													<a href="javascript:;" style="color: red">下架</a>
+												{if $value['status'] == 1}
+													<b  style="color: green">上架</b>
+												{elseif $value['status'] == 2}
+													<b  style="color: red">下架</b>
 												{/if}
 											</td>
 											<td align='center'>
-												<a data-href="{F:url('edit',array('id'=>$value['id']))}"  data-height="500px" data-width="356px"  data-title="修改规则"  class="btn-open">编辑</a>
+												<a config-href="{F:url('edit',array('id'=>$value['id']))}"  config-height="70%" config-width="70%"  config-title="商品详情"  class="btn-open" config-tooltip="{$value['title']}">编辑</a>
 											</td>
 										</tr>
 										{/loop}

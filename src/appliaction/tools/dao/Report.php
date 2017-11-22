@@ -1,8 +1,19 @@
 <?php
+/**
+ * 举报模块管理
+ */
 namespace app\tools\dao;
 
 class Report
 {
+    /**
+     * 增加举报
+     * @date   2017-10-25T16:32:11+0800
+     * @author ChenMingjiang
+     * @param  integer                  $uid     [description]
+     * @param  integer                  $type    [description]
+     * @param  integer                  $goodsId [description]
+     */
     public function add($uid = 0, $type = 0, $goodsId = 0)
     {
         if (!$type || !$goodsId) {

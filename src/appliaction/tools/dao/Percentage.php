@@ -6,6 +6,13 @@ namespace app\tools\dao;
 
 class Percentage
 {
+    /**
+     * 根据订单编号获取订单佣金
+     * @date   2017-10-25T16:31:42+0800
+     * @author ChenMingjiang
+     * @param  [type]                   $orderSn [description]
+     * @return [type]                            [description]
+     */
     public function getOnePercentage($orderSn)
     {
         if (!$orderSn) {

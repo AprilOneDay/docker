@@ -17,7 +17,7 @@
 							<h5>推荐列表</h5>
 						</div>
 						<div class="pull-right">
-							<a class="btn btn-primary btn-open"  data-href="{F:url('add_recommend')}"  data-height="500px" data-width="356px">添加推荐</a>
+							<a class="btn btn-primary btn-open"  config-href="{F:url('add_recommend')}"  config-height="500px" config-width="356px">添加推荐</a>
 						</div>
 					</div>
 
@@ -51,13 +51,13 @@
 											<td>{$value['value']}</td>
 											<td align='center'>
 												{if $value['status']}
-													<a data-href="{F:url('change_status')}" data-type="SearchRemmond" data-id="{$value['id']}" data-status="0" style="color: green" class="btn-ajax-post">启用</a>
+													<a config-href="{F:url('change_status')}" data-type="SearchRemmond" data-id="{$value['id']}" data-status="0" style="color: green" class="btn-ajax-post">启用</a>
 												{else}
-													<a data-href="{F:url('change_status')}" data-type="SearchRemmond" data-id="{$value['id']}" data-status="1" style="color: red" class="btn-ajax-post">禁用</a>
+													<a config-href="{F:url('change_status')}" data-type="SearchRemmond" data-id="{$value['id']}" data-status="1" style="color: red" class="btn-ajax-post">禁用</a>
 												{/if}
 											</td>
 											<td align='center'>
-												<a data-href="{F:url('del')}" data-table="SearchRemmond" data-type="{$value['type']}" data-value="{$value['value']}"  class="btn-ajax-post">删除</a>
+												<a config-href="{F:url('del')}" data-table="SearchRemmond" data-type="{$value['type']}" data-value="{$value['value']}"  class="btn-ajax-post">删除</a>
 											</td>
 										</tr>
 										{/loop}

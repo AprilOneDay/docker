@@ -50,22 +50,22 @@
 											<td align='center'>{$value['hot']}</td>
 											<td align='center'>
 												{if $value['is_recommend']}
-													<a href="javascript:;" style="color: green">推荐</a>
+													<b style="color: green">推荐</b>
 												{else}
-													<a href="javascript:;" style="color: red">未推荐</a>
+													<b style="color: red">未推荐</b>
 												{/if}
 											</td>
 											<td align='center'>
 												{if $value['is_disable']}
-													<a href="javascript:;" style="color: red">禁用</a>
+													<b style="color: red">禁用</b>
 												{else}
-													<a href="javascript:;" style="color: green">未禁用</a>
+													<b style="color: green">未禁用</b>
 												{/if}
 											</td>
 											<td align='center'>
 												{if !$value['is_disable'] && !$value['is_recommend']}
-												<a data-href="{F:url('add_recommend')}"  data-type="{$value['type']}" data-value="{$value['value']}"  class="btn-ajax-post">设为推荐</a>
-												<a data-href="{F:url('add_disable')}"  data-type="{$value['type']}" data-value="{$value['value']}"  class="btn-ajax-post">设为禁用</a>
+												<a config-href="{F:url('add_recommend')}"  data-type="{$value['type']}" data-value="{$value['value']}"  class="btn-ajax-post">设为推荐</a>
+												<a config-href="{F:url('add_disable')}"  data-type="{$value['type']}" data-value="{$value['value']}"  class="btn-ajax-post">设为禁用</a>
 												{/if}
 											</td>
 										</tr>

@@ -1,6 +1,6 @@
 <?php
 /**
- * 手续费模块
+ * 财务模块
  */
 namespace app\tools\dao;
 

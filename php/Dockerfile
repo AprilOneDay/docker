@@ -11,7 +11,7 @@ MAINTAINER siyue 350375092@qq.com
 # RUN export https_proxy=192.168.1.10:1080
 
 # Update ubuntu
-#RUN apt-get update
+RUN apt-get update
 
 # mcrypt
 RUN apt-get install -y libmcrypt-dev
@@ -49,7 +49,7 @@ RUN docker-php-ext-install json
 RUN docker-php-ext-install mbstring
 RUN docker-php-ext-install session
 RUN docker-php-ext-install pdo
-RUN docker-php-ext-install pdo_sqlite
+#RUN docker-php-ext-install pdo_sqlite
 #RUN docker-php-ext-install posix
 #RUN docker-php-ext-install tokenizer
 #RUN docker-php-ext-install simplexml

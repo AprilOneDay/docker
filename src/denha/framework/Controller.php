@@ -30,7 +30,11 @@ class Controller
      * @param  boolean                  $peg      [true 自定义路径]
      * @return [type]                             [description]
      */
-    protected function show($viewPath = '', $peg = false)
+    // /XXX 以view开始
+    // XXX/XXXX/XXX 以view/modul 开始
+    // xxxx   以view/modul/controller 开始
+    // ''     如果为空 者为 view/modul/controller/action.html
+    protected function show($viewPath = '', $peg = false, $trace = true)
     {
 
         if (get('all')) {
@@ -48,11 +52,11 @@ class Controller
             }
             //绝对路径
             elseif (stripos($viewPath, '/') === 0) {
-                $path = APP_PATH . APP . DS . 'view' . DS . MODULE . DS . substr($viewPath, 1) . '.html';
+                $path = APP_PATH . APP . DS . 'view' . DS . str_replace('/', DS, substr($viewPath, 1)) . '.html';
             }
             //相对路径
             else {
-                $path = APP_PATH . APP . DS . 'view' . DS . MODULE . DS . $viewPath . '.html';
+                $path = APP_PATH . APP . DS . 'view' . DS . MODULE . DS . str_replace('/', DS, $viewPath) . '.html';
             }
         } else {
             $path = $viewPath;
@@ -63,13 +67,17 @@ class Controller
         }
 
         $cachePath = DATA_PATH . md5($path) . '.php';
-        if (is_file($cachePath) && filemtime($path) == filemtime($cachePath)) {
+        if (is_file($cachePath) && filemtime($path) == filemtime($cachePath) && !Start::$config['trace']) {
             include $cachePath;
         } else {
             //处理视图模板
             $template = new Template($path);
             $template->getContent();
             include $template->loadPath;
+        }
+
+        if (Start::$config['trace'] && $trace) {
+            Trace::run();
         }
     }
 

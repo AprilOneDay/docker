@@ -1,0 +1,20 @@
+body{ background: #f0f2f7; }
+.wapper{ background: #fff; padding-left: 15px; padding-right: 15px; }
+
+.menus{ position: fixed; margin-top: -90%; }
+.menus li{ width: 70%; margin:0 auto; margin-top: 2rem; }
+.menus li img{ width: 95%; margin-left: 2%; }
+
+.tips{ display: none; background: url(../images/tips.png) no-repeat; background-size: 100%100%;  position: absolute; z-index: 100; top: 2rem; height: 90%; width: 98%; margin-left: 2%; }
+.tips .close{ float: right; width: 55px; height: 75px;}
+.tips .content{ margin-top: 7.4rem; width: 80%; margin-left: 10%;  height: 80%; overflow: auto;}
+
+.ranking{ background: url(../images/ranking_bg.jpg) no-repeat; background-size: 100%100%;  width: 100%;  padding-top: 10rem; }
+
+.ranking .back{ width: 10%; position: absolute; top: 0;  margin-top: 2%; margin-left: 3%; }
+.ranking .back img{ width: 80%; }
+.ranking .info{ background: #da2931; width: 80%; line-height: 4rem; margin:0 auto;  text-align: center; font-size: 1.5rem; color: #fff; margin-bottom: 2rem;  }
+
+.ranking .list{ height: 74%; overflow: auto; }
+.ranking .list table{ width: 80%; margin: 0 auto;  text-align: center;  }
+.ranking .list table th{ text-align: center; }

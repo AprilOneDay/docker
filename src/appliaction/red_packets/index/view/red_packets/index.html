@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>华侨城</title>
+	<meta name="keywords" content="华侨城"/>
+	<meta name="description" content="华侨城"/>
+
+	<meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+	<meta name="baidu-site-verification" content="IOphv8ZngJ" />
+	<link rel="stylesheet" href="{F:getConfig('config','vendor')}/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="{F:getConfig('config','vendor')}/bootstrap/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="{F:getConfig('config','vendor')}/pace/themes/blue/pace-theme-minimal.css" />
+	<link rel="stylesheet" href="{F:getConfig('config','ststic')}/red_packets/css/common.css" />
+	<link rel="stylesheet" href="{F:getConfig('config','ststic')}/red_packets/css/css.css" />
+	
+</head>
+<body>
+	<div class="guide">
+		<img class="bg" src="{F:\denha\Start::$config['ststic']}/red_packets/images/start.jpg" data-id="1" style="width: 100%; height: 100%;">
+		<div class="menus">
+			<ul>
+				<li><a href="javascript:;" class="btn-reload"><img src="{F:\denha\Start::$config['ststic']}/red_packets/images/nav_1.png"></a></li>
+				<li><a href="javascript:;" class="rule"><img src="{F:\denha\Start::$config['ststic']}/red_packets/images/nav_2.png"></a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="tips">
+		<a href="javascript:;" class="close"></a>
+		<div class="content" id="boxscroll">
+			<p>xxxxxxx1</p>
+			<p>xxxxxxx2</p>
+			<p>xxxxxxx3</p>
+			<p>xxxxxxx4</p>
+			<p>xxxxxxx5</p>
+			<p>xxxxxxx6</p>
+			<p>xxxxxxx7</p>
+			<p>xxxxxxx8</p>
+			<p>xxxxxxx9</p>
+			<p>xxxxxxx0</p>
+			<p>xxxxxxx0-</p>
+			<p>xxxxxxxd</p>
+			<p>xxxxxxxdsaf</p>
+			<p>xxxxxxxdasf</p>
+			<p>xxxxxxxfasdf</p>
+			<p>xxxxxxxfsadf</p>
+			<p>xxxxxxxfdsaf</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+			<p>xxxxxxx</p>
+		</div>
+	</div>
+	<script type="text/javascript" src="{F:getConfig('config','ststic')}/red_packets/js/jquery-1.12.3.min.js"></script>
+	<script type="text/javascript" src="{F:getConfig('config','ststic')}/red_packets/js/common.js"></script>
+	<script type="text/javascript" src="{F:getConfig('config','vendor')}/pace/pace.min.js"></script>
+	<script type="text/javascript" src="{F:getConfig('config','vendor')}/layer/layer.js"></script>
+	<script type="text/javascript" src="{F:getConfig('config','vendor')}/nicescroll/jquery.nicescroll.min.js"></script>
+	<script type="text/javascript">
+		$('.bg').css('height',window.screen.height);
+		$('.rule').click(function(){
+			$('.tips').css('display','block');
+			$('#boxscroll').css('outline','');
+		});
+		$('.close').click(function(){
+			$('.tips').css('display','none');
+		})
+	 	$('#boxscroll').niceScroll({
+		    cursorcolor: "#dcdee0", //滚动条的颜色   
+		    cursoropacitymax: 1, //滚动条的透明度，从0-1   
+		    touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备   
+		    cursorwidth: "3px", //滚动条的宽度   
+		    cursorborder: "0", // 游标边框css定义    
+		    cursorborderradius: "1px", //以像素为光标边界半径  圆角   
+		    autohidemode: true, //是否隐藏滚动条  true的时候默认不显示滚动条，当鼠标经过的时候显示滚动条   
+		    zindex: "auto", //给滚动条设置z-index值    
+		    railpadding: {
+		        top: 0,
+		        right: -4,
+		        left: 0,
+		        bottom: 0
+		    }, //滚动条的位置
+		});
+		$('.btn-reload').click(function(){
+			$.post("{F:url('today_game_num')}",{id:0},function(result){
+				if(result.data >= 3){
+					layer.msg('今日游戏次数已完了,请明天再来吧')
+				}else{
+					window.location.href = '{F:url('game')}';
+				}
+			},'json');
+		})
+	</script>
+</body>
+</html>

@@ -18,6 +18,8 @@ a:link{ text-decoration: none; }
 ul{ margin: 0px; padding: 0px;  }
 li{ list-style: none; }
 
+.form-horizontal .checkbox, .form-horizontal .radio{ min-height: 20px; }
+
 .container-fluid{ padding: 0px; }
 .form-horizontal .radio{ margin-bottom: 15px; }
 .form-control{border-radius: 0; font-size: 12px; height: 32px; padding: 6px; transition: none 0s ease 0s ;}

@@ -25,11 +25,17 @@
                                		<option value="{$key}">{$value}</option>
                             	{/loop}
                             </select>
+                            <select class="form-control" name="param[to_field]" data-selected="{??$param['to_field']}">
+                             	<option value="to_nickname">接受者昵称</option>
+                            </select>
+                            <input type="text" class="form-control w120" placeholder="Search" name="param[to_keyword]" value="{??$param['to_keyword']}" >
                             <select class="form-control" name="param[field]" data-selected="{??$param['field']}">
                             	<option value="">选择搜索条件</option>
                              	<option value="content">内容</option>
+                             	<option value="nickname">发送者昵称</option>
                             </select>
                             <input type="text" class="form-control w120" placeholder="Search" name="param[keyword]" value="{??$param['keyword']}" >
+                         	
                             <button type="submit" class="btn btn-default" @click="search()">搜索</button>
                         </div>
                     </form>
@@ -59,7 +65,7 @@
 											<td>{$other['isReaderCopy'][$value['is_reader']]}</td>
 											<td align='center'>
 												{if !$value['to_uid']}
-												<a data-href="{F:url('reply',array('to_uid'=>$value['uid']))}"  data-height="500px" data-width="45%"  data-title="聊天记录"  class="btn-open">回复</a>
+												<a config-href="{F:url('reply',array('to_uid'=>$value['uid']))}"  config-height="500px" config-width="45%"  config-title="聊天记录"  class="btn-open">回复</a>
 												{/if}
 											</td>
 										</tr>

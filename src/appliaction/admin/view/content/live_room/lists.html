@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+	<meta name="keywords" content=""/>
+	<title>后台管理</title>
+	{include /public/global_css}
+</head>
+  	<body>
+	<div id="console-content-index-index">
+		<div class="view-content-container" >
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="console-title console-title-border clearfix">
+						<div class="pull-left">
+							<h5>积分赠送规则</h5>
+						</div>
+						<div class="pull-right">
+							<a class="btn btn-primary btn-open" config-href="{F:url('edit')}" config-height="500px" config-width="356px">添加规则</a>
+						</div>
+					</div>
+					<form class="form-inline ng-pristine ng-valid" action=""  method="get">
+                        <div class="form-group">
+                            <select class="form-control" name="field" data-selected="{??$param['field']}">
+                                <option value="id">UID</option>
+                                <option value="username">用户名</option>
+                            </select>
+                            <input type="text" class="form-control w120" placeholder="Search" name="keyword" value="{??$param['keyword']}" >
+                            <button type="submit" class="btn btn-default" @click="search()">搜索</button>
+                        </div>
+                    </form>
+					<div class="console-form">
+						<div class="mt8">
+							<form>
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th style="width:75px;">ID</th>
+											<th>规则内容</th>
+											<th>积分数</th>
+											<th style="width:120px;">状态</th>
+											<th style="width:160px; text-align:center;">操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										{loop $list $key $value}
+									 	<tr v-for="list in list">
+											<td>{$value['id']}</td>
+											<td>{$value['content']}</td>
+											<td>{$value['value']}</td>
+											<td>
+												{if $value['status']}
+													<b style="color: green">启用</b>
+												{else}
+													<b style="color: red">禁用</b>
+												{/if}
+											</td>
+											<td align='center'>
+												<a config-href="{F:url('edit',array('id'=>$value['id']))}"  config-height="500px" config-width="356px"  config-title="修改规则"  class="btn-open">编辑</a>
+											</td>
+										</tr>
+										{/loop}
+									</tbody>
+								    <tfoot>
+							          	<tr>
+          									<td colspan="13">{$pages}</td>
+          								</tr>
+									</tfoot>
+								</table>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{include /public/global_js}
+</body>
+</html>

@@ -11,24 +11,30 @@ class Login extends \app\admin\controller\Init
             $username = (string) post('username', 'text', '');
             $password = (string) post('password', 'text', '');
 
-            $admin = table('ConsoleAdmin')->where(['username' => $username])->field('id,consoleid,password,salt,status,nickname,group')->find();
+            $admin = table('ConsoleAdmin')->where('username', $username)->field('id,consoleid,password,salt,status,nickname,group')->find();
             //判断帐号
             if (!$admin || !$username) {
-                $this->ajaxReturn(['status' => false, 'msg' => '用户名错误']);
+                $this->ajaxReturn(array('status' => false, 'msg' => '用户名错误'));
             }
 
             if (!$admin['status']) {
-                $this->ajaxReturn(['status' => false, 'msg' => '账户已禁用']);
+                $this->ajaxReturn(array('status' => false, 'msg' => '账户已禁用'));
             }
 
             //判断密码
             if (md5($admin['salt'] . $password) !== $admin['password']) {
-                $this->ajaxReturn(['status' => false, 'msg' => '密码错误']);
+                $this->ajaxReturn(array('status' => false, 'msg' => '密码错误'));
+            }
+
+            //判断用户组
+            $group = table('ConsoleGroup')->where('id', $admin['group'])->field('status')->find();
+            if (!$group['status']) {
+                $this->ajaxReturn(array('status' => false, 'msg' => '用户组已被关闭,请联系管理员'));
             }
 
             $data['login_ip']   = getIP();
             $data['login_time'] = TIME;
-            table('ConsoleAdmin')->where(['id' => $admin['id']])->save($data);
+            table('ConsoleAdmin')->where('id', $admin['id'])->save($data);
 
             $console['id']       = $admin['id'];
             $console['nickname'] = $admin['nickname'];
@@ -36,7 +42,7 @@ class Login extends \app\admin\controller\Init
 
             session('console', $console);
 
-            $this->ajaxReturn(['status' => true, 'msg' => '登录成功']);
+            $this->ajaxReturn(array('status' => true, 'msg' => '登录成功'));
 
         } else {
             $this->show();
@@ -53,7 +59,6 @@ class Login extends \app\admin\controller\Init
     public function loginOut()
     {
         session_start();
-        var_dump($_SESSION);
         unset($_SESSION['console']);
         session_write_close();
         header('Location:/index/login/');
@@ -64,9 +69,9 @@ class Login extends \app\admin\controller\Init
     {
         $callback = get('callback');
         if (issetSession('consoleid')) {
-            $this->jsonpReturn(['status' => true, 'msg' => '已登录'], $callback);
+            $this->jsonpReturn(array('status' => true, 'msg' => '已登录'), $callback);
         } else {
-            $this->jsonpReturn(['status' => false, 'msg' => '未登录'], $callback);
+            $this->jsonpReturn(array('status' => false, 'msg' => '未登录'), $callback);
         }
     }
 }
