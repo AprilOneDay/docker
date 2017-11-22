@@ -24,7 +24,10 @@
 	<script type="text/javascript" src="{F:getConfig('config','vendor')}/pace/pace.min.js"></script>
 	<script type="text/javascript" src="{F:getConfig('config','vendor')}/layer/layer.js"></script>
 	<script type="text/javascript">
-		$('.guide img').css('height',window.screen.availHeight);
+		console.log(window.screen.height);
+		console.log(document.body.clientHeight);
+		console.log(window.screen.availHeight);
+		$('.guide img').css('height',document.body.clientHeight);
 		$('.guide').click(function(){
 			var id = Number($(this).find('img').attr('data-id'));
 			if(id == 1){
@@ -37,7 +40,6 @@
 			console.log(id);
 		})
 		document.body.style.overflow='hidden';        
-        document.addEventListener("touchmove",mo,false);//禁止页面滑动
 	</script>
 </body>
 </html>

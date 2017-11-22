@@ -19,7 +19,7 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		var win = (parseInt($(".couten").css("width"))) - 60;
-		$(".mo").css("height", $(document).height());
+		$(".mo").css("height", document.body.clientHeight);
 		$(".couten").css("height", $(document).height());
 		$(".backward").css("height", $(document).height());
 		$("li").css({});
@@ -187,8 +187,7 @@
 			}
 		},'json');
 	})
-	document.body.style.overflow='hidden';        
-    document.addEventListener("touchmove",mo,false);//禁止页面滑动
+	document.body.style.overflow='hidden';
 </script>
 </body>
 </html>
