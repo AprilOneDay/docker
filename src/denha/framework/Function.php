@@ -459,6 +459,8 @@ function session($name = '', $value = '')
         if (isset($_SESSION[$name])) {
             unset($_SESSION[$name]);
         }
+        //session_write_close(); //关闭session
+        return true;
     }
     //读取session
     elseif ($value == '') {
@@ -466,7 +468,7 @@ function session($name = '', $value = '')
         if (is_object($data)) {
             $data = (array) $data;
         }
-        session_write_close(); //关闭session
+        //session_write_close(); //关闭session
         return $data;
     }
     //保存
@@ -485,10 +487,13 @@ function session($name = '', $value = '')
         } else {
             $_SESSION[$name] = $value;
         }
+
+        //关闭session 可防止高并发下死锁问题
+        session_write_close();
+        return true;
     }
 
-    //关闭session 可防止高并发下死锁问题
-    session_write_close();
+    return false;
 }
 
 //判断是否存在session
@@ -500,29 +505,6 @@ function issetSession($name)
     }
     session_write_close(); //关闭session
     return false;
-}
-
-//读取Session
-function getSession($name)
-{
-    isset($_SESSION) ?: session_start();
-    $data = isset($_SESSION[$name]) ? $_SESSION[$name] : '';
-    if (is_object($data)) {
-        $data = (array) $data;
-    }
-    session_write_close(); //关闭session
-    return $data;
-}
-
-//删除session
-function delSession($name)
-{
-    isset($_SESSION) ?: session_start();
-    if (isset($_SESSION[$name])) {
-        unset($_SESSION[$name]);
-    }
-    session_write_close(); //关闭session
-    return true;
 }
 
 /**
