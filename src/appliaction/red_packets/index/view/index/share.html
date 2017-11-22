@@ -5,22 +5,42 @@
 	<title>华侨城</title>
 	<meta name="keywords" content="华侨城"/>
 	<meta name="description" content="华侨城"/>
+
 	<meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
 	<meta name="baidu-site-verification" content="IOphv8ZngJ" />
 	<link rel="stylesheet" href="{F:getConfig('config','vendor')}/bootstrap/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="{F:getConfig('config','ststic')}/red_packets/css/common.css" />
 	<link rel="stylesheet" href="{F:getConfig('config','ststic')}/red_packets/css/css.css" />
-	
+
+	<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+	<script type="text/javascript">
+	wx.config({
+	    debug: false,
+	    appId: '{$weixinJs['appId']}',
+	    timestamp: {$weixinJs['timestamp']},
+	    nonceStr: '{$weixinJs['nonceStr']}',
+	    signature: '{$weixinJs['signature']}',
+	    jsApiList: [
+	      // 所有要调用的 API 都要加到这个列表中
+	    ]
+  	});
+  	wx.ready(function () {
+	    // 在这里调用 API
+  	});
+	</script>
 </head>
 <body>
 	<div class="guide">
-		<img src="{F:\denha\Start::$config['ststic']}/red_packets/images/guide_1.jpg" data-id="1" style="width: 100%; height: 100%;">
+		<img src="{F:\denha\Start::$config['ststic']}/red_packets/images/share.jpg" data-id="1" style="width: 100%; height: 100%;">
 	</div>
+	
+	<div class="code">
+		<img src="{F:\denha\Start::$config['ststic']}/red_packets/images/code.jpg">
+		<p>即可扫码，参与活动</p>
+	</div>
+
 	<script type="text/javascript" src="{F:getConfig('config','ststic')}/red_packets/js/jquery-1.12.3.min.js"></script>
 	<script type="text/javascript">
-		$(document).ready(function() {
-			$('.guide img').css('height',window.screen.height - 60);
-		});
 		$('.guide').click(function(){
 			var id = Number($(this).find('img').attr('data-id'));
 			if(id == 1){
@@ -32,7 +52,7 @@
 			}
 			console.log(id);
 		})
-		document.body.style.overflow='hidden';        
+	  
 	</script>
 </body>
 </html>

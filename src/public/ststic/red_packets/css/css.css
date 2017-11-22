@@ -7,7 +7,10 @@ body{ background: #f0f2f7; }
 
 .tips{ display: none; background: url(../images/tips.png) no-repeat; background-size: 100%100%;  position: absolute; z-index: 100; top: 2rem; height: 90%; width: 98%; margin-left: 2%; }
 .tips .close{ float: right; width: 55px; height: 75px;}
-.tips .content{ margin-top: 7.4rem; width: 80%; margin-left: 10%;  height: 80%; overflow: auto;}
+.tips .content{ margin-top: 7.4rem; width: 80%; margin-left: 10%;  height: 80%; overflow: auto; font-size: 1.8rem;}
+.tips .content span{ background: #db4019; padding: 10px; border-radius: 4px; color: #fff;  font-size: 1.5rem; text-align: center; display: block; width: 30%; margin-bottom: 1rem; }
+.tips .content p{ line-height: 2.5rem;  text-align:justify ;}
+.btn-share{ position: absolute; right: 2%; top: 0; width: 30%; height: 20%;  cursor: pointer; }
 
 .ranking{ background: url(../images/ranking_bg.jpg) no-repeat; background-size: 100%100%;  width: 100%;  padding-top: 10rem; }
 
@@ -18,3 +21,7 @@ body{ background: #f0f2f7; }
 .ranking .list{ height: 74%; overflow: auto; }
 .ranking .list table{ width: 80%; margin: 0 auto;  text-align: center;  }
 .ranking .list table th{ text-align: center; }
+
+.code{ position: relative; left: 30%;  width: 50%;  margin-top: -51%;  }
+.code img{ max-width:70%; border: 2px solid #27a987;  }
+.code p{  color: #fff; margin-top: 0.5rem; font-size: 1.5rem; }
