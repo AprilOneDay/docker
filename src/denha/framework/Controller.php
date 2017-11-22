@@ -64,7 +64,7 @@ class Controller
 
         $path = str_replace('/', DS, $path);
 
-        //var_dump($path);
+        var_dump($path);die;
 
         if (!is_file($path)) {
             throw new Exception('视图地址' . $path . '不存在');
