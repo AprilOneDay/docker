@@ -23,6 +23,8 @@ class RedPackets extends denha\Controller
             }
         }
 
+        var_dump(session('uid'));
+
         $this->show();
     }
 
