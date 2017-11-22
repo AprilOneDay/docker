@@ -27,7 +27,7 @@
 		console.log(window.screen.height);
 		console.log(document.body.clientHeight);
 		console.log(window.screen.availHeight);
-		$('.guide img').css('height',document.body.clientHeight);
+		$('.guide img').css('height',window.screen.availHeight - 60);
 		$('.guide').click(function(){
 			var id = Number($(this).find('img').attr('data-id'));
 			if(id == 1){
