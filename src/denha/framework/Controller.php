@@ -64,6 +64,7 @@ class Controller
 
         $path = str_replace('/', DS, $path);
 
+        var_dump(DS);
         var_dump($path);die;
 
         if (!is_file($path)) {
