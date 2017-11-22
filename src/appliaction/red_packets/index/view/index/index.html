@@ -24,7 +24,10 @@
 	<script type="text/javascript" src="{F:getConfig('config','vendor')}/pace/pace.min.js"></script>
 	<script type="text/javascript" src="{F:getConfig('config','vendor')}/layer/layer.js"></script>
 	<script type="text/javascript">
-		$('.guide img').css('height',window.screen.height);
+		document.querySelector('body').addEventListener('touchstart', function (ev) {
+		    event.preventDefault();
+		});
+		$('.guide img').css('height',window.screen.availHeight);
 		$('.guide').click(function(){
 			var id = Number($(this).find('img').attr('data-id'));
 			if(id == 1){

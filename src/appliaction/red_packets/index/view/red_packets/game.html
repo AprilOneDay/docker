@@ -17,6 +17,9 @@
 <script type="text/javascript" src="{F:getConfig('config','ststic')}/red_packets/js/jquery-1.12.3.min.js"></script>
 <script type="text/javascript" src="{F:getConfig('config','vendor')}/layer/layer.js"></script>
 <script type="text/javascript">
+	document.querySelector('body').addEventListener('touchstart', function (ev) {
+	    event.preventDefault();
+	});
 	$(document).ready(function() {
 		var win = (parseInt($(".couten").css("width"))) - 60;
 		$(".mo").css("height", $(document).height());
