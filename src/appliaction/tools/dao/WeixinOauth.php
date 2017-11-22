@@ -6,6 +6,9 @@
  */
 namespace app\tools\dao;
 
+use app\tools\vendor\weixin\Oauth;
+use denha\Start;
+
 class WeixinOauth
 {
     /**
@@ -24,7 +27,7 @@ class WeixinOauth
             exit;
         }
 
-        $Oauth       = new \app\tools\vendor\weixin\Oauth();
+        $Oauth       = new Oauth();
         $accessToken = $Oauth->getAccessToken($code);
 
         $userInfo = $Oauth->getUserInfo($accessToken['access_token'], $accessToken['openid']);
@@ -47,7 +50,7 @@ class WeixinOauth
             echo '回调地址不能为空';
             exit;
         }
-        $Oauth     = new \app\tools\vendor\weixin\Oauth();
+        $Oauth     = new Oauth();
         $returnUrl = $Oauth->getAuthorizeUrl($url, $state, $scope);
         return $returnUrl;
     }
@@ -75,7 +78,7 @@ class WeixinOauth
         $mobileShijiUrl = $this->checkScience();
         }*/
 
-        $appId  = \denha\Start::$config['weixin_appid'];
+        $appId  = Start::$config['weixin_appid'];
         $newUrl = URL . '/weixin_oauth?appId=' . $appId . '&scope=' . $scope . '&state=' . $state . '&return_url=' . urlencode($url);
         // redirect($newUrl);
         exit('<script>window.location.href="' . $newUrl . '";</script>');

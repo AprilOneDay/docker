@@ -141,7 +141,7 @@ class Sms
         switch ($flag) {
             case 'verification':
                 //返回验证内容
-                $content = 'Code:{code}';
+                $content = '[POCKET auto.ca] Verif Code:{code}';
                 break;
             default:
                 return array('status' => false, 'msg' => '内容为空');
@@ -235,7 +235,7 @@ class Sms
     {
 
         if (!$mobile) {
-            return array('status' => false, 'msg' => '请输入手机号');
+            return array('status' => false, 'msg' => '请输入验证码手机号');
         }
 
         if (!$code) {

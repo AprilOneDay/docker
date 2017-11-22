@@ -7,18 +7,22 @@
 namespace app\tools\vendor\weixin;
 
 use app\tools\vendor\weixin;
+use denha\Start;
 
 class Jssdk
 {
     private $appId;
     private $appSecret;
-    private $weixinName;
-    public function __construct($weixinName = 'shiji')
+    private $accessTokenPath;
+    private $jsapiTicketPath;
+
+    public function __construct()
     {
-        $conf             = V($weixinName, 'weixin');
-        $this->appId      = $conf['appId'];
-        $this->appSecret  = $conf['appSecret'];
-        $this->weixinName = $weixinName;
+        $this->accessTokenPath = APP_PATH . DS . 'tools' . DS . 'vendor' . DS . 'weixin' . DS . 'access_token' . EXT;
+        $this->jsapiTicketPath = APP_PATH . DS . 'tools' . DS . 'vendor' . DS . 'weixin' . DS . 'jsapi_ticket' . EXT;
+
+        $this->appId     = Start::$config['weixin_appid'];
+        $this->appSecret = Start::$config['weixin_secret'];
     }
     /**
      * [获取签名包]
@@ -59,7 +63,7 @@ class Jssdk
         // 注意 URL 一定要动态获取，不能 hardcode.
         // $protocol  = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
         // $url       = "$protocol$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-        $timestamp = time();
+        $timestamp = TIME;
         $nonceStr  = $this->createNonceStr();
         // 这里参数的顺序要按照 key 值 ASCII 码升序排序
         $string      = "jsapi_ticket=$jsapiTicket&noncestr=$nonceStr&timestamp=$timestamp&url=$url";
@@ -100,8 +104,7 @@ class Jssdk
     {
         // jsapi_ticket 应该全局存储与更新，以下代码以写入到文件中做示例
         // 读取ticket
-        $jsapiTicket = cache('jsapiTicket');
-        $data        = json_decode($jsapiTicket);
+        $data = json_decode($this->getPhpFile($this->jsapiTicketPath));
         if ($data->expire_time < time()) {
             $accessToken = $this->getAccessToken();
             // 如果是企业号用以下 URL 获取 ticket
@@ -113,10 +116,7 @@ class Jssdk
                 $data->expire_time  = time() + 7000;
                 $data->jsapi_ticket = $ticket;
                 // 保存ticket
-                cache('jsapiTicket', json_encode($data));
-                // $fp = fopen("jsapi_ticket.json", "w");
-                // fwrite($fp, json_encode($data));
-                // fclose($fp);
+                $this->setPhpFile($this->jsapiTicketPath, json_encode($data));
             }
         } else {
             $ticket = $data->jsapi_ticket;
@@ -129,17 +129,53 @@ class Jssdk
      * @datetime 2015-09-29T14:48:56+0800
      * @return   [json]                   [令牌]
      */
-    public function getAccessToken()
+    private function getAccessToken()
     {
-        $weixinName = $this->weixinName;
-        $url        = "http://api.chayu.com/weixin/jssdk/get_access_token?weixinname=$weixinName";
-        $data       = $this->httpGet($url);
-        $data       = json_decode($data);
-        if ($data->state) {
-            return $data->access_token;
+        // access_token 应该全局存储与更新，以下代码以写入到文件中做示例
+        $data = json_decode($this->getPhpFile($this->accessTokenPath));
+        if ($data->expire_time < time()) {
+            // 如果是企业号用以下URL获取access_token
+            // $url = "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=$this->appId&corpsecret=$this->appSecret";
+            $url          = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=$this->appId&secret=$this->appSecret";
+            $res          = json_decode($this->httpGet($url));
+            $access_token = $res->access_token;
+            if ($access_token) {
+                $data->expire_time  = time() + 7000;
+                $data->access_token = $access_token;
+                $this->setPhpFile($this->accessTokenPath, json_encode($data));
+            }
+        } else {
+            $access_token = $data->access_token;
         }
-        return '';
+        return $access_token;
     }
+
+    /**
+     * 获取文件
+     * @date   2017-11-22T19:41:59+0800
+     * @author ChenMingjiang
+     * @param  [type]                   $filename [description]
+     * @return [type]                             [description]
+     */
+    private function getPhpFile($filename)
+    {
+        return trim(substr(file_get_contents($filename), 15));
+    }
+
+    /**
+     * 保存文件
+     * @date   2017-11-22T19:42:16+0800
+     * @author ChenMingjiang
+     * @param  [type]                   $filename [description]
+     * @param  [type]                   $content  [description]
+     */
+    private function setPhpFile($filename, $content)
+    {
+        $fp = fopen($filename, "w");
+        fwrite($fp, "<?php exit();?>" . $content);
+        fclose($fp);
+    }
+
     /**
      * [获取URL]
      * @author Chenmingjiang

@@ -13,19 +13,23 @@ class Category
      * @param  integer                  $id [description]
      * @return [type]                       [description]
      */
-    public function getList($id = 0)
+    public function getList($id = 0, $lg)
     {
 
         static $_category = array();
 
         if (!isset($_category[$id])) {
             $map['parentid'] = $id;
-            $list            = table('Category')->where($map)->field('id,name')->order('name asc,sort asc')->find('array');
+            $list            = table('Category')->where($map)->field('id,name,bname')->order('name asc,sort asc')->find('array');
 
             $_category[$id] = null;
 
             foreach ($list as $key => $value) {
-                $_category[$id][$value['id']] = $value['name'];
+                if ($lg == 'en') {
+                    $_category[$id][$value['id']] = $value['bname'];
+                } else {
+                    $_category[$id][$value['id']] = $value['name'];
+                }
             }
 
         }

@@ -132,7 +132,7 @@ class User
      * @param  [type]                   $code      [description]
      * @return [type]                              [description]
      */
-    public function findPassword($uid, $password, $password2, $code = '')
+    public function findPassword($uid, $password, $password2, $code = '', $mobile)
     {
         if (!$uid) {
             return array('status' => false, 'msg' => '参数错误');
@@ -154,7 +154,7 @@ class User
 
         //检测验证码
         if ($code) {
-            $reslutCode = dao('Sms')->checkVerification($data['mobile'], $code);
+            $reslutCode = dao('Sms')->checkVerification($mobile, $code);
             if (!$reslutCode['status']) {
                 return $reslutCode;
             }

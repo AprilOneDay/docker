@@ -30,7 +30,7 @@ class Orders
             $data['order_sn']        = $orderSn;
             $data['message']         = $message;
             $data['acount_original'] = $value['data']['acount_original'];
-            $data['acount']          = $data['acount_original'] + $farePrice - $couponPrice;
+            $data['acount']          = $data['acount_original'];
             $data['coupon_price']    = $couponPrice;
             $data['fare_price']      = $farePrice;
             $data['created']         = TIME;
@@ -181,7 +181,7 @@ class Orders
 
             $dataInfo[$goods['uid']]['list'][$key]['price_original'] = $dataInfo[$goods['uid']]['list'][$key]['price'] = $goods['price'];
 
-            $dataInfo[$goods['uid']]['data']['acount_original'] += floatval($goods['price']);
+            $dataInfo[$goods['uid']]['data']['acount_original'] = $goods['price'];
         }
 
         return $dataInfo;
@@ -213,7 +213,7 @@ class Orders
             $dataInfo[$goods['uid']]['list'][$key]['title']                = $goods['title'];
             $dataInfo[$goods['uid']]['list'][$key]['thumb']                = $goods['thumb'];
             $dataInfo[$goods['uid']]['list'][$key]['price_original']       = $dataInfo[$goods['uid']]['list'][$key]['price']       = $goods['price'];
-            $dataInfo[$goods['uid']]['data']['acount_original'] += floatval($goods['price']);
+            $dataInfo[$goods['uid']]['data']['acount_original']            = $goods['price'];
 
             if ($other[$key]['my_car_id']) {
                 $myCar = table('MyCar')->where(array('id' => $other[$key]['my_car_id'], 'del_status' => 0))->find();

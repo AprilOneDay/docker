@@ -7,6 +7,7 @@
 namespace app\tools\vendor\weixin;
 
 use app\tools\vendor\weixin;
+use denha\Start;
 
 class Oauth
 {
@@ -14,8 +15,8 @@ class Oauth
     private $appSecret;
     public function __construct()
     {
-        $this->appId     = \denha\Start::$config['weixin_appid'];
-        $this->appSecret = \denha\Start::$config['weixin_secret'];
+        $this->appId     = Start::$config['weixin_appid'];
+        $this->appSecret = Start::$config['weixin_secret'];
     }
     /**
      * [获取微信授权链接]
