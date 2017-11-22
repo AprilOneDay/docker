@@ -32,6 +32,9 @@ class RedPackets extends denha\Controller
     public function game()
     {
         if (!session('uid')) {
+            var_dump(session('uid'));
+            session_start();
+            var_dump($_SESSION);
             die('授权失败');
         }
 
