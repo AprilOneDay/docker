@@ -14,7 +14,9 @@
 </head>
 <body>
 	<div class="guide">
-		<img src="{F:\denha\Start::$config['ststic']}/red_packets/images/guide_1.jpg" data-id="1" style="width: 100%; height: 100%;">
+		<img src="{F:\denha\Start::$config['ststic']}/red_packets/images/guide_1.jpg" class="img_1" data-id="1" style="width: 100%; height: 100%;">
+		<img src="{F:\denha\Start::$config['ststic']}/red_packets/images/guide_2.jpg" class="img_2" style="width: 100%; height: 100%;display: none;">
+		<img src="{F:\denha\Start::$config['ststic']}/red_packets/images/guide_3.jpg" class="img_3" style="width: 100%; height: 100%; display: none;">
 	</div>
 	<script type="text/javascript" src="{F:getConfig('config','ststic')}/red_packets/js/jquery-1.12.3.min.js"></script>
 	<script type="text/javascript">
@@ -22,15 +24,20 @@
 			$('.guide img').css('height',window.screen.height - 60);
 		});
 		$('.guide').click(function(){
+			var _this = this;
 			var id = Number($(this).find('img').attr('data-id'));
 			if(id == 1){
 				$(this).find('img').attr('data-id',2);
-				$(this).find('img').attr('src','{F:\denha\Start::$config['ststic']}/red_packets/images/guide_2.jpg');
+				$('.guide img').css('display','none');
+				$('.img_2').css('display','block');
 				setTimeout(function(){
-					window.location.href = '{F:url('/red_packets')}';
-				},3000);
+					$('.guide img').css('display','none');
+					$('.img_3').css('display','block');
+					setTimeout(function(){
+						window.location.href = '{F:url('/red_packets')}';
+					},1000);
+				},500);
 			}
-			console.log(id);
 		})
 		document.body.style.overflow='hidden';        
 	</script>
