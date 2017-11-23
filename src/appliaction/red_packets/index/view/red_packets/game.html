@@ -178,6 +178,9 @@
 		<span></span>
 </div>
 <script type="text/javascript">
+	$('body').on('touchmove', function (event) {
+	    event.preventDefault();
+	});
 	$('.btn-reload').click(function(){
 		$.post("{F:url('today_game_num')}",{id:0},function(result){
 			if(result.data >= 3){

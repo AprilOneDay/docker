@@ -20,6 +20,9 @@
 	</div>
 	<script type="text/javascript" src="{F:getConfig('config','ststic')}/red_packets/js/jquery-1.12.3.min.js"></script>
 	<script type="text/javascript">
+		$('body').on('touchmove', function (event) {
+		    event.preventDefault();
+		});
 		$(document).ready(function() {
 			$('.guide img').css('height',window.screen.height - 60);
 		});
