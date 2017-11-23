@@ -2,6 +2,7 @@
 namespace app\blog\controller\index;
 
 use denha\Controller;
+use denha\Pages;
 
 class Index extends Controller
 {
@@ -27,7 +28,7 @@ class Index extends Controller
         }
 
         $total = table('Article')->where($map)->count();
-        $pages = new denha\Pages($total, $pageNo, $pageSize, url('index'));
+        $pages = new Pages($total, $pageNo, $pageSize, url('index'));
 
         $field = 'id,tag,title,thumb,description,created,hot';
         $list  = table('Article')->where($map)->field($field)->limit($offer, $pageSize)->order('id desc')->find('array');
