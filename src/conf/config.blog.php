@@ -1,7 +1,7 @@
 <?php
 return [
     'deBug'         => false,
-    'trace'         => false, // 是否显示页面Trace信息
+    'trace'         => true, // 是否显示页面Trace信息
 
     //百度榨取自动推送
     'sitemap_token' => '3E9wM5IW4Qdb0HEg',

@@ -29,7 +29,7 @@ class Index extends denha\Controller
         $total = table('Article')->where($map)->count();
         $pages = new denha\Pages($total, $pageNo, $pageSize, url('index'));
 
-        $field = 'id,tag,type,title,thumb,description,created,hot';
+        $field = 'id,tag,title,thumb,description,created,hot';
         $list  = table('Article')->where($map)->field($field)->limit($offer, $pageSize)->order('id desc')->find('array');
         foreach ($list as $key => $value) {
             $list[$key]['comment'] = (int) table('VisitorComment')->where(array('goods_id' => $value['id']))->count();

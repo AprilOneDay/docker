@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<title>四月 - 个人博客  - 给我留言</title>
-	<meta name="keywords" content=""/>
-	<meta name="description" content="{$data['description']}"/>
+	<meta name="keywords" content="四月程序工作室 四月Denha Denha 个人博客 PHP程序 Denha框架"/>
+	<meta name="description" content="时间记录过程,文字记录时间！四月Denha的个人博客，专注WEB建站技术，PHP网站开发，Uinty3D游戏开发 一个开发狗的日常...."/>
 	<meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
 	<link rel="stylesheet" href="{F:getConfig('config','vendor')}/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="{F:getConfig('config','vendor')}/bootstrap/css/bootstrap.min.css" />
@@ -35,7 +35,7 @@
 				<div class="news-content">
 				</div>
 				<div class="clearfix"></div>
-				{if $comment}
+				{if isset($comment)}
 				<div class="comment">
 					<ul>
 						{loop $comment $key $value}
@@ -49,7 +49,7 @@
 								<div class="pull-right">
 									<a href="javascript:;" class="btn-ajax-post" config-href="{F:url('report/add')}" data-goods_id="{$value['id']}">举报</a>
 									<a href="javascript:;" data-to_id="{$value['id']}" data-parent_id="{$value['id']}" class="btn-show-reply">回复[{$value['total']}]</a>
-								</div>
+								</div>$
 							</div>
 							<div class="clearfix"></div>
 							<div class="comment-chlid" style="display: none;">
@@ -60,10 +60,7 @@
 										<a href="javascript:;" class="btn-comment-up">[收起]</a>
 									</div>
 								</div>
-		       				 	<form  class="form-horizontal remark" action="{F:url('comment/reply')}">
-		       				 		<input type="hidden" class="form-control" name="goods_id"  value="{$data['id']}">
-		       				 		<input type="hidden" class="form-control" name="parent_id"  value="{$value['id']}">
-		       				 		<input type="hidden" class="form-control" name="to_id"  value="{$value['id']}">
+		       				 	<form  class="form-horizontal remark" action="{F:url('comment/reply')}">$
 							 		<div class="form-group">
 									    <label for="inputEmail3" class="col-sm-2 control-label">称呼</label>
 									    <div class="col-sm-10">
@@ -97,7 +94,6 @@
 				{/if}
 				<div class="alert alert-info" role="alert" style="margin-top: 2rem;">联系我:</div>
 				 	<form  class="form-horizontal remark" action="{F:url('message/add')}">
-			 		 	<input type="hidden" class="form-control" name="goods_id"  value="{$data['id']}">
 				 		<div class="form-group">
 						    <label for="inputEmail3" class="col-sm-2 control-label">称呼</label>
 						    <div class="col-sm-10">
