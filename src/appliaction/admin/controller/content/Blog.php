@@ -124,7 +124,7 @@ class Blog extends \app\admin\controller\Init
             }
 
             $other = array(
-                'tag' => getVar('tags', 'console.article'),
+                'tag' => getVar('tags', 'admin.article'),
             );
 
             $this->assign('data', $rs);
