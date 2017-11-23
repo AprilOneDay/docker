@@ -100,40 +100,41 @@
 		var allWidth = 5600;
 		var click 	 = false;
 		var left 	 =  0;
+		var time 	 =  0; //计时器
 			
 
 		if(wWdith > 1600 && wWdith <  1900){
 			$('.bg').css('backgroundPositionX','-80px');
 		}
-
 		wWdith = 1920;
-
 
 		//落叶
 		$('.luoye').snowfall({
             image: "images/flower_8.png",
-            flakeCount:5,
+            flakeCount:3,
             minSize: 5,
             maxSize: 22
         });
-		
 
 		//第一个场景
-		$('.one .thumb').animate({'filter.grayscale':0},100);
-		$('.one .gray').show(1000);
-		$('.one .blue').show(1000);
-		$('.one .green').show(10);
-		$(".one span").letterfx({"fx":"wave","words":true,"timing":300});
-		$(".one .content h2").letterfx({"fx":"fall","words":true,"timing":600});
-		$(".one .content p").letterfx({"fx":"fly-right fly-bottom spin"});
-		setTimeout(function(){
-			$('.one .content').hide(500);
-			$('.one .content-2').show(500);
-		},8000);
-		
+		function scene_1(){
+
+			$('.one .thumb').animate({'filter.grayscale':0},100);
+			$('.one .gray').show(1000);
+			$('.one .blue').show(1000);
+			$('.one .green').show(10);
+			$(".one span").letterfx({"fx":"wave","words":true,"timing":300});
+			$(".one .content h2").letterfx({"fx":"fall","words":true,"timing":600});
+			$(".one .content p").letterfx({"fx":"fly-right fly-bottom spin"});
+			setTimeout(function(){
+				$('.one .content').hide(500);
+				$('.one .content-2').show(500);
+			},8000);
+		}
 
 		//第二个场景
-		setTimeout(function(){
+		function scene_2(){
+	
 			left = bgWidth() - wWdith;
 
 			//隐藏第一个场景
@@ -141,11 +142,14 @@
 			$('.one .gray').hide(1000);
 			$('.one .blue').hide(1000);
 			$('.one .green').hide(10);
+			$('.one .content').hide();
 			$('.one .content-2').hide();
 			$(".one span").hide();
 			$(".one .skip").hide();
 
 			$('.bg').animate({backgroundPositionX:left+'px'},1300,function(){
+				$('.one').hide();
+
 				//落叶
 				$('.luoye').animate({left:'0%',top:'30%'},8000);
 
@@ -162,19 +166,24 @@
 					$('.two .content-2').fadeIn(500);
 				},8000);
 			});
-			left -= wWdith;
-			console.log(left);
-		},10000);
+		}
 
 		//第三个场景
-		setTimeout(function(){
-			left = bgWidth() - wWdith;
+		function scene_3(){
+			console.log(wWdith);
+			//小分辨率特殊处理
+			if($(window).width() < 1600){
+				left = -3960;
+			}else{
+				left = bgWidth() - wWdith;
+			}
 
 			//隐藏第一个场景
 			$('.two .thumb').hide(500);
 			$('.two .gray').hide(1000);
 			$('.two .blue').hide(1000);
 			$('.two .green').hide(10);
+			$('.two .content').hide();
 			$('.two .content-2').hide();
 			$(".two span").hide();
 			$(".two .skip").hide();
@@ -184,6 +193,7 @@
 			$('.luoye').animate({left:'47%',top:'30%'},8000);
 
 			$('.bg').animate({backgroundPositionX:left+'px'},1300,function(){
+				$('.two').hide();
 
 				$('.three').css('display','block');
 				$('.three .thumb').show(500);
@@ -198,42 +208,42 @@
 					$('.three .content-2').show(500);
 				},8000);
 			});
-			left -= wWdith;
-			console.log(left);
-		},20000);
+		}
 
 		//第四个场景
-		setTimeout(function(){
+		function scene_4(){
+			scene_4_start = true;
 			$('.bg').hide(500);
 			$('.main').show();
 			$('.main .zt img').fadeIn(5000);
 			$('.main .logo img').slideToggle(3000);
-		},30000)
+		}
 
-		/*$('body').click(function(){
-			if(!click){
-				var bgAnimation = function(){
-					if(left < -wWdith*2){
-						return true;
-					}
-		
-					if(left == -wWdith){
-						$('.one .thumb').hide(500);
-						$('.one .gray').hide(1000);
-						$('.one .blue').hide(1000);
-						$('.one .green').hide(10);
-						$('.one .content-2').hide();
-						$(".one span").hide();
-					}
-
-					$('.bg').animate({backgroundPositionX:left+'px'},1300);
-					left -= wWdith;
-					setTimeout(bgAnimation,5000);
-				}
-				setTimeout(bgAnimation,5000);
+		//创建房间计时器
+		setInterval(function(){
+			if(time == 0){
+				scene_1();
+			}else if(time == 10){
+				scene_2();
+			}else if( time == 20){
+				scene_3();
+			}else if(time == 30){
+				//scene_4();
 			}
-			click = true;
-		});*/
+			time += 0.5;
+ 			//console.log(time);
+		},500)
+		
+		//更改时间直接切换场景
+		$('.skip').click(function(){
+			if( time < 10){
+				time = 9.5;
+			}else if(time < 20){
+				time =19.5;
+			}else if(time < 30){
+				time = 29.5;
+			}
+		})
 	</script>
 </body>
 </html>
