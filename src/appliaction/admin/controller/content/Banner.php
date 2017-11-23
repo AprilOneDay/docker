@@ -86,6 +86,8 @@ class Banner extends \app\admin\controller\Init
 
             $data['path']        = post('path', 'text', '');
             $data['description'] = post('description', 'text', '');
+            $data['app_type']    = post('app_type', 'intval', 0);
+            $data['app_value']   = post('app_value', 'text', '');
 
             $data['sort'] = post('sort', 'intval', 0);
 
@@ -120,7 +122,12 @@ class Banner extends \app\admin\controller\Init
                 $rs['sort'] = 0;
             }
 
+            $other = array(
+                'appTypeCopy' => getVar('app_type', 'admin.banner'),
+            );
+
             $this->assign('data', $rs);
+            $this->assign('other', $other);
             $this->show();
         }
     }

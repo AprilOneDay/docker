@@ -14,7 +14,7 @@ class Init extends denha\Controller
     {
         $isPass = $this->getWhiteList();
         if (!$isPass) {
-            $console           = getSession('console');
+            $console           = session('console');
             $this->consoleid   = $console['id'];
             $this->consoleName = $console['nickname'];
             $this->group       = $console['group'];
