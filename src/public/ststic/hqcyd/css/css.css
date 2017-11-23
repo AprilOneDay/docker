@@ -7,6 +7,9 @@ body{ background: #fff;  font-family: "微软雅黑"; overflow:hidden; padding: 
 
 .bg img{ position: absolute; }
 
+.content p{ display: none; }
+.content h2{ display: none; }
+
 /** 第一屏 */
 .one .gray{ left: 21%; top: 12%;  z-index: 1;}
 .one .thumb{ left: 27.6%; top: 13%;  z-index: 2; background-color: (0 0 0);}

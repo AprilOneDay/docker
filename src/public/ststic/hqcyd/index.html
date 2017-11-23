@@ -124,12 +124,12 @@
 			$('.one .blue').show(1000);
 			$('.one .green').show(10);
 			$(".one span").letterfx({"fx":"wave","words":true,"timing":300});
-			$(".one .content h2").letterfx({"fx":"fall","words":true,"timing":600});
-			$(".one .content p").letterfx({"fx":"fly-right fly-bottom spin"});
+			$(".one .content h2").show(1000);
+			$(".one .content p").fadeIn(2000);
 			setTimeout(function(){
 				$('.one .content').hide(500);
 				$('.one .content-2').show(500);
-			},8000);
+			},3000);
 		}
 
 		//第二个场景
@@ -151,7 +151,7 @@
 				$('.one').hide();
 
 				//落叶
-				$('.luoye').animate({left:'0%',top:'30%'},8000);
+				$('.luoye').animate({left:'0%',top:'30%'},4000);
 
 				$('.two').css('display','block');
 				$('.two .thumb').fadeIn(2000);
@@ -159,12 +159,12 @@
 				$('.two .blue').fadeIn(1000);
 				$('.two .green').fadeIn(10);
 				$(".two span").letterfx({"fx":"wave","words":true,"timing":300});
-				$(".two .content h2").letterfx({"fx":"swirl","timing":500});
-				$(".two .content p").letterfx({"fx":"fly-right fly-bottom spin"});
+				$(".two .content h2").show(1000);
+				$(".two .content p").fadeIn(2000);
 				setTimeout(function(){
 					$('.two .content').hide(500);
 					$('.two .content-2').fadeIn(500);
-				},8000);
+				},3000);
 			});
 		}
 
@@ -190,7 +190,7 @@
 
 			//落叶
 			//$('.luoye').html('');
-			$('.luoye').animate({left:'47%',top:'30%'},8000);
+			$('.luoye').animate({left:'47%',top:'30%'},4000);
 
 			$('.bg').animate({backgroundPositionX:left+'px'},1300,function(){
 				$('.two').hide();
@@ -201,12 +201,12 @@
 				$('.three .blue').show(1000);
 				$('.three .green').show(10);
 				$(".three span").letterfx({"fx":"wave","words":true,"timing":300});
-				$(".three .content h2").letterfx({"fx":"swirl","timing":500});
-				$(".three .content p").letterfx({"fx":"fly-right fly-bottom spin"});
+				$(".three .content h2").show(1000);
+				$(".three .content p").fadeIn(2000);
 				setTimeout(function(){
 					$('.three .content').hide(500);
 					$('.three .content-2').show(500);
-				},8000);
+				},3000);
 			});
 		}
 
@@ -223,12 +223,12 @@
 		setInterval(function(){
 			if(time == 0){
 				scene_1();
-			}else if(time == 10){
+			}else if(time == 6){
 				scene_2();
-			}else if( time == 20){
+			}else if( time == 14){
 				scene_3();
-			}else if(time == 30){
-				//scene_4();
+			}else if(time == 21){
+				scene_4();
 			}
 			time += 0.5;
  			//console.log(time);
@@ -236,11 +236,11 @@
 		
 		//更改时间直接切换场景
 		$('.skip').click(function(){
-			if( time < 10){
+			if( time < 5){
 				time = 9.5;
-			}else if(time < 20){
+			}else if(time < 12){
 				time =19.5;
-			}else if(time < 30){
+			}else if(time < 15){
 				time = 29.5;
 			}
 		})
