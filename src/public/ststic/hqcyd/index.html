@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html manifest="index.appcache">
 <head>
 	<meta charset="utf-8">
 	<title>华侨城-引导动画</title>
@@ -85,18 +85,30 @@
 	<script type="text/javascript" src="vendor/letterfx/tuxsudo.min.js"></script>
 	<script type="text/javascript" src="vendor/letterfx/jquery-letterfx.min.js"></script>
 	<script type="text/javascript">
-		function snowfallclear(){
-			$('.one .luoye').snowfall('clear');
-			$('.two .luoye').snowfall('clear');
-			$('.three .luoye').snowfall('clear');
+		/*$(document).snowfall('clear');*/
+
+		console.log($(window).width());
+
+		var bgWidth = function(){
+			var bgWidth = $('.bg').css('backgroundPositionX');
+			bgWidth = bgWidth.substring(0,bgWidth.length-2);
+			return bgWidth;
 		}
 
-	 	/*$(document).snowfall('clear');*/
+		
 
-		var wWdith  =  $(window).width();
+		var wWdith   =  $(window).width();
 		var allWidth = 5600;
-		var left = -wWdith;
-		var click = false;
+		var click 	 = false;
+		var left 	 =  0;
+			
+
+		if(wWdith > 1600 && wWdith <  1900){
+			$('.bg').css('backgroundPositionX','-80px');
+		}
+
+		wWdith = 1920;
+
 
 		//落叶
 		$('.luoye').snowfall({
@@ -108,31 +120,31 @@
 		
 
 		//第一个场景
-		if(left == -wWdith){
-
-			$('.one .thumb').animate({'filter.grayscale':0},100);
-			$('.one .gray').show(1000);
-			$('.one .blue').show(1000);
-			$('.one .green').show(10);
-			$(".one span").letterfx({"fx":"wave","words":true,"timing":300});
-			$(".one .content h2").letterfx({"fx":"fall","words":true,"timing":600});
-			$(".one .content p").letterfx({"fx":"fly-right fly-bottom spin"});
-			setTimeout(function(){
-				$('.one .content').hide(500);
-				$('.one .content-2').show(500);
-			},8000);
-		}
+		$('.one .thumb').animate({'filter.grayscale':0},100);
+		$('.one .gray').show(1000);
+		$('.one .blue').show(1000);
+		$('.one .green').show(10);
+		$(".one span").letterfx({"fx":"wave","words":true,"timing":300});
+		$(".one .content h2").letterfx({"fx":"fall","words":true,"timing":600});
+		$(".one .content p").letterfx({"fx":"fly-right fly-bottom spin"});
+		setTimeout(function(){
+			$('.one .content').hide(500);
+			$('.one .content-2').show(500);
+		},8000);
+		
 
 		//第二个场景
 		setTimeout(function(){
+			left = bgWidth() - wWdith;
+
 			//隐藏第一个场景
-			snowfallclear();
 			$('.one .thumb').hide(500);
 			$('.one .gray').hide(1000);
 			$('.one .blue').hide(1000);
 			$('.one .green').hide(10);
 			$('.one .content-2').hide();
 			$(".one span").hide();
+			$(".one .skip").hide();
 
 			$('.bg').animate({backgroundPositionX:left+'px'},1300,function(){
 				//落叶
@@ -157,18 +169,20 @@
 
 		//第三个场景
 		setTimeout(function(){
+			left = bgWidth() - wWdith;
+
 			//隐藏第一个场景
-			
-			snowfallclear();
 			$('.two .thumb').hide(500);
 			$('.two .gray').hide(1000);
 			$('.two .blue').hide(1000);
 			$('.two .green').hide(10);
 			$('.two .content-2').hide();
 			$(".two span").hide();
+			$(".two .skip").hide();
 
 			//落叶
-			$('.luoye').css({left:'47%',top:'30%'});
+			//$('.luoye').html('');
+			$('.luoye').animate({left:'47%',top:'30%'},8000);
 
 			$('.bg').animate({backgroundPositionX:left+'px'},1300,function(){
 

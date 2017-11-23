@@ -43,5 +43,4 @@ return array(
     'smtp_user'         => 'senddebug', //账户
     'smtp_password'     => 'uVqe2aZ0Wc0DiAVo', //密码
     'smtp_mail'         => 'senddebug@163.com', //发送邮箱名
-
 );
