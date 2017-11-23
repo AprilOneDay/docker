@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="{F:getConfig('config','ststic')}/red_packets/css/css.css" />
 	
 </head>
-<body style="overflow: hidden;">
+<body style="overflow: hidden;height: 100%;position: fixed;">
 	<div class="guide">
 		<img class="bg" src="{F:\denha\Start::$config['ststic']}/red_packets/images/start.jpg" data-id="1" style="width: 100%; height: 100%;">
 		<div class="menus">
@@ -44,6 +44,9 @@
 	<script type="text/javascript" src="{F:getConfig('config','vendor')}/layer/layer.js"></script>
 	<script type="text/javascript" src="{F:getConfig('config','vendor')}/nicescroll/jquery.nicescroll.min.js"></script>
 	<script type="text/javascript">
+		$('body').on('touchmove', function (event) {
+		    event.preventDefault();
+		});
 		$('.bg').css('height',window.screen.availHeight);
 		$('.rule').click(function(){
 			$('.tips').css('display','block');
