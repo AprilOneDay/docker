@@ -4,9 +4,9 @@
  */
 namespace app\blog\controller\index;
 
-use app\app\controller;
+use denha\Controller;
 
-class Comment extends \app\app\controller\Init
+class Comment extends Controller
 {
     /**
      * 添加评论

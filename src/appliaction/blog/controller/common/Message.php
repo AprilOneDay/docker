@@ -4,9 +4,9 @@
  */
 namespace app\blog\controller\common;
 
-use app\app\controller;
+use denha\Controller;
 
-class Message extends \app\app\controller\Init
+class Message extends Controller
 {
     public function index()
     {

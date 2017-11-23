@@ -1,9 +1,9 @@
 <?php
 namespace app\blog\controller\index;
 
-use denha;
+use denha\Controller;
 
-class Index extends denha\Controller
+class Index extends Controller
 {
     public function index()
     {

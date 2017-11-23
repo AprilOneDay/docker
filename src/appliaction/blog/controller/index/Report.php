@@ -4,9 +4,9 @@
  */
 namespace app\blog\controller\index;
 
-use denha;
+use denha\Controller;
 
-class Report extends denha\Controller
+class Report extends Controller
 {
     public function add()
     {
