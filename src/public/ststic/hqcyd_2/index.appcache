@@ -1,0 +1,31 @@
+CACHE MANIFEST
+# 2017-11-23 v1.1.1
+css/common.css
+css/css.css
+vendor/letterfx/jquery-letterfx.css
+
+images/bg.jpg
+images/green.png
+images/gray.png
+images/blue.png
+images/flower.png
+images/flower_8.png
+
+images/img_8_1.png
+images/img_8_2.png
+images/img_8_3.png
+
+images/main.jpg
+images/logo.png
+images/btn_home.png
+
+js/jquery-1.12.3.min.js
+vendor/luoye/js/snowfall.jquery.js
+vendor/letterfx/tuxsudo.min.js
+vendor/letterfx/jquery-letterfx.min.js
+
+NETWORK:
+# login.asp
+
+FALLBACK:
+# /html5/ /404.html
