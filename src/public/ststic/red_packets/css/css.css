@@ -23,5 +23,5 @@ body{ background: #f0f2f7; }
 .ranking .list table th{ text-align: center; }
 
 .code{ position: relative; left: 30%;  width: 50%;  margin-top: -51%;  }
-.code img{ max-width:70%; border: 2px solid #27a987;  }
+.code img{ max-width:70%; border: 2px solid #27a987; width: 192px;   }
 .code p{  color: #fff; margin-top: 0.5rem; font-size: 1.5rem; }
