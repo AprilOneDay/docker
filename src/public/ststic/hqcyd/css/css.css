@@ -7,19 +7,20 @@ body{ background: #fff;  font-family: "微软雅黑"; overflow:hidden; padding: 
 
 .bg img{ position: absolute; }
 
+.content{ width: 300px; height: 200px; }
 .content p{ display: none; }
 .content h2{ display: none; }
 
 /** 第一屏 */
 .one .gray{ left: 21%; top: 12%;  z-index: 1;}
-.one .thumb{ left: 27.6%; top: 13%;  z-index: 2; background-color: (0 0 0);}
+.one .thumb,.one .thumb2{ left: 27.6%; top: 13%;  z-index: 2; background-color: (0 0 0);}
 .one .blue{ left: 45%; top: 2%;  z-index: 3;}
 .one .green{ left: 20%; top: 60%;  z-index: 4;}
 
 .one .skip{ font-size: 20px;  color: #fff;  position: absolute; left: 47.6%; top: 11%;  z-index: 5 }
 .one span{ font-size: 30px; text-transform:Uppercase; color: #414447; font-style: italic; position: absolute; top: 82%; left: 25%; z-index: 6 }
 
-.one .content{ position: absolute; width: 20%; left: 58%; top: 40%; }
+.one .content{ position: absolute;  left: 58%; top: 40%; }
 .one .content h2{ font-size: 28px; font-family: "宋体"; font-weight: bold; }
 .one .content p{ line-height: 22px; font-size: 15px; }
 
@@ -30,7 +31,7 @@ body{ background: #fff;  font-family: "微软雅黑"; overflow:hidden; padding: 
 .luoye{ position: absolute; left: 53%; top: 20%; width: 600px; height: 400px;  z-index: 10; }
 
 /** 第二屏 */
-.two .thumb{ left: 44%; top: 16%;  z-index: 1;}
+.two .thumb,.two .thumb2{ left: 44%; top: 16%;  z-index: 1;}
 .two .gray{ left: 60%; top: 80%;  z-index: 2;}
 .two .blue{ left: 41%; top: 13%;  z-index: 3;}
 .two .green{ left: 62%; top: 0%;  z-index: 4;}
@@ -38,7 +39,7 @@ body{ background: #fff;  font-family: "微软雅黑"; overflow:hidden; padding: 
 .two .skip{ font-size: 20px; color: #fff;  position: absolute; left: 44%; top: 22%;  z-index: 5 }
 .two span{ font-size: 30px; text-transform:Uppercase; color: #414447; font-style: italic; position: absolute; top: 17%; left: 66%; z-index: 6 }
 
-.two .content{ position: absolute; width: 20%; left: 10%; top: 55%; }
+.two .content{ position: absolute;  left: 10%; top: 55%; }
 .two .content h2{ font-size: 28px; font-family: "宋体"; font-weight: bold; }
 .two .content p{ line-height: 22px; font-size: 15px; }
 
@@ -50,14 +51,14 @@ body{ background: #fff;  font-family: "微软雅黑"; overflow:hidden; padding: 
 
 /** 第三屏 */
 .three .gray{ left: 15%; top: 6%;  z-index: 1;}
-.three .thumb{ left: 21.5%; top: 14%;  z-index: 2;}
+.three .thumb,.three .thumb2{ left: 21.5%; top: 14%;  z-index: 2;}
 .three .blue{ left: 42%; top: 66%;  z-index: 3;}
 .three .green{ left: 62%; top: 0%;  z-index: 4;}
 
 .three .skip{ font-size: 20px; color: #fff;  position: absolute; left: 44.6%; top: 75%;  z-index: 5 }
-.three span{ font-size: 30px; text-transform:Uppercase; color: #414447; font-style: italic; position: absolute; top: 17%; left: 66%; z-index: 6 }
+.three span{ font-size: 30px; text-transform:Uppercase; color: #414447; font-style: italic; position: absolute; top: 13%; left: 14%; z-index: 6 }
 
-.three .content{ position: absolute; width: 20%; left: 56%; top: 50%; }
+.three .content{ position: absolute;  left: 56%; top: 50%; }
 .three .content h2{ font-size: 28px; font-family: "宋体"; font-weight: bold; }
 .three .content p{ line-height: 22px; font-size: 15px; }
 
@@ -86,7 +87,7 @@ body{ background: #fff;  font-family: "微软雅黑"; overflow:hidden; padding: 
 .one .skip{ font-size: 20px;  color: #fff;  position: absolute; left: 47.6%; top: 11%;  z-index: 5 }
 .one span{ font-size: 30px; text-transform:Uppercase; color: #414447; font-style: italic; position: absolute; top: 82%; left: 20%; z-index: 6 }
 
-.one .content{ position: absolute; width: 20%; left: 62%; top: 42%; }
+.one .content{ position: absolute;  left: 62%; top: 42%; }
 .one .content h2{ font-size: 28px; font-family: "宋体"; font-weight: bold; }
 .one .content p{ line-height: 22px; font-size: 15px; }
 
@@ -95,15 +96,15 @@ body{ background: #fff;  font-family: "微软雅黑"; overflow:hidden; padding: 
 .one .content-2 p{ line-height: 22px; font-size: 15px; }
 
 /** 第三屏 */
+.three .thumb,.three .thumb2{ left: 21.5%; top: 14%;  z-index: 2;}
 .three .gray{ left: 15%; top: 6%;  z-index: 1;}
-.three .thumb{ left: 21.5%; top: 14%;  z-index: 2;}
 .three .blue{ left: 42%; top: 66%;  z-index: 3;}
 .three .green{ left: 62%; top: 0%;  z-index: 4;}
 
 .three .skip{ font-size: 20px; color: #fff;  position: absolute; left: 44.6%; top: 75%;  z-index: 5 }
 .three span{ font-size: 30px; text-transform:Uppercase; color: #414447; font-style: italic; position: absolute; top: 17%; left: 66%; z-index: 6 }
 
-.three .content{ position: absolute; width: 20%; left: 63%; top: 50%; }
+.three .content{ position: absolute;  left: 63%; top: 50%; }
 .three .content h2{ font-size: 28px; font-family: "宋体"; font-weight: bold; }
 .three .content p{ line-height: 22px; font-size: 15px; }
 
