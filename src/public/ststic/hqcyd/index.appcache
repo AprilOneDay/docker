@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# 2017-11-23 v1.1.1
+# 2017-11-23 v1.2.1
 css/common.css
 css/css.css
 vendor/letterfx/jquery-letterfx.css
@@ -12,8 +12,11 @@ images/flower.png
 images/flower_8.png
 
 images/img_8_1.png
+images/img_8_1_2.png
 images/img_8_2.png
+images/img_8_2_2.png
 images/img_8_3.png
+images/img_8_3_2.png
 
 images/main.jpg
 images/logo.png
