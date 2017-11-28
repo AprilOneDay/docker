@@ -122,11 +122,11 @@
 			$('.one .gray').show(1000);
 			$('.one .blue').show(1000);
 			$('.one .green').show(10);
-			$(".one span").fadeIn(500);
+			$(".one span").letterfx({"fx":"wave","words":true,"timing":300});
 			$(".one .content h2").show(1000);
 			$(".one .content p").fadeIn(2000);
 			setTimeout(function(){
-				$('.one .content').animate({'display':'none'},1000,function(){
+				$('.one .content').animate({'margin-left':200},1000,function(){
 					var text = 'City of joy';
 					$('.one span').html(text);
 					$('.one .thumb').fadeOut(1000);
@@ -136,7 +136,7 @@
 						$('.one .content-2').fadeIn(2000);
 					},1000);
 				});
-			},1000);
+			},3000);
 		}
 
 		//第二个场景
@@ -165,11 +165,11 @@
 				$('.two .gray').fadeIn(1000);
 				$('.two .blue').fadeIn(1000);
 				$('.two .green').fadeIn(10);
-				$(".two span").fadeIn(500);
+				$(".two span").letterfx({"fx":"wave","words":true,"timing":300});
 				$(".two .content h2").show(1000);
 				$(".two .content p").fadeIn(2000);
 				setTimeout(function(){
-					$('.two .content').animate({'display':'none'},1000,function(){
+					$('.two .content').animate({'margin-top':200},1000,function(){
 						var text = 'Leisure City';
 						$('.two span').html(text);
 						$('.two .thumb').fadeOut(1000);
@@ -179,7 +179,7 @@
 							$('.two .content-2').fadeIn(2000);
 						},1000);
 					});
-				},1000);
+				},3000);
 			});
 		}
 
@@ -215,11 +215,11 @@
 				$('.three .gray').show(1000);
 				$('.three .blue').show(1000);
 				$('.three .green').show(10);
-				$(".three span").fadeIn(500);
+				$(".three span").letterfx({"fx":"wave","words":true,"timing":300});
 				$(".three .content h2").show(1000);
 				$(".three .content p").fadeIn(2000);
 				setTimeout(function(){
-					$('.three .content').animate({'display':'none'},1000,function(){
+					$('.three .content').animate({'margin-left':200},1000,function(){
 						var text = 'Festival <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;City';
 						$('.three span').html(text);
 						$('.three .thumb').fadeOut(1000);
@@ -229,7 +229,7 @@
 							$('.three .content-2').fadeIn(2000);
 						},1000);
 					});
-				},1000);
+				},3000);
 			});
 		}
 
@@ -245,11 +245,11 @@
 		setInterval(function(){
 			if(time == 0){
 				scene_1();
-			}else if(time == 5){
+			}else if(time == 8){
 				scene_2();
-			}else if( time == 11){
+			}else if( time == 17){
 				scene_3();
-			}else if(time == 16){
+			}else if(time == 27){
 				scene_4();
 			}
 			time += 0.5;
@@ -259,11 +259,11 @@
 		//更改时间直接切换场景
 		$('.skip').click(function(){
 			if( time < 5){
-				time = 4.5;
-			}else if(time < 10){
-				time =9.5;
-			}else if(time < 16){
-				time = 15.5;
+				time = 5.5;
+			}else if(time < 12){
+				time =16.5;
+			}else if(time < 15){
+				time = 26.5;
 			}
 		})
 	</script>
