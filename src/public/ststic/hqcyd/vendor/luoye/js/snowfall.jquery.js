@@ -55,7 +55,7 @@
             }
             var flakeMarkup = null;
 
-            console.log(options.image);
+            //console.log(options.image);
 
             if (options.image) {
         	 	var num  = parseInt(Math.random() * ((options.image.length-1) - 0 + 1) + 0);
