@@ -2,38 +2,38 @@ CACHE MANIFEST
 # 2017-11-23 v1.3.3
 css/common.css
 css/css.css
-vendor/letterfx/jquery-letterfx.css
+i_vendor/letterfx/jquery-letterfx.css
 
-images/bg.jpg
-images/green.png
-images/gray.png
-images/blue.png
-images/flower.png
-images/flower_8.png
-images/tree.png
+i_images/bg.jpg
+i_images/green.png
+i_images/gray.png
+i_images/blue.png
+i_images/flower.png
+i_images/flower_8.png
+i_images/tree.png
 
-images/img_1.png
-images/img_1_2.png
-images/img_2.png
-images/img_2_2.png
-images/img_3.png
-images/img_3_2.png
+i_images/img_1.png
+i_images/img_1_2.png
+i_images/img_2.png
+i_images/img_2_2.png
+i_images/img_3.png
+i_images/img_3_2.png
 
-images/img_8_1.png
-images/img_8_1_2.png
-images/img_8_2.png
-images/img_8_2_2.png
-images/img_8_3.png
-images/img_8_3_2.png
+i_images/img_8_1.png
+i_images/img_8_1_2.png
+i_images/img_8_2.png
+i_images/img_8_2_2.png
+i_images/img_8_3.png
+i_images/img_8_3_2.png
 
-images/main.jpg
-images/logo.png
-images/btn_home.png
+i_images/main.jpg
+i_images/logo.png
+i_images/btn_home.png
 
-js/jquery-1.12.3.min.js
-vendor/luoye/js/snowfall.jquery.js
-vendor/letterfx/tuxsudo.min.js
-vendor/letterfx/jquery-letterfx.min.js
+i_js/jquery-1.12.3.min.js
+i_vendor/luoye/js/snowfall.jquery.js
+i_vendor/letterfx/tuxsudo.min.js
+i_vendor/letterfx/jquery-letterfx.min.js
 
 NETWORK:
 # login.asp

@@ -1,7 +1,7 @@
 body{ background: #fff;  font-family: "微软雅黑"; overflow:hidden; padding: 0; margin: 0;}
 .wapper{ background: #fff; padding-left: 15px; padding-right: 15px; }
 
-.bg{ position: relative; background: url(../images/bg.jpg) no-repeat 0px 0px;  width: 100%; height: 660px; margin-top: 5%;}
+.bg{ position: relative; background: url(../i_images/bg.jpg) no-repeat 0px 0px;  width: 100%; height: 660px; margin-top: 5%;}
 .menus li{ width: 70%; margin:0 auto; margin-top: 2rem; }
 .menus li img{ width: 95%; margin-left: 2%; }
 
@@ -68,9 +68,10 @@ body{ background: #fff;  font-family: "微软雅黑"; overflow:hidden; padding: 
 
 
 /**  场景四 */
-.main{ width: 1000px; margin:0 auto; }
+.main{ width: 100%; margin:0 auto; }
+.main-1000{ width: 1000px; margin:0 auto; }
 .main img{ display: block; }
-.main .zt{ margin-top: 20px; }
+.main .zt{ width: 100%; height: 650px; background: url(../i_images/main.jpg) no-repeat; background-size: 100%100%; }
 .main .logo { display: block; width: 211px; margin:0 auto; margin-bottom: 20px; margin-top: 20px; }
 .main .btn-home { display: block; width: 211px; margin:0 auto; }
 
@@ -78,7 +79,7 @@ body{ background: #fff;  font-family: "微软雅黑"; overflow:hidden; padding: 
 /** 笔记本分辨率调整 */
 @media screen and (max-device-width: 1500px) {
 
-.bg{ position: relative; background: url(../images/bg.jpg) no-repeat -220px  0px;  width: 100%; height: 660px; margin-top: 5%;}
+.bg{ position: relative; background: url(../i_images/bg.jpg) no-repeat -220px  0px;  width: 100%; height: 660px; margin-top: 5%;}
 .one .gray{ left: 16%; top: 12%;  z-index: 1;}
 .one .thumb,.one .thumb2{ left: 21.6%; top: 13%;  z-index: 2; background-color: (0 0 0);}
 .one .blue{ left: 45%; top: 2%;  z-index: 3;}

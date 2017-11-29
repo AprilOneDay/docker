@@ -69,8 +69,6 @@
                 });
             }
 
-            console.log(flakeMarkup);
-
             flakeMarkup.attr({
                 'class': 'snowfall-flakes',
                 'id': 'flake-' + this.id

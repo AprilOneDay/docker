@@ -6,21 +6,20 @@
 	<meta name="keywords" content="华侨城"/>
 	<meta name="description" content="华侨城"/>
 	<meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
-	<meta name="baidu-site-verification" content="IOphv8ZngJ" />
-	<link rel="stylesheet" href="css/common.css" />
-	<link rel="stylesheet" href="css/css.css" />
-	<link rel="stylesheet" href="vendor/letterfx/jquery-letterfx.css"  type="text/css" />
+	<link rel="stylesheet" href="i_css/common.css" />
+	<link rel="stylesheet" href="i_css/css.css" />
+	<link rel="stylesheet" href="i_vendor/letterfx/jquery-letterfx.css"  type="text/css" />
 	
 </head>
 <body>
-	<div class="bg" >
+	<div class="bg">
 		<div class="luoye"></div>
-		<div class="one" >
-			<img src="images/green.png" class="green" style="display: none;">
-			<img src="images/gray.png" class="gray" style="display: none;">
-			<img src="images/blue.png" class="blue" style="display: none;">
-			<img src="images/img_1.png" class="thumb" >
-			<img src="images/img_1_2.png" class="thumb2" style="display: none;" >
+		<div class="one">
+			<img src="i_images/green.png" class="green" style="display: none;">
+			<img src="i_images/gray.png" class="gray" style="display: none;">
+			<img src="i_images/blue.png" class="blue" style="display: none;">
+			<img src="i_images/img_1.png" class="thumb" >
+			<img src="i_images/img_1_2.png" class="thumb2" style="display: none;" >
 			<span>Entertainment <br/> City</span>
 			<a class="skip" href="javascript:;">Skip</a>
 			
@@ -36,11 +35,11 @@
 		</div>
 
 		<div class="two" style="display: none;">
-			<img src="images/green.png" class="green" style="display: none;">
-			<img src="images/flower.png" class="gray" style="display: none;">
-			<img src="images/blue.png" class="blue" >
-			<img src="images/img_2.png" class="thumb" style="display: none;">
-			<img src="images/img_2_2.png" class="thumb2" style="display: none;">
+			<img src="i_images/green.png" class="green" style="display: none;">
+			<img src="i_images/flower.png" class="gray" style="display: none;">
+			<img src="i_images/blue.png" class="blue" >
+			<img src="i_images/img_2.png" class="thumb" style="display: none;">
+			<img src="i_images/img_2_2.png" class="thumb2" style="display: none;">
 			<span>Leisure <br/>City</span>
 			<a class="skip" href="javascript:;">Skip</a>
 			<div class="luoye"></div>
@@ -56,11 +55,11 @@
 		</div>
 
 		<div class="three"  style="display: none;">
-			<!-- <img src="images/green.png" class="green" > -->
-			<img src="images/gray.png" class="gray" style="display: none;">
-			<img src="images/blue.png" class="blue" style="display: none;">
-			<img src="images/img_3.png" class="thumb" style="display: none;">
-			<img src="images/img_3_2.png" class="thumb2" style="display: none;">
+			<!-- <img src="i_images/green.png" class="green" > -->
+			<img src="i_images/gray.png" class="gray" style="display: none;">
+			<img src="i_images/blue.png" class="blue" style="display: none;">
+			<img src="i_images/img_3.png" class="thumb" style="display: none;">
+			<img src="i_images/img_3_2.png" class="thumb2" style="display: none;">
 			<span>Humanities <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;City</span>
 			<a class="skip" href="javascript:;">Skip</a>
 			<div class="luoye"></div>
@@ -77,15 +76,17 @@
 	</div>
 	
 	<div class="main" style="display: none;">
-		<div class="zt"><img src="images/main.jpg"  style="display: none;"></div>
-		<div class="logo"><img src="images/logo.png"  style="display: none;"></div>
-		<a href="javascript:;"><img src="images/btn_home.png" class="btn-home"></a>
+		<div class="zt" style="display: none;"></div>
+		<div class="main-1000">
+			<div class="logo" style="display: none;"><img src="i_images/logo.png" ></div>
+			<a href="javascript:;"><img src="i_images/btn_home.png" class="btn-home"></a>
+		</div>
 	</div>
 
-	<script type="text/javascript" src="js/jquery-1.12.3.min.js"></script>
-	<script type="text/javascript" src="vendor/luoye/js/snowfall.jquery.js"></script> 
-	<script type="text/javascript" src="vendor/letterfx/tuxsudo.min.js"></script>
-	<script type="text/javascript" src="vendor/letterfx/jquery-letterfx.min.js"></script>
+	<script type="text/javascript" src="i_js/jquery-1.12.3.min.js"></script>
+	<script type="text/javascript" src="i_vendor/luoye/js/snowfall.jquery.js"></script> 
+	<script type="text/javascript" src="i_vendor/letterfx/tuxsudo.min.js"></script>
+	<script type="text/javascript" src="i_vendor/letterfx/jquery-letterfx.min.js"></script>
 	<script type="text/javascript">
 		//console.log($(window).width());
 
@@ -108,7 +109,7 @@
 
 		//落叶
 		$('.luoye').snowfall({
-            image: ["images/flower_8.png","images/tree.png"],
+            image: ["i_images/flower_8.png","i_images/tree.png"],
             flakeCount:5,
             minSize: 22,
             maxSize: 22
@@ -237,8 +238,8 @@
 		function scene_4(){
 			$('.bg').hide(2000);
 			$('.main').show();
-			$('.main .zt img').fadeIn(5000);
-			$('.main .logo img').slideToggle(3000);
+			$('.main .zt').fadeIn(5000);
+			$('.main-1000 .logo').slideToggle(3000);
 		}
 
 		//创建房间计时器
