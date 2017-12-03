@@ -279,7 +279,7 @@
 			$('.bg').animate({backgroundPositionX:left+'px'},1300,function(){
 				$('.two').hide();
 
-				/*var angle = 0;
+				var angle = 0;
 				setInterval(function(){
 				    angle +=3;
 				    $('#triangle-3').rotate(angle);
@@ -298,7 +298,7 @@
 				setInterval(function(){
 				    angle +=3;
 				    $('#round-5').rotate(angle);
-				}, 50);*/
+				}, 50);
 
 				$('#round-3').animate({'margin-bottom':'5rem'},2000,function(){});
 				$('#round-4').animate({'margin-left':'5rem'},2000,function(){});
@@ -334,6 +334,7 @@
 
 		//第四个场景
 		function scene_4(){
+			$('.three').hide();
 			$('.bg').hide(2000);
 			$('.main').show();
 			$('.main .zt').fadeIn(5000);
@@ -349,9 +350,9 @@
 				scene_2();
 			}else if( time == 11){
 				scene_3();
-			}/*else if(time == 16){
+			}else if(time == 16){
 				scene_4();
-			}*/
+			}
 			time += 0.5;
  			//console.log(time);
 		},500)
