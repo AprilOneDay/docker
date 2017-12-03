@@ -5,13 +5,21 @@ body{ background: #fff;  font-family: "微软雅黑"; overflow:hidden; padding: 
 .menus li{ width: 70%; margin:0 auto; margin-top: 2rem; }
 .menus li img{ width: 95%; margin-left: 2%; }
 
-.bg img{ position: absolute; }
+.bg img{ position: absolute;  }
 
+.round{ position: absolute; z-index: 1; display: none; }
 .content{ width: 300px; height: 200px; }
 .content p{ display: none; }
 .content h2{ display: none; }
 
+
+.triangle{ position: absolute; left: 80%; top: 80%;  width: 20px; display: none; }
+
 /** 第一屏 */
+.round-2{ top: 5%; }
+.round-6{ bottom: 0%;  }
+.round-7{ bottom: 0%; left: 12%; }
+.round-8{ bottom: 0%; left: 50%;}
 .one .gray{ left: 21%; top: 12%;  z-index: 1;}
 .one .thumb,.one .thumb2{ left: 27.6%; top: 13%;  z-index: 2; background-color: (0 0 0);}
 .one .blue{ left: 45%; top: 2%;  z-index: 3;}
@@ -50,6 +58,9 @@ body{ background: #fff;  font-family: "微软雅黑"; overflow:hidden; padding: 
 
 
 /** 第三屏 */
+.round-3{ right: 5%; bottom: 10%; }
+.round-4{ right: 30%; top: 20%; }
+.round-5{ right: 15%; top: 60%; }
 .three .gray{ left: 15%; top: 6%;  z-index: 1;}
 .three .thumb,.three .thumb2{ left: 21.5%; top: 14%;  z-index: 2;}
 .three .blue{ left: 42%; top: 66%;  z-index: 3;}
@@ -73,7 +84,7 @@ body{ background: #fff;  font-family: "微软雅黑"; overflow:hidden; padding: 
 .main img{ display: block; }
 .main .zt{ width: 100%; height: 780px; background: url(../i_images/main.jpg) no-repeat; background-size: 100%100%; }
 .main .logo { display: block; width: 211px; margin:0 auto; margin-bottom: 5px; }
-.main .btn-home { display: block; width: 211px; margin:0 auto; }
+.main .btn-home { display: block; width: 211px; margin:0 auto; position: fixed; bottom: 0; }
 
 
 /** 笔记本分辨率调整 */

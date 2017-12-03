@@ -4,6 +4,22 @@ css/common.css
 css/css.css
 i_vendor/letterfx/jquery-letterfx.css
 
+i_images/round_1.png
+i_images/round_2.png
+i_images/round_3.png
+i_images/round_4.png
+i_images/round_5.png
+i_images/round_6.png
+i_images/round_7.png
+i_images/round_8.png
+i_images/round_9.png
+i_images/round_10.png
+i_images/round_11.png
+
+i_images/triangle.png
+i_images/triangle_2.png
+i_images/triangle_3.png
+
 i_images/bg.jpg
 i_images/green.png
 i_images/gray.png
@@ -34,6 +50,7 @@ i_js/jquery-1.12.3.min.js
 i_vendor/luoye/js/snowfall.jquery.js
 i_vendor/letterfx/tuxsudo.min.js
 i_vendor/letterfx/jquery-letterfx.min.js
+i_vendor/xuanzhuan/js/jquery.rotate.min.js
 
 NETWORK:
 # login.asp

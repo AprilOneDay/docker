@@ -12,9 +12,16 @@
 	
 </head>
 <body>
+	<img src="i_images/round_2.png" class="one round round-2" >
+	<img src="i_images/round_6.png" class="one round round-6" >
+	<img src="i_images/round_7.png" class="one round round-7" >
+	<img src="i_images/round_8.png" class="one round round-8" >
+
+	<img src="i_images/round_11.png" class="three round round-11" style="right: 0; bottom: 0;">
 	<div class="bg">
 		<div class="luoye"></div>
 		<div class="one">
+			<img src="i_images/triangle.png" id="triangle-1" class="triangle triangle-1" >
 			<img src="i_images/green.png" class="green" style="display: none;">
 			<img src="i_images/gray.png" class="gray" style="display: none;">
 			<img src="i_images/blue.png" class="blue" style="display: none;">
@@ -35,6 +42,9 @@
 		</div>
 
 		<div class="two" style="display: none;">
+			<img src="i_images/triangle_2.png" id="triangle-2" class="triangle triangle-2">
+			<img src="i_images/triangle.png" id="triangle-4" class="triangle triangle-4" style="left: 30%;top: 5%;">
+			<img src="i_images/round_3.png" id="triangle-5" class="triangle triangle-5" style="left: 90%;top: 20%;">
 			<img src="i_images/green.png" class="green" style="display: none;">
 			<img src="i_images/flower.png" class="gray" style="display: none;">
 			<img src="i_images/blue.png" class="blue" >
@@ -55,7 +65,11 @@
 		</div>
 
 		<div class="three"  style="display: none;">
-			<!-- <img src="i_images/green.png" class="green" > -->
+			<img src="i_images/round_3.png" class="three round round-3" id="round-3">
+			<img src="i_images/round_4.png" class="three round round-4" id="round-4">
+			<img src="i_images/round_5.png" class="three round round-5" id="round-5">
+			<!-- <img src="i_images/triangle_3.png" class="three round round-12" > -->
+			<img src="i_images/triangle_2.png" id="triangle-3" class="triangle triangle-3" >
 			<img src="i_images/gray.png" class="gray" style="display: none;">
 			<img src="i_images/blue.png" class="blue" style="display: none;">
 			<img src="i_images/img_3.png" class="thumb" style="display: none;">
@@ -87,6 +101,7 @@
 	<script type="text/javascript" src="i_vendor/luoye/js/snowfall.jquery.js"></script> 
 	<script type="text/javascript" src="i_vendor/letterfx/tuxsudo.min.js"></script>
 	<script type="text/javascript" src="i_vendor/letterfx/jquery-letterfx.min.js"></script>
+	<script type="text/javascript" src="i_vendor/xuanzhuan/js/jquery.rotate.min.js"></script> 
 	<script type="text/javascript">
 		//console.log($(window).width());
 
@@ -114,9 +129,7 @@
             minSize: 22,
             maxSize: 22
         });
-
-
-
+    	
 		//第一个场景
 		function scene_1(){
 			$('.one .thumb').animate({'filter.grayscale':0},100);
@@ -126,6 +139,21 @@
 			$(".one span").fadeIn(500);
 			$(".one .content h2").show(1000);
 			$(".one .content p").fadeIn(2000);
+
+			
+
+			$(".triangle-1").animate({'width':'100px','left':'85%','display':'block'},1000,function(){
+				var angle = 0;
+				setInterval(function(){
+				    angle +=3;
+				    $('#triangle-1').rotate(angle);
+				}, 50);
+			})
+
+			$('.round-2').fadeIn(5000);
+			$('.round-6').show(5000);
+			$('.round-7').fadeIn(5000);
+			$('.round-8').show(5000);
 			setTimeout(function(){
 				$('.one .content').animate({'display':'none'},1000,function(){
 					var text = 'City of joy';
@@ -154,10 +182,19 @@
 			$('.one .content-2').hide();
 			$(".one span").hide();
 			$(".one .skip").hide();
+			$(".round").hide(1000);
+			$(".triangle").hide(1000);
+
 
 			$('.bg').animate({backgroundPositionX:left+'px'},1300,function(){
 				$('.one').hide();
 
+				var angle = 0;
+				/*setInterval(function(){
+				    angle +=3;
+				    $('#triangle-2').rotate(angle);
+				}, 50);
+*/
 				//落叶
 				$('.luoye').animate({left:'0%',top:'30%'},4000);
 
@@ -169,6 +206,35 @@
 				$(".two span").fadeIn(500);
 				$(".two .content h2").show(1000);
 				$(".two .content p").fadeIn(2000);
+
+
+				//$(".triangle").show(1000);
+
+				$(".triangle-2").animate({'width':'100px','display':'block'},1000,function(){
+					var angle = 0;
+					setInterval(function(){
+					    angle +=3;
+					    $('#triangle-2').rotate(angle);
+					}, 50);
+				})
+
+				$(".triangle-4").animate({'width':'100px','display':'block'},1000,function(){
+					var angle = 0;
+					setInterval(function(){
+					    angle +=3;
+					    $('#triangle-4').rotate(angle);
+					}, 50);
+				})
+
+				$(".triangle-5").animate({'width':'100px','display':'block'},1000,function(){
+					var angle = 0;
+					setInterval(function(){
+					    angle +=3;
+					    $('#triangle-5').rotate(angle);
+					}, 50);
+					$('.triangle-5').animate({'margin-top':'2rem'},2000,function(){});
+				})
+
 				setTimeout(function(){
 					$('.two .content').animate({'display':'none'},1000,function(){
 						var text = 'Leisure City';
@@ -203,6 +269,8 @@
 			$('.two .content-2').hide();
 			$(".two span").hide();
 			$(".two .skip").hide();
+			$(".round").hide(1000);
+			$(".triangle").hide(1000);
 
 			//落叶
 			//$('.luoye').html('');
@@ -210,6 +278,36 @@
 
 			$('.bg').animate({backgroundPositionX:left+'px'},1300,function(){
 				$('.two').hide();
+
+				/*var angle = 0;
+				setInterval(function(){
+				    angle +=3;
+				    $('#triangle-3').rotate(angle);
+				}, 50);
+
+				setInterval(function(){
+				    angle +=3;
+				    $('#round-3').rotate(angle);
+				}, 50);
+
+				setInterval(function(){
+				    angle +=3;
+				    $('#round-4').rotate(angle);
+				}, 50);
+
+				setInterval(function(){
+				    angle +=3;
+				    $('#round-5').rotate(angle);
+				}, 50);*/
+
+				$('#round-3').animate({'margin-bottom':'5rem'},2000,function(){});
+				$('#round-4').animate({'margin-left':'5rem'},2000,function(){});
+				$('#round-5').animate({'margin-top':'5rem'},2000,function(){});
+				$('#round-5').animate({'margin-top':'5rem'},2000,function(){});
+				$('#round-5').animate({'margin-top':'5rem'},2000,function(){});
+				$('.round-12').show(5000);
+
+				$('.round-11').animate({'width':'140px','margin-left':'140px'},1000,function(){})
 
 				$('.three').css('display','block');
 				$('.three .thumb').show(500);
@@ -240,6 +338,7 @@
 			$('.main').show();
 			$('.main .zt').fadeIn(5000);
 			$('.main-1000 .logo').slideToggle(3000);
+			$('body').css('overflow','auto');
 		}
 
 		//创建房间计时器
@@ -250,9 +349,9 @@
 				scene_2();
 			}else if( time == 11){
 				scene_3();
-			}else if(time == 16){
+			}/*else if(time == 16){
 				scene_4();
-			}
+			}*/
 			time += 0.5;
  			//console.log(time);
 		},500)
