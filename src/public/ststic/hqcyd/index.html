@@ -17,7 +17,13 @@
 	<img src="i_images/round_7.png" class="one round round-7" >
 	<img src="i_images/round_8.png" class="one round round-8" >
 
-	<img src="i_images/round_11.png" class="three round round-11" style="right: 0; bottom: 0;">
+	<img src="i_images/round_1.png" class="two round two-round round-1" style="top: 0; left: 15%;display: none;">
+	<img src="i_images/round_10.png" class="two round two-round round-10" style="top: 35%; right: 5%;display: none;">
+	
+	<img src="i_images/round_9.png" class="three round three-round" style=" bottom: 0; left: 20%;">
+	<img src="i_images/round_11.png" class="three round three-round" style=" bottom: 0; right: 0;">
+	<img src="i_images/triangle_3.png" class="three round three-round" style="right: 0; top: 20%;">
+
 	<div class="bg">
 		<div class="luoye"></div>
 		<div class="one">
@@ -140,8 +146,6 @@
 			$(".one .content h2").show(1000);
 			$(".one .content p").fadeIn(2000);
 
-			
-
 			$(".triangle-1").animate({'width':'100px','left':'85%','display':'block'},1000,function(){
 				var angle = 0;
 				setInterval(function(){
@@ -187,18 +191,12 @@
 
 
 			$('.bg').animate({backgroundPositionX:left+'px'},1300,function(){
-				$('.one').hide();
+				$('.one').remove();
 
-				var angle = 0;
-				/*setInterval(function(){
-				    angle +=3;
-				    $('#triangle-2').rotate(angle);
-				}, 50);
-*/
 				//落叶
 				$('.luoye').animate({left:'0%',top:'30%'},4000);
 
-				$('.two').css('display','block');
+				$('.bg .two').css('display','block');
 				$('.two .thumb').fadeIn(2000);
 				$('.two .gray').fadeIn(1000);
 				$('.two .blue').fadeIn(1000);
@@ -206,9 +204,7 @@
 				$(".two span").fadeIn(500);
 				$(".two .content h2").show(1000);
 				$(".two .content p").fadeIn(2000);
-
-
-				//$(".triangle").show(1000);
+				$(".two-round").show(5000);
 
 				$(".triangle-2").animate({'width':'100px','display':'block'},1000,function(){
 					var angle = 0;
@@ -277,7 +273,7 @@
 			$('.luoye').animate({left:'47%',top:'30%'},4000);
 
 			$('.bg').animate({backgroundPositionX:left+'px'},1300,function(){
-				$('.two').hide();
+				$('.two').remove();
 
 				var angle = 0;
 				setInterval(function(){
@@ -305,9 +301,7 @@
 				$('#round-5').animate({'margin-top':'5rem'},2000,function(){});
 				$('#round-5').animate({'margin-top':'5rem'},2000,function(){});
 				$('#round-5').animate({'margin-top':'5rem'},2000,function(){});
-				$('.round-12').show(5000);
-
-				$('.round-11').animate({'width':'140px','margin-left':'140px'},1000,function(){})
+				$('.three-round').show(5000);
 
 				$('.three').css('display','block');
 				$('.three .thumb').show(500);
@@ -334,8 +328,8 @@
 
 		//第四个场景
 		function scene_4(){
-			$('.three').hide();
-			$('.bg').hide(2000);
+			$('.three').remove();
+			$('.bg').remove();
 			$('.main').show();
 			$('.main .zt').fadeIn(5000);
 			$('.main-1000 .logo').slideToggle(3000);
