@@ -82,7 +82,7 @@ body{ background: #fff;  font-family: "微软雅黑"; overflow:hidden; padding: 
 .main{ width: 100%; margin:0 auto; }
 .main-1000{ width: 1000px; margin:0 auto; }
 .main img{ display: block; }
-.main .zt{ width: 100%; height: 780px; background: url(../i_images/main.jpg) no-repeat; background-size: 100%100%; }
+.main .zt{ width: 100%; height: 780px; background: url(../i_images/main.jpg) no-repeat center;  }
 .main .logo { display: block; width: 211px; margin:0 auto; margin-bottom: 5px; }
 .main .btn-home { display: block; width: 211px; margin:0 auto; margin-bottom: 20px;}
 

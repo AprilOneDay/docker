@@ -328,8 +328,8 @@
 
 		//第四个场景
 		function scene_4(){
-			$('.three').remove();
-			$('.bg').remove();
+			$('.bg').hide(2000);
+			$('.three').hide(2000);
 			$('.main').show();
 			$('.main .zt').fadeIn(5000);
 			$('.main-1000 .logo').slideToggle(3000);
@@ -344,7 +344,7 @@
 				scene_2();
 			}else if( time == 11){
 				scene_3();
-			}else if(time == 16){
+			}else if(time == 18){
 				scene_4();
 			}
 			time += 0.5;
@@ -358,7 +358,7 @@
 			}else if(time < 10){
 				time =9.5;
 			}else if(time < 16){
-				time = 15.5;
+				time = 16.5;
 			}
 		})
 	</script>
