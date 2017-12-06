@@ -4,9 +4,10 @@
  */
 namespace app\admin\controller\content;
 
-use denha;
+use app\admin\controller\Init;
+use denha\Pages;
 
-class Blog extends \app\admin\controller\Init
+class Blog extends Init
 {
 
     public function index()
@@ -41,7 +42,7 @@ class Blog extends \app\admin\controller\Init
         }
         $list  = table('Article')->where($map)->limit($offer, $pageSize)->order('id desc')->find('array');
         $total = table('Article')->where($map)->count();
-        $page  = new denha\Pages($total, $pageNo, $pageSize, url('', $param));
+        $page  = new Pages($total, $pageNo, $pageSize, url('', $param));
 
         $other = array(
             'tag'             => getVar('tags', 'admin.article'),
@@ -89,7 +90,7 @@ class Blog extends \app\admin\controller\Init
                 $result = table('Article')->where(array('id' => $id))->save($data);
                 if ($result) {
                     $resultData = table('ArticleBlog')->where(array('id' => $id))->save($dataContent);
-                    dao('BaiduSpider')->pull($id); //百度主动推送
+                    dao('BaiduSpider')->update($id); //百度主动推送
                     $this->ajaxReturn(array('status' => true, 'msg' => '修改成功'));
                 } else {
                     $this->ajaxReturn(array('status' => false, 'msg' => '修改失败'));
