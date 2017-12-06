@@ -66,8 +66,9 @@ class Trace
             if (TRACE) {
                 return include FARM_PATH . DS . 'trace' . DS . 'error.html';
             } else {
+                //FATAL ERROR 发送到邮箱
                 if (getConfig('config', 'send_debug_mail')) {
-                    $title   = $_SERVER['HTTP_HOST'] . ' 有一个致命错误';
+                    $title   = $_SERVER['HTTP_HOST'] . ' 有一个致命错误 ip:' . getIP();
                     $content = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . PHP_EOL . 'FATAL ERROR : ' . $e['message'] . ' from ' . $e['file'] . ' on line ' . $e['line'];
                     dao('Mail')->send(getConfig('config', 'send_mail'), $title, $content);
                 }
