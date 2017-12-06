@@ -28,6 +28,7 @@ class VisitorComment
         $data['type']      = $type;
         $data['ip']        = getIP();
 
+        $map             = array();
         $map['ip']       = $data['ip'];
         $map['nickname'] = $nickname;
         $map['content']  = $content;
@@ -35,6 +36,17 @@ class VisitorComment
         $id = table('VisitorComment')->where($map)->field('id')->find('one');
         if ($id) {
             return array('status' => false, 'msg' => '请勿发布重复内容');
+        }
+
+        //当日IP只可提交N条数据
+        $beginToday     = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
+        $endToday       = mktime(0, 0, 0, date('m'), date('d') + 1, date('Y')) - 1;
+        $map            = array();
+        $map['ip']      = $data['ip'];
+        $map['created'] = array('between', $beginToday, $endToday);
+        $count          = table('VisitorComment')->where($map)->count();
+        if ($count >= 5) {
+            return array('status' => false, 'msg' => '请勿频繁提交');
         }
 
         $result = table('VisitorComment')->add($data);
