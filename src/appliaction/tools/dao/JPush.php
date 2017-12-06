@@ -79,7 +79,7 @@ class JPush
         $pusher = $this->client->push();
         $pusher->setPlatform('all');
         $pusher->addAlias($registration_ids);
-        $pusher->options(['apns_production' => true]); //苹果如果是正式环境需要增加这个参数
+        $pusher->options(['apns_production' => false]); //true 苹果如果是正式环境需要增加这个参数
         //$pusher->addRegistrationId($registration_ids);
         $pusher->iosNotification($content, array(
             'sound'  => 'sound.caf',

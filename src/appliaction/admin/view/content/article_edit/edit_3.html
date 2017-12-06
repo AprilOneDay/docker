@@ -36,6 +36,7 @@
 							</label>
 							<div class="col-sm-8">
 								<select data-selected="{??$data['teacher_uid']}" name="info[teacher_uid]" class="form-control w160">
+									<option value="0">选择授课老师</option>
 									{loop $other['teacherList'] $key $value}
 	                               		<option value="{$value['id']}">{$value['real_name']}</option>
 	                            	{/loop}
@@ -180,6 +181,17 @@
                                		<option value="2">一对多</option>
                                		<option value="3">视频课件</option>
 								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger">*</span>
+								<span>上传文件</span>
+							</label>
+							<div class="col-sm-1">
+								<a class="btn btn-primary pull-left btn-files" data-name="video_url" data-value='{??$data['video_url']}' data-path="test" data-max="1">添加文件</a>
+							</div>
+							<div class="col-sm-8">
 							</div>
 						</div>
 						<div class="form-group">

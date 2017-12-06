@@ -17,13 +17,13 @@
 							<h5>菜单列表</h5>
 						</div>
 						<div class="pull-right">
-							<a class="btn btn-primary btn-open" config-href="{F:url('edit',array('parentid'=>$parentid))}"  config-height="500px" config-width="60%">添加分类</a>
+							<a class="btn btn-primary btn-open" config-href="{F:url('edit')}"  config-height="500px" config-width="60%">添加考卷</a>
 						</div>
 					</div>
 					<form class="form-inline ng-pristine ng-valid" action=""  method="get">
                         <div class="form-group">
                             <select class="form-control" name="field">
-                                <option value="title">标题</option>
+                                <option value="title">考卷</option>
                             </select>
                             <input type="text" class="form-control w120" placeholder="Search" name="keyword" value="{??$param['keyword']}" >
                             <button type="submit" class="btn btn-default" >搜索</button>
@@ -36,9 +36,10 @@
 									<thead>
 										<tr>
 											<th style="width:75px;">ID</th>
-											<th>标题</th>
+											<th>考卷名称</th>
+											<th style="width:120px;">试卷总分</th>
 											<th style="width:120px;">状态</th>
-											<th style="width:180px; text-align:center;">编辑/操作</th>
+											<th style="width:160px; text-align:center;">编辑/操作</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -46,12 +47,11 @@
 									 	<tr v-for="list in list">
 											<td>{$value['id']}</td>
 											<td>{$value['name']}</td>
-											<td>{$value['is_show']}</td>
+											<td>{$value['score']}</td>
+											<td>{$other['statusCopy'][$value['status']]}</td>
 											<td align='center'>
-												<a config-href="{F:url('edit',array('parentid'=>$value['id']))}"  config-height="500px" config-width="60%"  config-title="编辑分类"  class="btn-open">添加子类</a>
-												<a href="{F:url('lists',array('id'=>$value['id']))}">查看子类</a>
+												<a href="{F:url('question_list',array('id'=>$value['id']))}">查看题目</a>
 												<a config-href="{F:url('edit',array('id'=>$value['id']))}"  config-height="500px" config-width="60%"  config-title="编辑分类"  class="btn-open">编辑</a>
-												<a config-href="{F:url('del')}" config-tips="确定删除【{$value['name']}】分类?" data-id="{$value['id']}" class="btn-ajax-post">删除</a>
 											</td>
 										</tr>
 										{/loop}

@@ -53,7 +53,7 @@ class Coupon
         } else {
             $data['discount'] = (int) $param['discount'];
             if (!$data['discount']) {
-                return array('stauts' => false, 'msg' => '请输入折扣值');
+                return array('stauts' => false, 'msg' => '请输入折扣值[数字]');
             }
 
             if ($data['discount'] >= 10) {

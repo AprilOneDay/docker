@@ -9,6 +9,8 @@ namespace app\tools\dao;
  */
 class Upload
 {
+    private $path;
+
     public function upBase64Img($data, $path)
     {
         if ($path) {
@@ -62,8 +64,11 @@ class Upload
 
         $type ?: $type = 'jpg,png,gif,jpeg';
 
-        $path = PUBLIC_PATH . 'uploadfile' . DS . $path . DS;
-        is_dir($path) ? '' : mkdir($path, 0755, true);
+        $filePath = PUBLIC_PATH . 'uploadfile' . DS . $path . DS;
+        is_dir($filePath) ? '' : mkdir($filePath, 0755, true);
+
+        //获取最近附件记录id
+        $id = (int) table('UploadLog')->order('id desc')->field('id')->find('one') + 1;
 
         foreach ($files as $key => $value) {
             if ($value['size'] >= $size * 1024 * 1024) {
@@ -71,32 +76,49 @@ class Upload
             }
 
             $ext = ltrim($value['type'], substr($value['type'], 0, stripos($value['type'], '/') + 1));
-            if ($ext == 'et-stream') {
-                $ext = pathinfo($value['name']);
-                $ext = $ext['extension'];
-            }
+
+            $ext != 'et-stream' ?: $ext = pathinfo($value['name'], PATHINFO_EXTENSION);
 
             if (stripos($type, $ext) === false) {
                 return array('status' => false, 'msg' => $ext . '文件禁止上传');
             }
 
-            //保存文件
-            //$fileName = time() . '.' . $ext;
-            //$result   = move_uploaded_file($value['tmp_name'], $path . $fileName);
             $move[$key]['tmp_name'] = $value['tmp_name'];
-            $move[$key]['name']     = time() . rand(10000, 99999) . '.' . $ext;
-
+            $move[$key]['name']     = time() . rand(100, 999) . '_' . $id++ . '.' . $ext;
+            $move[$key]['old_name'] = $value['name'];
+            $move[$key]['size']     = $value['size'];
         }
 
         //上传文件
         foreach ($move as $key => $value) {
-            $result = move_uploaded_file($value['tmp_name'], $path . $value['name']);
+
+            $result = move_uploaded_file($value['tmp_name'], $filePath . $value['name']);
 
             if ($result) {
                 $data['name'][$key] = $value['name'];
+                //保存日志记录
+                $this->saveLog($value, $path);
             }
+
         }
 
         return array('status' => true, 'msg' => '上传成功', 'data' => $data);
     }
+
+    /** 保存附件记录 */
+    public function saveLog($param = array(), $path = '')
+    {
+
+        $data['name']    = $param['old_name'];
+        $data['size']    = $param['size'];
+        $data['path']    = $path;
+        $data['ext']     = pathinfo($param['old_name'], PATHINFO_EXTENSION);
+        $data['url']     = $param['name'];
+        $data['created'] = TIME;
+
+        $result = table('UploadLog')->add($data);
+
+        return $result;
+    }
+
 }

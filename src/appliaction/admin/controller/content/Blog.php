@@ -117,7 +117,6 @@ class Blog extends \app\admin\controller\Init
                 $rs = table('Article')->join($articleData, "$articleData.id = $article.id", 'left')->where($map)->find();
 
                 $rs['created'] = date('Y-m-d', $rs['created']);
-                $rs['thumb']   = json_encode((array) imgUrl($rs['thumb'], 'blog'));
 
             } else {
                 $rs = array('is_show' => 1, 'is_recommend' => 0, 'created' => date('Y-m-d', TIME));

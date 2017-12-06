@@ -16,12 +16,29 @@
 						<div class="pull-left">
 							<h5>会员列表</h5>
 						</div>
+						<div class="pull-right">
+							<a class="btn btn-primary btn-open" config-href="{F:url('edit')}" config-width="40%" config-height="70%">添加</a>
+						</div>
 					</div>
 					<form class="form-inline ng-pristine ng-valid" action=""  method="get">
                         <div class="form-group">
+                        	<select class="form-control" data-selected="{$param['type']}" name="param[type]">
+                                <option value="">类型</option>
+                                {loop $other['typeCopy'] $key $value}
+                               		<option value="{$key}">{$value}</option>
+                            	{/loop}
+                            </select>
+                        	<select class="form-control" data-selected="{$param['status']}" name="param[status]">
+                                <option value="">状态</option>
+                                {loop $other['statusCopy'] $key $value}
+                               		<option value="{$key}">{$value}</option>
+                            	{/loop}
+                            </select>
                             <select class="form-control" name="field" data-selected="{??$param['field']}">
                                 <option value="id">UID</option>
                                 <option value="username">用户名</option>
+                                <option value="nickname">昵称</option>
+                                <option value="mobile">电话</option>
                             </select>
                             <input type="text" class="form-control w120" placeholder="Search" name="keyword" value="{??$param['keyword']}" >
                             <button type="submit" class="btn btn-default" @click="search()">搜索</button>
@@ -37,6 +54,7 @@
 											<th>用户名/昵称</th>
 											<th>手机号</th>
 											<th>注册时间</th>
+											<th style="width:120px;">类型</th>
 											<th style="width:120px;">状态</th>
 											<th style="width:160px; text-align:center;">操作</th>
 										</tr>
@@ -48,6 +66,7 @@
 											<td>{$value['username']} / {$value['nickname']}</td>
 											<td>{$value['mobile']}</td>
 											<td>{F:date('Y-m-d',$value['created'])}</td>
+											<td>{$other['typeCopy'][$value['type']]}</td>
 											<td>
 												{if $value['status'] == 1}
 													<b style="color: green">启用</b>

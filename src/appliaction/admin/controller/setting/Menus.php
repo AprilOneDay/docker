@@ -1,7 +1,9 @@
 <?php
 namespace app\admin\controller\setting;
 
-class Menus extends \app\admin\controller\Init
+use app\admin\controller\Init;
+
+class Menus extends Init
 {
     public $type;
 

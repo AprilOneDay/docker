@@ -13,7 +13,7 @@ class Category
      * @param  integer                  $id [description]
      * @return [type]                       [description]
      */
-    public function getList($id = 0, $lg)
+    public function getList($id = 0, $lg = '')
     {
 
         static $_category = array();
@@ -44,11 +44,20 @@ class Category
      * @param  [type]                   $id [description]
      * @return [type]                       [description]
      */
-    public function getName($id)
+    public function getName($id, $lg = '')
     {
 
         $map['id'] = array('in', $id);
-        $name      = table('Category')->where($map)->field('name')->find('one', true);
+        if ($lg) {
+            $name = table('Category')->where($map)->field('bname')->find('one', true);
+        } else {
+            $name = table('Category')->where($map)->field('name')->find('one', true);
+        }
+
+        if (!$name) {
+            return null;
+        }
+
         if (count($name) == 1) {
             return (string) $name[0];
         }

@@ -116,8 +116,7 @@ class Banner extends \app\admin\controller\Init
             $this->ajaxReturn(array('status' => false, 'msg' => '操作失败'));
         } else {
             if ($id) {
-                $rs         = table('BannerData')->where(array('id' => $id))->find();
-                $rs['path'] = json_encode((array) imgUrl($rs['path'], 'banner'));
+                $rs = table('BannerData')->where(array('id' => $id))->find();
             } else {
                 $rs['sort'] = 0;
             }

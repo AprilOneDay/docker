@@ -21,20 +21,20 @@
 				</ul>
 			</div>
 		</div>
-		<div class="wrapper container-fluid">
+		<div class="wrapper container-fluid mian-menus">
 			<nav class="sidebar-inner fl col-md-1">
 				<div class="sidebar-fold" ><span class="glyphicon glyphicon-transfer"></span></div>
 				<ul>
-					{loop $list $key $value}
+					{loop $list['list'] $key $value}
 					<li>
 						<a href="javascript:;" @click="open(key)">
-							<span class="{$value['icon']}"></span>{$value['name']}
+							<span class="{if $value['id'] == $this->thisConsoleMenusTopId}glyphicon glyphicon-triangle-bottom{else}{$value['icon']}{/if}"></span>{$value['name']}
 						</a>
 						{if $value['child']}
-							<dl>
+							<dl {if $value['id'] == $this->thisConsoleMenusTopId}style="display:block;"{/if}>
 								{loop $value['child'] $k $v}
 									<dd>
-										<a data-id="{$v['id']}" href="{$v['url']}" target="iframe0"  class="sec-list-show" data-name="{$v['name']}">
+										<a data-id="{$v['id']}" data-href="{$v['url']}" target="iframe0"  class="sec-list-show btn-jump-main {if $v['id'] == $this->thisConsoleMenusId}cur{/if}" data-name="{$v['name']}">
 											<span class="{$v['icon']}" ></span>{$v['name']}
 										</a>
 									</dd>
@@ -46,15 +46,15 @@
 				</ul>
 			</nav>
 			
-			<div class="product-nav-scene fl col-md-1">
+			<div class="product-nav-scene fl col-md-1" style="display: block;">
 				<div class="title">设置</div>
 				<ul>
-					{loop $list $key $value}
+					{loop $list['two']['list'] $key $value}
 					<li>
 						{if $value['child']}
-						<a href="javascript:;"><span class="glyphicon glyphicon-triangle-right"></span>
+							<a href="javascript:;" ><span class="glyphicon glyphicon-triangle-right"></span>
 						{else}
-						<a href="{$value['url']}" target="iframe0"><span></span>
+							<a data-href="{$value['url']}" class="btn-jump-main"><span></span>
 						{/if}
 							{$value['name']}
 						</a>
@@ -62,7 +62,7 @@
 							<dl>
 								{loop $value['child'] $k $v}
 									<dd>
-										<a href="{$v['url']}" target="iframe0">
+										<a data-href="{$v['url']}" class="btn-jump-main">
 											<span class="{$v['icon']}"></span>{$v['name']}
 										</a>
 									</dd>
@@ -80,42 +80,100 @@
 		</div>
 	{include /public/global_js}
 	<script type="text/javascript">
+	//如果存在缓存url 则显示缓存url
+	var  this_console_url = sessionStorage.getItem('this_console_url');
+	if(this_console_url){
+		$('.J_iframe').attr('src',this_console_url);
+	}
+
+	//导航展开下级菜单
+	$('.mian-menus').on('click','.product-nav-scene ul li',function(){
+        //初始化
+        $('.product-nav-scene ul li dl').css('display', 'none');
+        $('.product-nav-scene ul li').each(function() {
+            if ($(this).children().children().eq(0).attr('class') == 'glyphicon glyphicon-triangle-bottom') {
+                $(this).children().children().eq(0).attr('class', 'glyphicon glyphicon-triangle-right');
+            }
+        });
+
+        //展开/收缩
+        var ico = $(this).children().children(':first').attr('class');
+        if (ico == 'glyphicon glyphicon-triangle-right') {
+            $(this).children().children(':first').attr('class', 'glyphicon glyphicon-triangle-bottom');
+            $(this).find('dl').css('display', 'block');
+        } else if (ico == 'glyphicon glyphicon-triangle-bottom') {
+            $(this).children().children(':first').attr('class', 'glyphicon glyphicon-triangle-right');
+            $(this).find('dl').css('display', 'none');
+        }
+	})
+
+	//收缩一级导航
+    $('.sidebar-fold').click(function() {
+        var width = $(this).width();
+        if (width > 38) {
+            $('.sidebar-inner').width(38);
+        } else {
+            $('.sidebar-inner').width(180);
+        }
+
+    });
+
+    //导航展开下级菜单
+    $('.sidebar-inner ul li').click(function() {
+        //初始化
+        $('.sidebar-inner ul li dl').css('display', 'none');
+        $('.sidebar-inner ul li').each(function() {
+            if ($(this).children().children().eq(0).attr('class') == 'glyphicon glyphicon-triangle-bottom') {
+                $(this).children().children().eq(0).attr('class', 'glyphicon glyphicon-triangle-right');
+            }
+        });
+
+        //展开/收缩
+        var ico = $(this).children().children(':first').attr('class');
+        if (ico == 'glyphicon glyphicon-triangle-right') {
+            $(this).children().children(':first').attr('class', 'glyphicon glyphicon-triangle-bottom');
+            $(this).find('dl').css('display', 'block');
+        } else if (ico == 'glyphicon glyphicon-triangle-bottom') {
+            $(this).children().children(':first').attr('class', 'glyphicon glyphicon-triangle-right');
+            $(this).find('dl').css('display', 'none');
+        }
+
+    })
+
+
+    //一级高亮
+    $('.sidebar-inner dd').click(function() {
+        $('.sidebar-inner dd').each(function() {
+            $(this).find('a').removeClass('cur');
+        })
+        $(this).find('a').addClass('cur');
+    });
+
+ 	//二级高亮
+	$('.mian-menus').on('click','.product-nav-scene dd',function(){
+ 		$('.product-nav-scene dd').each(function() {
+            $(this).find('a').removeClass('cur');
+        })
+        $(this).find('a').addClass('cur');
+	})
+
+	//三级栏目点击事件
+	$('.mian-menus').on('click','.btn-jump-main',function(){
+		var id = $(this).attr('data-id');
+		var url = $(this).attr('data-href');
+		//记录url
+		sessionStorage.setItem('this_console_url',url);
+		//跳转
+		window.iframe0.location.href = url;
+	})
+
 	$('.sec-list-show').click(function(){
 		var id = $(this).attr('data-id');
 		var name = $(this).attr('data-name');
-		$.post('/index/index/menus',{id:id},function(result){
+		$.post('/index/index/menus',{id:id,level:2},function(result){
 			$('.product-nav-scene').find('.title').text(name);
 			$('.product-nav-scene').css('display','block');
 			$('.product-nav-scene').find('ul').html(result);
-
-			//导航展开下级菜单
-    		$('.product-nav-scene ul li').click(function() {
-		        //初始化
-		        $('.product-nav-scene ul li dl').css('display', 'none');
-		        $('.product-nav-scene ul li').each(function() {
-		            if ($(this).children().children().eq(0).attr('class') == 'glyphicon glyphicon-triangle-bottom') {
-		                $(this).children().children().eq(0).attr('class', 'glyphicon glyphicon-triangle-right');
-		            }
-		        });
-
-		        //展开/收缩
-		        var ico = $(this).children().children(':first').attr('class');
-		        if (ico == 'glyphicon glyphicon-triangle-right') {
-		            $(this).children().children(':first').attr('class', 'glyphicon glyphicon-triangle-bottom');
-		            $(this).find('dl').css('display', 'block');
-		        } else if (ico == 'glyphicon glyphicon-triangle-bottom') {
-		            $(this).children().children(':first').attr('class', 'glyphicon glyphicon-triangle-right');
-		            $(this).find('dl').css('display', 'none');
-		        }
-		    })
-
-	     	//二级高亮
-		    $('.product-nav-scene dd').click(function() {
-		        $('.product-nav-scene dd').each(function() {
-		            $(this).find('a').removeClass();
-		        })
-		        $(this).find('a').addClass('cur');
-		    });
 		},"html");
 	})
 	</script>

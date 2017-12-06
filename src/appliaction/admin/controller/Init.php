@@ -1,14 +1,15 @@
 <?php
 namespace app\admin\controller;
 
-use denha;
+use denha\Controller;
 
-class Init extends denha\Controller
+class Init extends Controller
 {
     public $consoleid;
     public $consoleName;
     public $group;
     public $power;
+    public $webType = 2; //站点标记
 
     public function __construct()
     {

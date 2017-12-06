@@ -4,13 +4,14 @@
  */
 namespace app\admin\controller\content;
 
-use app\app\controller;
-use denha;
+use app\admin\controller\Init;
+use denha\Pages;
 
-class AppVersion extends \app\admin\controller\Init
+class AppVersion extends Init
 {
     public function lists()
     {
+
         $pageNo   = get('pageNo', 'intval', 1);
         $pageSize = get('pageSize', 'intval', 25);
 
@@ -22,7 +23,7 @@ class AppVersion extends \app\admin\controller\Init
 
         $list  = table('AppVersion')->where($map)->limit($offer, $pageSize)->order('id desc')->find('array');
         $total = table('AppVersion')->where($map)->count();
-        $page  = new denha\Pages($total, $pageNo, $pageSize, url('', $param));
+        $page  = new Pages($total, $pageNo, $pageSize, url('', $param));
 
         foreach ($list as $key => $value) {
             $list[$key]['thumb'] = 'http://qr.liantu.com/api.php?text=' . URL . $value['apk_url'] . '&w=200&h=200';

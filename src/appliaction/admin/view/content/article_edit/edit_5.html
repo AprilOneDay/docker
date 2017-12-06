@@ -11,74 +11,66 @@
 	<div id="console-content-edit">
 		<div class="modal-content">
 			<form class="form-horizontal" role="form" action="">
+				<input type="hidden" value="{??$column_id}" name="column_id">
+				<input type="hidden" value="{??$data['model_id']}" name="model_id">	
 				<div class="panel-body">
 					<fieldset>
 						<div class="form-group">
 							<label class="control-label col-sm-3">
 								<span class="text-danger"></span>
-								<span>标题</span>
+								<span>店铺名称</span>
 							</label>
 							<div class="col-sm-8">
-								<input type="text" value="{??$data['title']}" name="name" placeholder="标题"  disabled class="form-control">	
+								<input type="text" value="{??$data['title']}" name="title" placeholder="标题名称"  required class="form-control">	
 							</div>
 						</div>
+
 						<div class="form-group">
 							<label class="control-label col-sm-3">
 								<span class="text-danger"></span>
-								<span>服务类型</span>
+								<span>店铺简介</span>
 							</label>
 							<div class="col-sm-8">
-								<select name="type" class="form-control w160" data-selected="{??$data['type']}" disabled>
-									{loop $other['typeCopy'] $key $value}
-									<option value="{$key}" >{$value}</option>
-									{/loop}
-								</select>
+								<textarea name="description" placeholder="输入摘要内容" class="form-control">{??$data['description']}</textarea>
 							</div>
 						</div>
+
 						<div class="form-group">
 							<label class="control-label col-sm-3">
 								<span class="text-danger"></span>
-								<span>相册</span>
+								<span>店铺地址</span>
 							</label>
 							<div class="col-sm-8">
-								{loop $data['ablum'] $key $value}
-									<img src="{$value}" width="150" height="100" style="margin-left: 10px;">
-								{/loop}
+								<input type="text" value="{??$data['address']}" name="info[address]" placeholder="店铺地址"  required class="form-control">	
 							</div>
 						</div>
+
 						<div class="form-group">
 							<label class="control-label col-sm-3">
 								<span class="text-danger"></span>
-								<span>价格</span>
+								<span>店铺坐标</span>
 							</label>
-							<div class="col-sm-8">
-								<input type="text" value="{??$data['price']}" name="price" placeholder="价格"  disabled class="form-control">	
+							<div class="col-sm-3">
+								<input type="text" value="{??$data['lng']}" name="info[lng]" placeholder="经度坐标"  required class="form-control">
+							</div>
+							<div class="col-sm-3">
+								<input type="text" value="{??$data['lat']}" name="info[lat]" placeholder="维度坐标"  required class="form-control">
+							</div>
+							<div class="col-sm-2">
+								<p class="form-control-static"><a href="http://api.map.baidu.com/lbsapi/getpoint/index.html" target="_blank">查询坐标</a></p>
 							</div>
 						</div>
-						<div class="form-group">
-							<label class="control-label col-sm-3">
-								<span class="text-danger"></span>
-								<span>详情内容</span>
-							</label>
-							<div class="col-sm-8">
-								<textarea class="form-control" rows="10" name="description" disabled>{??$data['description']}</textarea>
-							</div>
-						</div>
-						<div class="form-group radio" data-radio="{??$data['status']}">
-							<label class="control-label col-sm-3">商品状态</label>
+			
+						<div class="form-group radio" data-radio="{??$data['is_show']}">
+							<label class="control-label col-sm-3">显示状态：</label>
 							<div class="radio-inline">
 								<label>
-									<input type="radio" name="status"  value="1"> 上架
+									<input type="radio" name="is_show"  value="1"> 显示
 								</label>
 							</div>
 							<div class="radio-inline">
 								<label >
-									<input type="radio" name="status"  value="2"> 下架
-								</label>
-							</div>
-							<div class="radio-inline">
-								<label >
-									<input type="radio" name="status"  value="4"> 用户删除
+									<input type="radio" name="is_show"  value="0"> 隐藏
 								</label>
 							</div>
 						</div>
@@ -88,7 +80,7 @@
 					<button type="button" class="btn btn-primary btn-comply">确定</button>
 					<button type="button" class="btn btn-default" id="btn-close" >取消</button>
 				</div>
-			</form>	
+			</form>
 		</div>
 	</div>
 	{include /public/global_js}

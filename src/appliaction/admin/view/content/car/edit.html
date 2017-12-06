@@ -16,21 +16,99 @@
 						<div class="form-group">
 							<label class="control-label col-sm-3">
 								<span class="text-danger"></span>
-								<span>标题</span>
+								<span>店铺</span>
 							</label>
 							<div class="col-sm-8">
-								<input type="text" value="{??$data['title']}" name="name" placeholder="标题"  disabled class="form-control">	
+								<select name="uid" class="form-control w160" data-selected="{??$data['uid']}" >
+									{loop $other['shopName'] $key $value}
+										<option value="{$key}" >{$value}</option>
+									{/loop}
+								</select>
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="control-label col-sm-3">
 								<span class="text-danger"></span>
-								<span>Banner图片</span>
+								<span>标题</span>
 							</label>
 							<div class="col-sm-8">
-								{loop $data['banner'] $key $value}
-									<img src="{$value}" width="150" height="100" style="margin-left: 10px;">
-								{/loop}
+								<input type="text" value="{??$data['title']}" name="name" placeholder="标题"  disabled  class="form-control">	
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger"></span>
+								<span>品牌</span>
+							</label>
+							<div class="col-sm-8">
+								<select name="brand" class="form-control w160" data-selected="{??$data['brand']}" >
+									{loop $other['brandCopy'] $key $value}
+										<option value="{$key}" >{$value}</option>
+									{/loop}
+								</select>	
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger"></span>
+								<span>款号</span>
+							</label>
+							<div class="col-sm-8">
+								<input type="text" value="{??$data['style']}" name="style" placeholder="款号"   class="form-control">	
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger"></span>
+								<span>车型</span>
+							</label>
+							<div class="col-sm-8">
+								<input type="text" value="{??$data['model']}" name="model" placeholder="车型"   class="form-control">	
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger"></span>
+								<span>车型备注</span>
+							</label>
+							<div class="col-sm-8">
+								<input type="text" value="{??$data['model_remark']}" name="model_remark" placeholder="车型备注"   class="form-control">	
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger"></span>
+								<span>月供</span>
+							</label>
+							<div class="col-sm-8">
+								<input type="text" value="{??$data['gearbox']}" name="gearbox" placeholder="变数箱"   class="form-control">	
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger"></span>
+								<span>尾款</span>
+							</label>
+							<div class="col-sm-8">
+								<input type="text" value="{??$data['gases']}" name="gases" placeholder="尾款"   class="form-control">	
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger"></span>
+								<span>排量</span>
+							</label>
+							<div class="col-sm-8">
+								<input type="text" value="{??$data['displacement']}" name="displacement" placeholder="排量"   class="form-control">	
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger"></span>
+								<span>vin</span>
+							</label>
+							<div class="col-sm-8">
+								<input type="text" value="{??$data['vin']}" name="vin" placeholder="vin"   class="form-control">	
 							</div>
 						</div>
 						<div class="form-group">
@@ -39,7 +117,7 @@
 								<span>里程数[公里]</span>
 							</label>
 							<div class="col-sm-8">
-								<input type="text" value="{??$data['mileage']}" name="mileage" placeholder="里程数"  disabled class="form-control">	
+								<input type="text" value="{??$data['mileage']}" name="mileage" placeholder="里程数"   class="form-control">	
 							</div>
 						</div>
 						<div class="form-group">
@@ -48,7 +126,7 @@
 								<span>价格</span>
 							</label>
 							<div class="col-sm-8">
-								<input type="text" value="{??$data['price']}" name="price" placeholder="价格"  disabled class="form-control">	
+								<input type="text" value="{??$data['price']}" name="price" placeholder="价格"   class="form-control">	
 							</div>
 						</div>
 						<div class="form-group">
@@ -57,7 +135,7 @@
 								<span>城市</span>
 							</label>
 							<div class="col-sm-8">
-								<select name="city" class="form-control w160" data-selected="{??$data['city']}" disabled>
+								<select name="city" class="form-control w160" data-selected="{??$data['city']}" >
 									{loop $other['cityCopy'] $key $value}
 									<option value="{$key}" >{$value}</option>
 									{/loop}
@@ -67,10 +145,30 @@
 						<div class="form-group">
 							<label class="control-label col-sm-3">
 								<span class="text-danger"></span>
+								<span>Banner图片</span>
+							</label>
+							<div class="col-sm-8">
+								<a class="btn btn-primary btn-ablum" data-name="banner" data-value='{??$data['banner']}' data-path="car" data-max="9">添加图片</a>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger">*</span>
+								<span>摘要内容</span>
+							</label>
+							<div class="col-sm-8">
+								<textarea name="description" placeholder="输入摘要内容" class="form-control">{??$data['description']}</textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger">*</span>
 								<span>详情内容</span>
 							</label>
 							<div class="col-sm-8">
-								{??$data['content']}	
+							 	<script id="content" name="content" type="text/plain" class="ue-editor">
+							 	{??$data['content']}
+							 	</script>
 							</div>
 						</div>
 						<div class="form-group radio" data-radio="{??$data['is_urgency']}">
@@ -113,7 +211,7 @@
 							</div>
 							<div class="radio-inline">
 								<label >
-									<input type="radio" name="status"  value="4"> 用户已删除
+									<input type="radio" name="status"  value="4"> 用户删除
 								</label>
 							</div>
 						</div>

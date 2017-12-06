@@ -51,7 +51,7 @@
 									</div>
 									<label class="control-label col-sm-2 pull-left">
 										<a href="javascript:;" class="btn-open" config-href="{F:url('edit',array('id'=>$value['id']))}"  config-height="750px">编辑</a> |
-										<a href="javascript:;">删除</a>
+										<a href="javascript:;" class="btn-ajax-post" config-href="{F:url('del')}" data-id="{$value['id']}" config-tips="确定删除该配置信息">删除</a>
 									</label>
 								</div>
 								{/loop}

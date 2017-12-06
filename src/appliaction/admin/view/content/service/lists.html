@@ -46,7 +46,7 @@
 											<th style="width:100px;">类型</th>
 											<th style="width:150px;">卖家</th>
 											<th style="width:120px;">发布时间</th>
-											<th style="width:50px;">状态</th>
+											<th style="width:100px;">状态</th>
 											<th style="width:80px; text-align:center;">操作</th>
 										</tr>
 									</thead>
@@ -61,9 +61,11 @@
 											<td>{F:date('Y-m-d H:i',$value['created'])}</td>
 											<td>
 												{if $value['status'] == 1}
-													<b  style="color: green">上架</b>
+													<b style="color: green">上架</b>
 												{elseif $value['status'] == 2}
-													<b  style="color: red">下架</b>
+													<b style="color: green">下架</b>
+												{elseif $value['status'] == 4}
+													<b style="color: red">用户已删除</b>
 												{/if}
 											</td>
 											<td align='center'>

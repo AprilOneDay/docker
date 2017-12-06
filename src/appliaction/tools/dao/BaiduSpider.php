@@ -12,7 +12,7 @@ class BaiduSpider
      * @author ChenMingjiang
      * @return [type]                   [description]
      */
-    public function pull($content = '', $url = 'http://www.denha.cn/index/index/detail/id/', $token = '', $site = 'www.denha.cn')
+    public function pull($content = '', $url = 'http://www.denha.cn/index/index/detail/s/id/', $token = '', $site = 'www.denha.cn')
     {
         $urls = (array) ($url . $content);
         if (!$content) {

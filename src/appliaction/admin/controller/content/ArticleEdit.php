@@ -4,9 +4,10 @@
  */
 namespace app\admin\controller\content;
 
-use denha;
+use app\admin\controller\Init;
+use denha\Log;
 
-class ArticleEdit extends \app\admin\controller\Init
+class ArticleEdit extends Init
 {
     //模型ID
     private static $modelId;
@@ -28,11 +29,11 @@ class ArticleEdit extends \app\admin\controller\Init
         self::$tpl       = 'article_edit/edit_' . $modelId;
 
         if (!self::$dataTable) {
-            denha\Log::error('模型库尚未创建....');
+            Log::error('模型库尚未创建....');
         }
 
         if ($isEdit) {
-            denha\Log::error('存在子级栏目,不可创建文章');
+            Log::error('存在子级栏目,不可创建文章');
         }
 
         switch (self::$modelId) {
@@ -44,6 +45,12 @@ class ArticleEdit extends \app\admin\controller\Init
                 break;
             case '3':
                 $this->edit_3();
+                break;
+            case '4':
+                $this->edit_4();
+                break;
+            case '5':
+                $this->edit_5();
                 break;
             default:
                 # code...
@@ -146,7 +153,7 @@ class ArticleEdit extends \app\admin\controller\Init
             }
 
             $other = array(
-                'tag'            => getVar('tags', 'console.article'),
+                'tag'            => getVar('tags', 'admin.article'),
                 'columnListCopy' => dao('Column', 'admin')->columnList(),
             );
 
@@ -202,7 +209,7 @@ class ArticleEdit extends \app\admin\controller\Init
             }
 
             $other = array(
-                'tag'            => getVar('tags', 'console.article'),
+                'tag'            => getVar('tags', 'admin.article'),
                 'columnListCopy' => dao('Column', 'admin')->columnList(),
                 'teacherList'    => table('User')->where(array('type' => 2, 'status' => 1))->field('id,real_name')->find('array'),
             );
@@ -222,6 +229,7 @@ class ArticleEdit extends \app\admin\controller\Init
         if (IS_POST) {
 
             $data                    = post('info');
+            $data['video_url']       = post('video_url', 'text', '');
             $data['start_time']      = post('info.start_time', 'time');
             $data['end_time']        = post('info.end_time', 'time');
             $data['characteristics'] = implode(',', $data['characteristics']);
@@ -230,13 +238,13 @@ class ArticleEdit extends \app\admin\controller\Init
                 $this->ajaxReturn(array('status' => false, 'msg' => '请输入售卖价格'));
             }
 
-            if (!$data['sale_price']) {
-                $this->ajaxReturn(array('status' => false, 'msg' => '请输入售卖价格'));
+            if ($data['sale_price'] <= $data['dis_price']) {
+                $this->ajaxReturn(array('status' => false, 'msg' => '活动价不可高于售卖价'));
             }
 
-            if (!$data['teacher_uid']) {
-                $this->ajaxReturn(array('status' => false, 'msg' => '请关联老师'));
-            }
+            /*if (!$data['teacher_uid']) {
+            $this->ajaxReturn(array('status' => false, 'msg' => '请关联老师'));
+            }*/
 
             if ($data['start_time'] > $data['end_time']) {
                 $this->ajaxReturn(array('status' => false, 'msg' => '开始时间大于结束时间'));
@@ -353,6 +361,108 @@ class ArticleEdit extends \app\admin\controller\Init
         }
     }
 
+    //下载
+    public function edit_4()
+    {
+        $id       = get('id', 'intval', 0);
+        $columnId = get('column_id', 'intval', 0);
+
+        if (IS_POST) {
+            $data = post('info');
+
+            $data['down_url'] = post('down_url', 'text', '');
+
+            //开启事务
+            table('Article')->startTrans();
+            $dataId = $this->defaults(); //保存主表
+
+            //编辑
+            if ($dataId && $id) {
+                $resultData = table('Article' . self::$dataTable)->where(array('id' => $id))->save($data);
+                $dataId     = $id;
+            } else {
+                $data['id'] = $dataId;
+                $resultData = table('Article' . self::$dataTable)->add($data);
+            }
+
+            if (!$resultData) {
+                table('Article')->rollback();
+                $this->ajaxReturn(array('status' => false, 'msg' => '操作失败,请重新尝试'));
+            }
+
+            table('Article')->commit();
+            $this->ajaxReturn(array('status' => true, 'msg' => '操作成功'));
+
+        } else {
+            if ($id) {
+                $rs = $this->getEditConent($id);
+            } else {
+                $rs              = array('is_show' => 1, 'is_recommend' => 0, 'created' => date('Y-m-d', TIME), 'model_id' => self::$modelId);
+                $rs['column_id'] = $columnId;
+            }
+
+            $other = array(
+                'tag'            => getVar('tags', 'admin.article'),
+                'columnListCopy' => dao('Column', 'admin')->columnList(),
+                'teacherList'    => table('User')->where(array('type' => 2, 'status' => 1))->field('id,real_name')->find('array'),
+            );
+
+            $this->assign('data', $rs);
+            $this->assign('other', $other);
+            $this->show(self::$tpl);
+        }
+    }
+
+    //店铺
+    public function edit_5()
+    {
+        $id       = get('id', 'intval', 0);
+        $columnId = get('column_id', 'intval', 0);
+
+        if (IS_POST) {
+            $data = post('info');
+
+            //开启事务
+            table('Article')->startTrans();
+            $dataId = $this->defaults(); //保存主表
+
+            //编辑
+            if ($dataId && $id) {
+                $resultData = table('Article' . self::$dataTable)->where(array('id' => $id))->save($data);
+                $dataId     = $id;
+            } else {
+                $data['id'] = $dataId;
+                $resultData = table('Article' . self::$dataTable)->add($data);
+            }
+
+            if (!$resultData) {
+                table('Article')->rollback();
+                $this->ajaxReturn(array('status' => false, 'msg' => '操作失败,请重新尝试'));
+            }
+
+            table('Article')->commit();
+            $this->ajaxReturn(array('status' => true, 'msg' => '操作成功'));
+
+        } else {
+            if ($id) {
+                $rs = $this->getEditConent($id);
+            } else {
+                $rs              = array('is_show' => 1, 'is_recommend' => 0, 'created' => date('Y-m-d', TIME), 'model_id' => self::$modelId);
+                $rs['column_id'] = $columnId;
+            }
+
+            $other = array(
+                'tag'            => getVar('tags', 'admin.article'),
+                'columnListCopy' => dao('Column', 'admin')->columnList(),
+                'teacherList'    => table('User')->where(array('type' => 2, 'status' => 1))->field('id,real_name')->find('array'),
+            );
+
+            $this->assign('data', $rs);
+            $this->assign('other', $other);
+            $this->show(self::$tpl);
+        }
+    }
+
     public function delArticle()
     {
         $modelTable = getVar('model_table', 'admin.article');
@@ -390,11 +500,10 @@ class ArticleEdit extends \app\admin\controller\Init
 
         $rs = table('Article')->join($articleData)->where($map)->find();
         if (!$rs) {
-            denha\Log::error('附属表异常');
+            Log::error('附属表异常');
         }
 
         $rs['created'] = date('Y-m-d', $rs['created']);
-        $rs['thumb']   = json_encode((array) imgUrl($rs['thumb'], 'article'));
 
         return $rs;
     }

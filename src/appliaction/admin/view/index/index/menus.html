@@ -3,7 +3,7 @@
 	{if $value['child']}
 	<a href="javascript:;"><span class="glyphicon glyphicon-triangle-right"></span>
 	{else}
-	<a href="{$value['url']}" target="iframe0"><span></span>
+	<a data-href="{$value['url']}" class="btn-jump-main"><span></span>
 	{/if}
 		{$value['name']}
 	</a>
@@ -11,7 +11,7 @@
 		<dl>
 			{loop $value['child'] $k $v}
 				<dd>
-					<a href="{$v['url']}" target="iframe0">
+					<a data-href="{$v['url']}" class="btn-jump-main">
 						<span class="{$v['icon']}"></span>{$v['name']}
 					</a>
 				</dd>

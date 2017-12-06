@@ -4,9 +4,10 @@
  */
 namespace app\admin\controller\content;
 
-use denha;
+use app\admin\controller\Init;
+use denha\Pages;
 
-class ArticleList extends \app\admin\controller\Init
+class ArticleList extends Init
 {
     public function lists()
     {
@@ -44,13 +45,13 @@ class ArticleList extends \app\admin\controller\Init
         }
         $list  = table('Article')->where($map)->limit($offer, $pageSize)->order('id desc')->find('array');
         $total = table('Article')->where($map)->count();
-        $page  = new denha\Pages($total, $pageNo, $pageSize, url('', $param));
+        $page  = new Pages($total, $pageNo, $pageSize, url('', $param));
 
         $other = array(
             'tag'             => getVar('tags', 'console.article'),
             'isShowCopy'      => array(0 => '未审核', 1 => '已审核'),
             'isRecommendCopy' => array(0 => '未推荐', 1 => '已推荐'),
-            'columnListCopy'  => dao('Column', 'admin')->columnList($param['column_id']),
+            'columnListCopy'  => dao('Column', 'admin')->columnList($param['column_id'], $this->webType),
         );
 
         $this->assign('list', $list);

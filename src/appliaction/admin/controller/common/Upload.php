@@ -25,10 +25,13 @@ class Upload extends denha\Controller
         $files = files('file');
         $path  = post('path', 'text', '');
 
-        $reslut = dao('Upload')->uploadfile($files, $path, 10, $type = 'apk,mp4,mp3,doc,docx,flv');
+        $reslut = dao('Upload')->uploadfile($files, $path, 10, $type = 'apk,mp4,mp3,doc,docx,flv,zip,rar');
         if ($reslut['status']) {
+
+            //保持完整路径 可以让用户自行修改下载资源
             $reslut['data']['name'][0] = '/uploadfile/' . $path . '/' . $reslut['data']['name'][0];
         }
+
         $this->ajaxReturn($reslut);
     }
 }

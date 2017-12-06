@@ -17,12 +17,14 @@ class User
      * @param  array                    $thirdParty [第三方登录信息]
      * @return [type]                               [description]
      */
-    public function register($data = array(), $password2 = '', $isAgree = 0, $code = '', $thirdParty = array())
+    public function register($data = array(), $password2 = '', $isAgree = 1, $code = '', $thirdParty = array())
     {
         $data['password'] = trim(strtolower($data['password']));
         $password2        = trim(strtolower($password2));
 
-        if (!in_array($data['type'], array(1, 2))) {
+        $userType = array_flip(getVar('type', 'admin.user'));
+
+        if (!in_array($data['type'], $userType)) {
             return array('status' => false, 'msg' => '注册类型不存在');
         }
 
@@ -407,4 +409,5 @@ class User
 
         return $data;
     }
+
 }

@@ -1,7 +1,10 @@
 <?php
 namespace app\admin\controller\content;
 
-class Menus extends \app\admin\controller\Init
+use app\admin\controller\Init;
+use app\admin\tools\util\MenuTree;
+
+class Menus extends Init
 {
     public $type;
 
@@ -18,11 +21,11 @@ class Menus extends \app\admin\controller\Init
      */
     public function index()
     {
-
-        $result = table('Column')->where($map)->order('sort asc,id asc')->find('array');
+        $map['web_type'] = $this->webType;
+        $result          = table('Column')->where($map)->order('sort asc,id asc')->find('array');
 
         if ($result) {
-            $tree = new \app\admin\tools\util\MenuTree();
+            $tree = new MenuTree();
             $tree->setConfig('id', 'parentid', '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
             $list = $tree->getLevelTreeArray($result);
             foreach ($list as $key => $value) {
@@ -49,103 +52,107 @@ class Menus extends \app\admin\controller\Init
      */
     public function edit()
     {
-        if (IS_POST) {
-            $id      = post('id', 'intval', 0);
-            $add     = post('add', 'intval', 1);
-            $content = post('content', 'text', '');
 
-            $data['name']     = post('name', 'text', '');
-            $data['bname']    = post('bname', 'text', '');
-            $data['url']      = post('url', 'text', '');
-            $data['jump_url'] = post('jump_url', 'text', '');
+        $id       = get('id', 'intval', 0);
+        $parentid = get('parentid', 'intval', 0);
+        $rs       = table('Column')->where(['id' => $id])->find();
 
-            $data['model_id'] = post('model_id', 'intval', 0);
-            $data['parentid'] = post('parentid', 'intval', 0);
-            $data['is_show']  = post('is_show', 'intval', 0);
-            $data['sort']     = post('sort', 'intval', 0);
+        if (!$id) {
+            $rs = array('is_show' => 1);
+        }
 
-            $data['bname'] ?: $data['bname'] = $data['name'];
+        if ($id == 0 && $parentid != 0) {
+            $rs['parentid'] = $parentid;
+            $rs['sort']     = 0;
+        }
 
-            $data['module']     = strtolower(post('module', 'text', 'content'));
-            $data['controller'] = strtolower(post('controller', 'text', 'article_list'));
-            $data['action']     = strtolower(post('action', 'text', 'lists'));
+        $this->assign('modelIdCopy', getVar('model', 'admin.article'));
+        $this->assign('treeList', $this->treeList());
+        $this->assign('data', $rs);
+        $this->show();
 
-            $data['url'] = (string) $data['url'] ?: '/' . $data['module'] . '/' . $data['controller'] . '/' . $data['action'] . $data['parameter'];
+    }
 
-            if ($add == 1 && !$data['name']) {
-                $this->ajaxReturn(array('status' => false, 'msg' => '请填写菜单名称'));
+    public function editPost()
+    {
+        $id      = post('id', 'intval', 0);
+        $add     = post('add', 'intval', 1);
+        $content = post('content', 'text', '');
+
+        $data['web_type'] = $this->webType;
+        $data['name']     = post('name', 'text', '');
+        $data['bname']    = post('bname', 'text', '');
+        $data['url']      = post('url', 'text', '');
+        $data['jump_url'] = post('jump_url', 'text', '');
+
+        $data['model_id'] = post('model_id', 'intval', 0);
+        $data['parentid'] = post('parentid', 'intval', 0);
+        $data['is_show']  = post('is_show', 'intval', 0);
+        $data['sort']     = post('sort', 'intval', 0);
+        $data['thumb']    = post('thumb', 'img', '');
+
+        $data['bname'] ?: $data['bname'] = $data['name'];
+
+        $data['module']     = strtolower(post('module', 'text', 'content'));
+        $data['controller'] = strtolower(post('controller', 'text', 'article_list'));
+        $data['action']     = strtolower(post('action', 'text', 'lists'));
+
+        $data['url'] = (string) $data['url'] ?: '/' . $data['module'] . '/' . $data['controller'] . '/' . $data['action'] . $data['parameter'];
+
+        if ($add == 1 && !$data['name']) {
+            $this->ajaxReturn(array('status' => false, 'msg' => '请填写菜单名称'));
+        }
+
+        if ($id) {
+            if ($data['jump_url'] && stripos($data['jump_url'], '/cid/') === false) {
+                $data['jump_url'] .= '/s/cid/' . $id;
             }
 
-            if ($id) {
-                if ($data['jump_url'] && stripos($data['jump_url'], '/cid/') === false) {
-                    $data['jump_url'] .= '/s/cid/' . $id;
-                }
-
-                $column = table('Column')->where('id', $id)->field('parentid,id')->find();
-                if (!$column) {
-                    $this->ajaxReturn(array('status' => false, 'msg' => '栏目不存在'));
-                }
-
-                if ($data['parentid'] == $id) {
-                    $this->ajaxReturn(array('status' => false, 'msg' => '上级栏目选择错误,不可选择自己为上级栏目'));
-                }
-
-                $result = table('Column')->where(array('id' => $id))->save($data);
-                if (!$result) {
-                    $this->ajaxReturn(array('status' => false, 'msg' => '修改失败'));
-                }
-
-                $this->ajaxReturn(array('status' => true, 'msg' => '修改成功'));
-
-            } else {
-
-                $isArticle = table('Article')->where('column_id', $data['parentid'])->field('id')->find('one');
-                if ($isArticle && $data['parentid'] != 0) {
-                    $this->ajaxReturn(array('status' => false, 'msg' => '清除父级栏目文章后，再添加栏目'));
-                }
-
-                $data['created'] = TIME;
-                if ($add == 2 && $content) {
-                    $content = explode(PHP_EOL, $content);
-                    foreach ($content as $key => $value) {
-                        if (stripos($value, '|') !== false) {
-                            $value         = explode('|', $value);
-                            $data['name']  = $value[0];
-                            $data['bname'] = $value[1];
-                        } else {
-                            $data['name'] = $data['bname'] = $value;
-                        }
-                        $result = table('Column')->add($data);
-                    }
-                } else {
-                    $result = table('Column')->add($data);
-                }
-
-                if ($result) {
-                    $this->ajaxReturn(array('status' => true, 'msg' => '添加成功', 'id' => $result));
-                } else {
-                    $this->ajaxReturn(array('status' => false, 'msg' => '添加失败'));
-                }
+            $column = table('Column')->where('id', $id)->field('parentid,id')->find();
+            if (!$column) {
+                $this->ajaxReturn(array('status' => false, 'msg' => '栏目不存在'));
             }
+
+            if ($data['parentid'] == $id) {
+                $this->ajaxReturn(array('status' => false, 'msg' => '上级栏目选择错误,不可选择自己为上级栏目'));
+            }
+
+            $result = table('Column')->where(array('id' => $id))->save($data);
+            if (!$result) {
+                $this->ajaxReturn(array('status' => false, 'msg' => '修改失败'));
+            }
+
+            $this->ajaxReturn(array('status' => true, 'msg' => '修改成功'));
 
         } else {
-            $id       = get('id', 'intval', 0);
-            $parentid = get('parentid', 'intval', 0);
-            $rs       = table('Column')->where(['id' => $id])->find();
 
-            if (!$id) {
-                $rs = array('is_show' => 1);
+            $isArticle = table('Article')->where('column_id', $data['parentid'])->field('id')->find('one');
+            if ($isArticle && $data['parentid'] != 0) {
+                $this->ajaxReturn(array('status' => false, 'msg' => '清除父级栏目文章后，再添加栏目'));
             }
 
-            if ($id == 0 && $parentid != 0) {
-                $rs['parentid'] = $parentid;
-                $rs['sort']     = 0;
+            $data['created'] = TIME;
+            if ($add == 2 && $content) {
+                $content = explode(PHP_EOL, $content);
+                foreach ($content as $key => $value) {
+                    if (stripos($value, '|') !== false) {
+                        $value         = explode('|', $value);
+                        $data['name']  = $value[0];
+                        $data['bname'] = $value[1];
+                    } else {
+                        $data['name'] = $data['bname'] = $value;
+                    }
+                    $result = table('Column')->add($data);
+                }
+            } else {
+                $result = table('Column')->add($data);
             }
 
-            $this->assign('modelIdCopy', getVar('model', 'admin.article'));
-            $this->assign('treeList', $this->treeList());
-            $this->assign('data', $rs);
-            $this->show();
+            if ($result) {
+                $this->ajaxReturn(array('status' => true, 'msg' => '添加成功', 'id' => $result));
+            } else {
+                $this->ajaxReturn(array('status' => false, 'msg' => '添加失败'));
+            }
         }
     }
 
@@ -212,7 +219,7 @@ class Menus extends \app\admin\controller\Init
         $id   = get('id', 'intval', 0);
         $menu = table('ConsoleMenu')->order('sort asc,id asc')->select();
         if ($menu) {
-            $tree = new \app\console\tools\util\MenuTree();
+            $tree = new MenuTree();
             $tree->setConfig('id', 'parentid');
             $ids = $tree->getChildsId($menu, $id);
             if ($ids) {
@@ -232,7 +239,7 @@ class Menus extends \app\admin\controller\Init
         //格式化菜单
         $result = table('Column')->field('id,parentid,name,bname')->find('array');
         if ($result) {
-            $tree = new \app\console\tools\util\MenuTree();
+            $tree = new MenuTree();
             $tree->setConfig('id', 'parentid');
             $list = $tree->getLevelTreeArray($result);
             if (isset($list) && $list) {

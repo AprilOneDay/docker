@@ -4,6 +4,8 @@
  */
 namespace app\tools\dao;
 
+use denha\Start;
+
 class YunwuRoom
 {
     public static $config;
@@ -13,8 +15,8 @@ class YunwuRoom
     public function __construct()
     {
         self::$config['RequestId'] = '123456789';
-        self::$config['UserName']  = \denha\Start::$config['yunwu_key'];
-        self::$config['UserPswd']  = \denha\Start::$config['yunwu_secret'];
+        self::$config['UserName']  = Start::$config['yunwu_key'];
+        self::$config['UserPswd']  = Start::$config['yunwu_secret'];
 
         $this->param = '?RequestId=' . self::$config['RequestId'] . '&UserName=' . self::$config['UserName'] . '&UserPswd=' . self::$config['UserPswd'] . '&DoAction=get';
     }
@@ -37,7 +39,7 @@ class YunwuRoom
             return false;
         }
 
-        $url    = $this->url . '/createLiveAPI' . $this->param . '&LiveSubject=' . $name;
+        $url    = $this->url . 'createLiveAPI' . $this->param . '&LiveSubject=' . $name;
         $result = file_get_contents($url);
         $result = json_decode($result, true);
 
@@ -57,7 +59,7 @@ class YunwuRoom
             return false;
         }
 
-        $url    = $this->url . '/queryLiveAPI' . $this->param . '&LiveSubject=' . $name;
+        $url    = $this->url . 'queryLiveAPI' . $this->param . '&LiveSubject=' . $name;
         $result = file_get_contents($url);
         $result = json_decode($result, true);
 
@@ -77,39 +79,61 @@ class YunwuRoom
     }
 
     /**
-     * 百度主动推送
-     * @date   2017-09-30T14:37:51+0800
+     * 查询会议列表
+     * @date   2017-11-29T16:55:19+0800
      * @author ChenMingjiang
      * @return [type]                   [description]
      */
-    public function pull($content = '', $url = 'http://www.denha.cn/index/index/detail/id/', $token = '', $site = 'www.denha.cn')
+    public function getMeetList($name)
     {
-        $urls = (array) ($url . $content);
-        if (!$content) {
-            return array('status' => false, 'msg' => '内容为空');
-        }
+        $get                = self::$config;
+        $get['LiveSubject'] = $name;
 
-        $token = $token ? $token : getConfig('config.blog', 'sitemap_token');
-        if (!$token) {
-            return array('status' => false, 'msg' => 'token配置失败');
-        }
+        $url = 'http://www.cloudroom.com/api/servlet/queryAllConfs?_data_=%7B%22RequestId%22%3A%22123456789%22%2C%22UserName%22%3A%22' . self::$config['UserName'] . '%22%2C%22UserPswd%22%3A%22' . self::$config['UserPswd'] . '%22%7D';
 
-        $api     = 'http://data.zz.baidu.com/urls?site=' . $site . '&token=' . $token;
-        $ch      = curl_init();
-        $options = array(
-            CURLOPT_URL            => $api,
-            CURLOPT_POST           => true,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POSTFIELDS     => implode("\n", $urls),
-            CURLOPT_HTTPHEADER     => array('Content-Type: text/plain'),
-        );
-        curl_setopt_array($ch, $options);
-        $result = curl_exec($ch);
+        $result = file_get_contents($url);
         $result = json_decode($result, true);
-        if (isset($result['error'])) {
-            return array('status' => false, 'msg' => '百度主动推送失败：' . $result['error'] . ' ' . $result['message']);
+
+        if (!$result['RspCode']) {
+
+            foreach ($result['MeetList'] as $key => $value) {
+                //$result['Data']['MeetList'][$key]['LiveCode'] = substr($value['liveUrl'], -6);
+                $meetList[$value['MeetSubject']] = $value;
+            }
+
+            if ($name) {
+                return $meetList[$name];
+            }
+
+            return $meetList;
         }
 
-        return array('status' => true, 'msg' => '推送成功');
+        return false;
+    }
+
+    /**
+     * 加入会议
+     * @date   2017-11-29T15:15:44+0800
+     * @author ChenMingjiang
+     * @param  [type]                   $meetID   [会议号]
+     * @param  integer                  $type     [参会者类型1:主持人 2:普通参会者]
+     * @param  string                   $name     [参会者昵称]
+     * @param  integer                  $uuid     [请求id，可以用UUID]
+     * @param  string                   $password [认证串(32位md5加密企业ID，企业ID由云屋提供)]
+     * @return [type]                             [description]
+     */
+    public function joinMeet($meetID, $type = 2, $name = '', $password = '123456', $uuid = 0)
+    {
+        $url    = $this->url . 'servlet/joinconfcebycomm?MeetID=' . $meetID . '&UserType=' . $type . '&Name=' . $name . '&RequestId=' . $uuid . '&MeetPwd=' . $password . '&UserKey=' . Start::$config['yunwu_api_key'];
+        $result = file_get_contents($url);
+        $result = json_decode($result, true);
+
+        //var_dump($result);die;
+
+        if (!$result['RspCode']) {
+            return $result['CRMTStr'];
+        }
+
+        return null;
     }
 }

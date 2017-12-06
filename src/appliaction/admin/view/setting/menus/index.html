@@ -43,7 +43,7 @@
 										<tbody>
 											{loop $list $key $value}
 										 	<tr>
-										 		<td align="center"><input type="text" class="form-control" value="{$value['sort']}" name="id[{$value['id']}]" data-checked='{F:json_encode($checkValue)}'></td>
+										 		<td align="center"><input type="text" class="form-control" value="{$value['sort']}" name="id[{$value['id']}]"></td>
 												<td>{$value['id']}</td>
 												<td>
 													<span>{$value['delimiter']}</span>{$value['name']}
