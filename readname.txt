@@ -68,6 +68,9 @@ cd /
 cd var/www/html
 vi index.php
 
+#linux 端口查看
+lsof -i tcp:443
+
 #docker复制本地
 docker cp apache2:/root/etc//local/apache2/conf/httpd.conf ~/www/apache2/conf/httpd.conf
 docker cp apache2:/usr/local/apache2/logs/ ~/www/apache2/logs
