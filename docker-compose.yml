@@ -60,6 +60,7 @@
             - ./nginx/log/:/var/log/nginx/:rw
         ports:
             - "80:80"
+            - "443:443"
     # httpd:
     #     前置需要
     #     depends_on:
