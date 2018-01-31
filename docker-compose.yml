@@ -54,9 +54,7 @@
         volumes:
             - ./src/:/var/www/html/:rw
             - ./src/data:/var/www/html/data:rw
-            - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf
-            - ./nginx/conf/conf.d/:/etc/nginx/conf.d/
-            - ./nginx/conf/ssl/:/etc/nginx/ssl/
+            - ./nginx/conf/:/etc/nginx/
             - ./nginx/log/:/var/log/nginx/:rw
         ports:
             - "80:80"
