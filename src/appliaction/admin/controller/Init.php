@@ -9,7 +9,8 @@ class Init extends Controller
     public $consoleName;
     public $group;
     public $power;
-    public $webType = 2; //站点标记
+    public $webType = 3; //站点标记
+    public $lg      = array('zh', 'en', 'jp'); //后台语言版本 zh:中文 en：英文 jp：日文
 
     public function __construct()
     {
@@ -67,5 +68,14 @@ class Init extends Controller
         }
 
         return false;
+    }
+
+    public function modelField($id, $model, $field)
+    {
+
+        $result = table($model)->where(array('id' => $id))->field($field)->find();
+
+        return $result[$field];
+
     }
 }

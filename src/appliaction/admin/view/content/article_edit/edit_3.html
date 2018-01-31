@@ -151,7 +151,7 @@
 							<div class="col-sm-8">
 								{loop $other['featuredCopy'] $key $value}
 									<label class="checkbox-inline">
-										<input type="checkbox" class="checkbox" value="{$key}" name="info[characteristics][]" data-checked='{F:json_encode(explode(',',$data['characteristics']))}'>{$value}
+										<input type="checkbox" class="checkbox" value="{$key}" name="info[characteristics][]" config-checked='{F:json_encode(explode(',',$data['characteristics']))}'>{$value}
 									</label>
 								{/loop}
 							</div>

@@ -34,7 +34,7 @@ class Start
         set_exception_handler('denha\Trace::catchApp');
 
         Start::filter(); //过滤
-        Route::$route(); //解析路由
+        Route::main($route); //解析路由
 
         if (preg_match("/^[A-Za-z](\/|\w)*$/", CONTROLLER)) {
             $class = Route::$class;

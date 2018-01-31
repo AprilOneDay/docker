@@ -1,6 +1,6 @@
 <?php
 /**
- * 百度抓取
+ * 系统参数
  */
 namespace app\tools\dao;
 

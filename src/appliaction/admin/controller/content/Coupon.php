@@ -25,6 +25,8 @@ class Coupon extends \app\admin\controller\Init
 
         $offer = max(($pageNo - 1), 0) * $pageSize;
 
+        $map['del_status'] = 0;
+
         if ($param['status']) {
             $map['status'] = $param['status'];
         }
@@ -52,7 +54,10 @@ class Coupon extends \app\admin\controller\Init
         $page  = new denha\Pages($total, $pageNo, $pageSize, url('', $param));
 
         foreach ($list as $key => $value) {
-            $list[$key]['seller'] = dao('User')->getInfo($value['uid'], 'nickname,mobile');
+            $seller = dao('User')->getInfo($value['uid'], 'nickname,mobile');
+            $seller = $seller ? $seller : array('nickname' => '系统配送', 'mobile' => 15923882847);
+
+            $list[$key]['seller'] = $seller;
         }
 
         $other = array(
@@ -126,6 +131,42 @@ class Coupon extends \app\admin\controller\Init
         $this->show();
     }
 
+    /** 编辑查看 */
+    public function editCoupon()
+    {
+        $id = get('id', 'intval', 0);
+
+        if ($id) {
+            $data = table('Coupon')->where('id', $id)->find();
+        } else {
+            $data = array('status' => 1, 'type' => 1);
+        }
+
+        $other = array(
+            'unitCopy' => dao('Category')->getList(790),
+        );
+        $this->assign('other', $other);
+
+        $this->assign('data', $data);
+        $this->show();
+    }
+
+    /** 编辑提交 */
+    public function editCouponPost()
+    {
+        $id = get('id', 'intval', 0);
+
+        $data               = post('info');
+        $data['start_time'] = post('info.start_time', 'time', '');
+        $data['end_time']   = post('info.end_time', 'time', '');
+        $data['id']         = $id;
+
+        $result = dao('Coupon')->add(0, $data);
+
+        $this->ajaxReturn($result);
+
+    }
+
     /**
      * 抵扣卷兑换编辑提交
      * @date   2017-10-25T11:20:01+0800
@@ -170,7 +211,7 @@ class Coupon extends \app\admin\controller\Init
     }
 
     /**
-     * 抵扣卷兑换编辑详情
+     * 抵扣卷兑换编辑提交
      * @date   2017-10-25T11:20:01+0800
      * @author ChenMingjiang
      * @return [type]                   [description]
@@ -190,6 +231,36 @@ class Coupon extends \app\admin\controller\Init
         $this->assign('other', $other);
         $this->assign('data', $data);
         $this->show();
+    }
+
+    /** 删除抵扣卷模板 */
+    public function delCoupon()
+    {
+        $id = post('id', 'intval', 0);
+
+        $map             = array();
+        $map['id']       = $id;
+        $map['end_time'] = array('<', TIME);
+        $isCoupon        = table('Coupon')->where($map)->find();
+
+        if (!$isCoupon) {
+            $map              = array();
+            $map['coupon_id'] = $id;
+            $map['use_time']  = 0;
+
+            $isCouponLog = table('CouponLog')->where($map)->find();
+            if ($isCouponLog) {
+                $this->ajaxReturn(array('status' => false, 'msg' => '该模板已在使用不可删除'));
+            }
+        }
+
+        $result = table('Coupon')->where('id', $id)->save('del_status', 1);
+        if (!$result) {
+            $this->ajaxReturn(array('status' => false, 'msg' => '删除失败'));
+        }
+
+        $this->ajaxReturn(array('msg' => '删除成功'));
+
     }
 
 }

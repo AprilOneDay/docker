@@ -7,6 +7,7 @@ class Index extends Init
 {
     public $thisConsoleMenusTopId; //顶级栏目信息
     public $thisConsoleMenusId; //最多记录二级栏目信息
+    public $mianUrl = '/content/menus/index'; //初始进入页面路径
 
     public function __construct()
     {
@@ -29,7 +30,7 @@ class Index extends Init
         }
 
         $this->assign('list', $list);
-        $this->show();
+        $this->show('', false, false);
     }
 
     //二级导航显示

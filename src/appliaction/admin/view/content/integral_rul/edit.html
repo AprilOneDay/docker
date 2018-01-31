@@ -32,6 +32,30 @@
 								<input type="text" value="{??$data['content']}" name="content" placeholder="规则内容"  class="form-control">	
 							</div>
 						</div>
+						
+						{if in_array('en',$this->lg)}
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger"></span>
+								<span>规则内容英文</span>
+							</label>
+							<div class="col-sm-8">
+								<input type="text" value="{??$data['content_en']}" name="content_en" placeholder="规则内容"  class="form-control">	
+							</div>
+						</div>
+						{/if}
+						
+						{if in_array('jp',$this->lg)}
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger"></span>
+								<span>规则内容日文</span>
+							</label>
+							<div class="col-sm-8">
+								<input type="text" value="{??$data['content_jp']}" name="content_jp" placeholder="规则内容"  class="form-control">	
+							</div>
+						</div>
+						{/if}
 
 						<div class="form-group">
 							<label class="control-label col-sm-3">

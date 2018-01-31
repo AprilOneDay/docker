@@ -99,6 +99,86 @@ class User extends Init
         $this->ajaxReturn(array('msg' => '操作成功'));
     }
 
+    /** 排班查询 */
+    public function schedule()
+    {
+        $uid  = get('uid', 'intval', 0);
+        $data = table('UserSchedule')->where('uid', $uid)->find();
+
+        $list = array(
+            1 => '星期一',
+            2 => '星期二',
+            3 => '星期三',
+            4 => '星期四',
+            5 => '星期五',
+            6 => '星期六',
+            0 => '星期日',
+        );
+
+        $this->assign('list', $list);
+        $this->assign('data', $data);
+        $this->show();
+    }
+
+    /** 排班操作 */
+    public function schedulePost()
+    {
+        $uid     = post('uid', 'intval', 0);
+        $value   = post('value', 'intval', 0);
+        $checked = post('checked', 'intval', 0);
+
+        $map = array();
+
+        $map['uid'] = $uid;
+
+        $timeArray = table('UserSchedule')->where($map)->field('time')->find('one');
+
+        //添加
+        if ($timeArray === false) {
+            $data['time'] = $value;
+            $data['uid']  = $uid;
+
+            $result = table('UserSchedule')->add($data);
+            if (!$result) {
+                $this->appReturn(array('status' => false, 'msg' => '添加失败'));
+            }
+        }
+        //编辑
+        else {
+            $timeArray = (array) explode(',', $timeArray);
+            $timeArray = array_filter($timeArray);
+
+            //debug
+            //print_r($timeArray);
+
+            //添加
+            if ($checked == 1) {
+                $timeArray[] = $value;
+            }
+            //删除
+            else {
+                $timeArray = array_flip($timeArray);
+                unset($timeArray[$value]);
+                $timeArray = array_flip($timeArray);
+            }
+
+            $data         = array();
+            $data['time'] = implode(',', $timeArray);
+
+            //debug
+            //print_r($data);
+
+            $result = table('UserSchedule')->where('uid', $uid)->save($data);
+            if (!$result) {
+                $this->appReturn(array('status' => false, 'msg' => '操作失败'));
+            }
+
+        }
+
+        $this->appReturn(array('status' => true, 'msg' => '操作成功'));
+
+    }
+
     public function edit()
     {
         $id = get('id', 'intval', 0);

@@ -47,7 +47,7 @@ class Sms
         $data['url']      = 'https://rest.nexmo.com/sms/json';
         $data['urlValue'] = array(
             'api_key'    => 'f3bcd87d',
-            'api_secret' => '7bdf89e00ac58e81',
+            'api_secret' => 'D7bdf89e00ac58e83',
             'to'         => $mobile,
             'from'       => $from,
             'text'       => $content,

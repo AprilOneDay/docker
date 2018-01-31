@@ -1,7 +1,9 @@
 <?php
 namespace app\admin\controller\setting;
 
-class Admin extends \app\admin\controller\Init
+use app\admin\controller\Init;
+
+class Admin extends Init
 {
     /**
      * 管理员列表

@@ -235,4 +235,33 @@ class Orders
 
     }
 
+    //获取订单号是否存在
+    public function checkOrderSn($orderSn, $uid, $goodsId = 0)
+    {
+
+        $order = table('Orders')->where('order_sn', $orderSn)->field('id')->find();
+        if (!$order) {
+
+            $this->appReturn(array('status' => false, 'msg' => '无效订单号'));
+
+        }
+        if ($order['uid'] != $uid) {
+
+            $this->appReturn(array('status' => false, 'msg' => '当前订单不属于您'));
+
+        }
+        if ($goodsId != 0) {
+
+            $packages = table('ordersPackage')->where('id', $goodsId)->field('id,orderSn')->find();
+
+            if (!$packages || $packages['orderSn'] != $orderSn) {
+
+                $this->appReturn(array('status' => false, 'msg' => '无效物品信息'));
+
+            }
+
+        }
+
+    }
+
 }

@@ -81,15 +81,21 @@ class Menus extends Init
 
         $data['web_type'] = $this->webType;
         $data['name']     = post('name', 'text', '');
+        $data['name_en']  = post('name_en', 'text', '');
+        $data['name_jp']  = post('name_jp', 'text', '');
+
         $data['bname']    = post('bname', 'text', '');
+        $data['bname_en'] = post('bname_en', 'text', '');
+        $data['bname_jp'] = post('bname_jp', 'text', '');
+
         $data['url']      = post('url', 'text', '');
         $data['jump_url'] = post('jump_url', 'text', '');
 
         $data['model_id'] = post('model_id', 'intval', 0);
         $data['parentid'] = post('parentid', 'intval', 0);
         $data['is_show']  = post('is_show', 'intval', 0);
-        $data['sort']     = post('sort', 'intval', 0);
-        $data['thumb']    = post('thumb', 'img', '');
+        //$data['sort']     = post('sort', 'intval', 0);
+        $data['thumb'] = post('thumb', 'img', '');
 
         $data['bname'] ?: $data['bname'] = $data['name'];
 
@@ -119,7 +125,7 @@ class Menus extends Init
 
             $result = table('Column')->where(array('id' => $id))->save($data);
             if (!$result) {
-                $this->ajaxReturn(array('status' => false, 'msg' => '修改失败'));
+                $this->ajaxReturn(array('status' => false, 'msg' => '修改失败', 'sql' => table('Column')->getSql()));
             }
 
             $this->ajaxReturn(array('status' => true, 'msg' => '修改成功'));
@@ -193,18 +199,36 @@ class Menus extends Init
      */
     public function delete()
     {
-        $id = post('id', 'intval', 0);
-        if (!$id) {
-            $this->ajaxReturn(array('status' => false, 'msg' => '参数错误'));
+        $chlid = post('id', 'intval');
+
+        //删除所有下级分类 引用 &很重要 不然返回不了完整信息
+        $delColumn = function ($chlid, &$idArray) use (&$delColumn) {
+            $idArray[] = $chlid;
+            //获取下级分类
+            $chlidList = table('Column')->where('parentid', $chlid)->field('id')->find('one', true);
+
+            //递归条件
+            if ($chlidList) {
+                foreach ($chlidList as $key => $value) {
+                    $i++;
+                    $delColumn((int) $value, $idArray);
+                }
+            }
+            //返回需要删除的id
+            return $idArray;
+        }; //记得这里必须加``;``分号，不加分号php会报错，闭包函数
+
+        //执行闭包函数
+        $idArray = $delColumn($chlid);
+
+        //执行删除操作
+        $map['id'] = array('in', $idArray);
+        $result    = table('Column')->where($map)->delete();
+        if (!$result) {
+            $this->appReturn(array('status' => false, 'msg' => '删除失败'));
         }
 
-        $result = table('Column')->where(['id' => $id])->save(['del_status' => 1]);
-
-        if ($result) {
-            $this->ajaxReturn(array('status' => true, 'msg' => '删除成功'));
-        }
-
-        $this->ajaxReturn(array('status' => false, 'msg' => '删除失败'));
+        $this->appReturn(array('status' => true, 'msg' => '删除成功'));
 
     }
 

@@ -25,7 +25,7 @@
 											<span></span>
 											{/if}
 											<span>{$value['delimiter']}</span>
-											<input type="checkbox" style="margin-right:5px;vertical-align:text-bottom;" name="id[]" level="{$value['level']}" data-native="true" value="{$value['id']}" {if in_array($value['id'],$checkArray)}checked="checked"{/if} onclick='javascript:checknode(this);'>{$value['name']}
+											<input type="checkbox" style="margin-right:5px;vertical-align:text-bottom;" name="id[]" level="{$value['level']}" config-native="true" value="{$value['id']}" {if in_array($value['id'],$checkArray)}checked="checked"{/if} onclick='javascript:checknode(this);'>{$value['name']}
 										</li>
 										{/loop}
 									<?php } ?>

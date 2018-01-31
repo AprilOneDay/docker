@@ -8,6 +8,8 @@ class Upload extends denha\Controller
     //上传base64图片
     public function upBase64Img()
     {
+        max_execution_time();
+
         $img  = post('data', 'text', '');
         $path = post('path', 'text', '');
 
@@ -22,15 +24,11 @@ class Upload extends denha\Controller
     //上传文件
     public function upFile()
     {
-        $files = files('file');
-        $path  = post('path', 'text', '');
+        $files   = files('file');
+        $path    = post('path', 'text', '');
+        $maxSize = post('max_size', 'intval', 30);
 
-        $reslut = dao('Upload')->uploadfile($files, $path, 10, $type = 'apk,mp4,mp3,doc,docx,flv,zip,rar');
-        if ($reslut['status']) {
-
-            //保持完整路径 可以让用户自行修改下载资源
-            $reslut['data']['name'][0] = '/uploadfile/' . $path . '/' . $reslut['data']['name'][0];
-        }
+        $reslut = dao('Upload')->uploadfile($files, $path, $maxSize, $type = 'apk,mp4,mp3,doc,docx,flv,zip,rar,jpg,gif,png,jpeg');
 
         $this->ajaxReturn($reslut);
     }

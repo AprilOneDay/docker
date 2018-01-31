@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+	<meta name="keywords" content=""/>
+	<title>后台管理</title>
+	{include /public/global_css}
+</head>
+  	<body>
+	<div id="console-content-index-index">
+		<div class="view-content-container" >
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="console-form">
+						<div class="mt8">
+							<form class="form-horizontal" action="{F:url('add_car_id',array('id'=>$id))}">
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th style="width:50px;">#</th>
+											<th>日期</th>
+										</tr>
+									</thead>
+									<tbody>
+										{loop $list $key $value}
+									 	<tr v-for="list in data.list">
+									 		<td><input type="checkbox" class="checkbox btn-ajax-post" value="{$key}" config-checked='{F:json_encode($data['time'])}' name="checked" config-href="{F:url('schedule')}" data-uid="{$uid}" data-value="{$key}"  config-false-value="0" config-true-value="1"></td>
+											<td>{$value}</td>
+										</tr>
+										{/loop}
+									</tbody>
+									<tfoot>
+							          	<tr>
+          									<td colspan="13">{$pages}</td>
+          								</tr>
+									</tfoot>
+								</table>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{include /public/global_js}
+	<script type="text/javascript">
+	</script>
+</body>
+</html>

@@ -15,7 +15,7 @@ class Integral
      */
     public function get($id)
     {
-        $data = where('IntegralRul')->where(array('id' => $id))->find();
+        $data = where('IntegralRule')->where(array('id' => $id))->find();
         return $data;
     }
 
@@ -68,7 +68,7 @@ class Integral
             return array('status' => false, 'msg' => '参数错误');
         }
 
-        $integralRul = table('IntegralRul')->where('flag', $flag)->find();
+        $integralRul = table('IntegralRule')->where('flag', $flag)->find();
 
         if (!$integralRul) {
             return array('status' => false, 'msg' => '规则信息不存在');
@@ -115,5 +115,50 @@ class Integral
         }
 
         return array('status' => true, 'msg' => '操作成功');
+    }
+
+    /**
+     * 获取积分规则文案
+     * @date   2018-01-19T17:29:40+0800
+     * @author ChenMingjiang
+     * @param  [type]                   $flag [规则标识符]
+     * @param  string                   $lg   [语言]
+     * @return [type]                         [description]
+     */
+    public function getRuleTitle($flag, $lg = 'zh')
+    {
+        $map         = array();
+        $map['flag'] = $flag;
+
+        if ($lg != 'zh') {
+            $field = 'content_' . $lg;
+        } else {
+            $field = 'content';
+        }
+
+        $title = (string) table('IntegralRule')->where($map)->field($field)->find('one');
+
+        return $title;
+    }
+
+    /** 积分明细列表 */
+    public function getList($uid, $lg = 'zh', $pageNo, $pageSize = 99)
+    {
+        $map        = array();
+        $map['uid'] = $uid;
+
+        $offer = max(($pageNo - 1) * $pageSize, 0);
+
+        $list = table('IntegralLog')->where($map)->order('created desc')->limit($offer, $pageSize)->find('array');
+
+        foreach ($list as $key => $value) {
+
+            $value['value'] < 0 ?: $list[$key]['value'] = '+' . $value['value'];
+
+            $list[$key]['title']        = $this->getRuleTitle($value['flag'], $lg);
+            $list[$key]['created_copy'] = date('Y-m-d', $value['created']);
+        }
+
+        return $list;
     }
 }

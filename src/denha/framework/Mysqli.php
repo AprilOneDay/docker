@@ -8,11 +8,13 @@ class Mysqli
 
     private static $instance;
 
+    public static $link; //mysql链接信息
+
     public $dbConfig; //数据库连接信息
     public $tablepre; //表前缀
     public $sqlInfo; //执行sql记录
 
-    public $link;
+    public $linkId;
     public $result;
     public $querystring;
     public $isclose;
@@ -48,9 +50,12 @@ class Mysqli
             throw new Exception('接数据库信息有误！请查看是否配置正确');
         }
 
-        $this->link = $this->openMysql();
-        mysqli_query($this->link, 'set names utf8mb4');
-        mysqli_query($this->link, 'SET sql_mode =\'ANSI,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION\'');
+        Mysqli::$link = $this->openMysql();
+        mysqli_query(Mysqli::$link, 'set names utf8mb4');
+        mysqli_query(Mysqli::$link, 'SET sql_mode =\'ANSI,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION\'');
+
+        $this->linkId = Mysqli::$link;
+
     }
 
     //单例实例化 避免重复New暂用资源
@@ -59,6 +64,7 @@ class Mysqli
         if (is_null(self::$instance)) {
             self::$instance = new Mysqli($dbConfig);
         }
+
         return self::$instance;
 
     }
@@ -77,8 +83,8 @@ class Mysqli
         }
 
         if (!$res) {
-            if (!$this->link) {
-                throw new Exception('连接数据库失败，可能数据库密码不对或数据库服务器出错！' . print_r($this->dbConfig));
+            if (!$this->linkId) {
+                throw new Exception('连接数据库失败，可能数据库密码不对或数据库服务器出错！');
             }
 
         }
@@ -114,6 +120,7 @@ class Mysqli
         $this->join      = '';
         $this->chilidSql = false;
         $this->having    = '';
+
         return $this;
     }
 
@@ -149,9 +156,10 @@ class Mysqli
      * @param  [type]                   $where [description]
      * @return [type]                          [description]
      */
-    public function where($where, $value = '')
+    public function where($where, $value = null)
     {
-        if ($value !== '' && !is_array($where)) {
+
+        if ($value !== null && !is_array($where)) {
             $this->where = ' WHERE ' . $where . ' = \'' . $value . '\'';
         } else {
             if ($where) {
@@ -170,8 +178,22 @@ class Mysqli
                                 if (!$v[1]) {
                                     $newWhere .= $k . '  ' . $v[0] . ' (\'\') AND ';
                                 } else {
-                                    $v[1] = is_array($v[1]) ? implode(',', $v[1]) : $v[1];
-                                    $newWhere .= $k . '  ' . $v[0] . ' (' . $v[1] . ') AND ';
+
+                                    if (stripos($v[1], ',') !== false && !is_array($v[1])) {
+                                        $v[1] = explode(',', $v[1]);
+                                    }
+
+                                    $v[1] = is_array($v[1]) ? $v[1] : (array) $v[1];
+
+                                    $commonInValue = '';
+                                    foreach ($v[1] as $inValue) {
+
+                                        $commonInValue .= '\'' . $inValue . '\',';
+                                    }
+
+                                    $commonInValue = substr($commonInValue, 0, -1);
+
+                                    $newWhere .= $k . '  ' . $v[0] . ' (' . $commonInValue . ') AND ';
                                 }
                             } elseif ($v[0] == 'instr') {
                                 $newWhere .= $v[0] . '(' . $k . ',\'' . $v[1] . '\') AND ';
@@ -317,9 +339,38 @@ class Mysqli
     {
         if ($table == '') {$table = $this->table;}
         $sql                      = "SELECT COUNT(*) as total  FROM information_schema.TABLES WHERE TABLE_NAME='$table'";
-        $t                        = mysqli_fetch_array(mysqli_query($this->link, $sql));
+        $t                        = mysqli_fetch_array(mysqli_query($this->linkId, $sql));
         if ($t['total'] == 0) {return false;}
         return true;
+    }
+
+    /** 查询数据表信息 */
+    public function fieldStatus($field)
+    {
+
+        $fieldArray = stripos($field, ',') !== false ? explode(',', $field) : (array) $field;
+
+        $this->_sql = "SHOW TABLE STATUS WHERE NAME = '{$this->table}'";
+        $result     = $this->query();
+
+        $this->total = mysqli_num_rows($result);
+        if ($this->total == 0) {return false;}
+
+        while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+            $dataRow = $row;
+        }
+
+        if ($fieldArray) {
+            foreach ($fieldArray as $key => $value) {
+                if (isset($dataRow[$value])) {
+                    $data[$value] = $dataRow[$value];
+                }
+            }
+        } else {
+            $data = $dataRow;
+        }
+
+        return $data;
     }
 
     /**
@@ -328,17 +379,22 @@ class Mysqli
      * @author ChenMingjiang
      * @return [type]                   [description]
      */
-    public function getField()
+    public function getField($field = 'column_name')
     {
         $this->where = ' where table_name = ' . "'" . $this->table . "'";
-        $this->field = 'column_name';
+        $this->field = $field;
         $this->table = 'information_schema.columns';
 
         $this->_sql = "select " . $this->field . " from " . $this->table . $this->where;
         $result     = $this->query();
 
         while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
-            $data[] = $row['column_name'];
+            if (stripos($field, ',') === false) {
+                $data[] = $row['column_name'];
+            } else {
+                $data[] = $row;
+            }
+
         }
 
         return $data;
@@ -469,8 +525,8 @@ class Mysqli
 
         //获取记录条数
         $this->total = mysqli_num_rows($result);
-
         if ($this->total == 0) {return false;}
+
         //单个字段模式
         if ($value == 'one' && !$isArray) {
             $row = mysqli_fetch_array($result, MYSQLI_NUM);
@@ -545,7 +601,7 @@ class Mysqli
         $this->_sql = 'INSERT INTO `' . $this->table . '` SET ' . $this->field;
         $result     = $this->query();
         if ($result) {
-            $result = max(mysqli_insert_id($this->link), 1);
+            $result = max(mysqli_insert_id($this->linkId), 1);
         }
         return $result;
     }
@@ -634,7 +690,7 @@ class Mysqli
     //开启事务
     public function startTrans()
     {
-        mysqli_query($this->link, 'begin');
+        mysqli_query($this->linkId, 'begin');
         /*$this->query('begin');*/
         return true;
     }
@@ -642,7 +698,7 @@ class Mysqli
     //回滚事务
     public function rollback()
     {
-        mysqli_query($this->link, 'rollback');
+        mysqli_query($this->linkId, 'rollback');
         /*$this->query('rollback');*/
         return true;
     }
@@ -650,7 +706,7 @@ class Mysqli
     //提交事务
     public function commit()
     {
-        mysqli_query($this->link, 'commit');
+        mysqli_query($this->linkId, 'commit');
         /* $this->query('commit');*/
         return true;
     }
@@ -666,7 +722,7 @@ class Mysqli
     {
         !$sql ?: $this->_sql = $sql;
         $_beginTime          = microtime(true);
-        $result              = mysqli_query($this->link, $this->_sql);
+        $result              = mysqli_query($this->linkId, $this->_sql);
         $_endTime            = microtime(true);
 
         $this->sqlInfo['time'] = $_endTime - $_beginTime; //获取执行时间
@@ -687,13 +743,18 @@ class Mysqli
     public function addErrorSqlLog()
     {
         //如果没有写入权限尝试修改权限 如果修改后还是失败 则跳过
-        if (isWritable(DATA_PATH . 'sql_log')) {
+        if (isWritable(DATA_PATH)) {
             $path = DATA_PATH . 'sql_log' . DS . $this->dbConfig['db_name'] . DS;
             is_dir($path) ? '' : mkdir($path, 0755, true);
             $path .= 'error_' . date('Y_m_d_H', TIME) . '.text';
+
+            $time = &$this->sqlInfo['time'];
+            $info = '------ ' . $time . ' | ' . date('Y-m-d H:i:s', TIME) . ' | ip:' . getIP() . ' | ';
+            $info .= 'Url:' . URL . ' | Controller:' . CONTROLLER . ' | Action:' . ACTION . PHP_EOL;
+
             $content = $this->sqlInfo['sql'] . ';' . PHP_EOL . '来源：' . getSystem() . getBrowser() . PHP_EOL . '--------------' . PHP_EOL;
             $file    = fopen($path, 'a');
-            fwrite($file, $content . PHP_EOL);
+            fwrite($file, $content . $info . PHP_EOL);
             fclose($file);
         }
     }
@@ -707,29 +768,45 @@ class Mysqli
     public function addSqlLog()
     {
         //如果没有写入权限尝试修改权限 如果修改后还是失败 则跳过
-        if (!isWritable(DATA_PATH . 'sql_log')) {
+        if (!isWritable(DATA_PATH)) {
             return false;
         }
 
-        if ($this->sqlInfo && $this->dbConfig['db_sqlLog']) {
+        //创建文件夹
+        is_dir(DATA_PATH . 'sql_log') ? '' : mkdir(DATA_PATH . 'sql_log', 0755, true);
+
+        $time = &$this->sqlInfo['time'];
+        $info = '------ ' . $time . ' | ' . date('Y-m-d H:i:s', TIME) . ' | ip:' . getIP() . ' | ';
+        $info .= 'Url:' . URL . ' | Controller:' . CONTROLLER . ' | Action:' . ACTION . PHP_EOL;
+
+        //记录sql
+        if ($this->sqlInfo && $this->dbConfig['db_save_log']) {
             $path = DATA_PATH . 'sql_log' . DS . $this->dbConfig['db_name'] . DS;
             is_dir($path) ? '' : mkdir($path, 0755, true);
             if (stripos($this->sqlInfo['sql'], 'select') === 0) {
                 $path .= 'select_' . date('Y_m_d_H', TIME) . '.text';
-                $content = $this->sqlInfo['sql'] . '|' . $this->sqlInfo['time'];
+                $content = $this->sqlInfo['sql'] . PHP_EOL;
             } elseif (stripos($this->sqlInfo['sql'], 'update') === 0) {
                 $path .= 'update_' . date('Y_m_d_H', TIME) . '.text';
-                $content = $this->sqlInfo['sql'] . ';';
+                $content = $this->sqlInfo['sql'] . ';' . PHP_EOL;
             } elseif (stripos($this->sqlInfo['sql'], 'delete') === 0) {
                 $path .= 'delete_' . date('Y_m_d_H', TIME) . '.text';
-                $content = $this->sqlInfo['sql'] . ';';
+                $content = $this->sqlInfo['sql'] . ';' . PHP_EOL;
             } elseif (stripos($this->sqlInfo['sql'], 'insert') === 0) {
                 $path .= 'add_' . date('Y_m_d_H', TIME) . '.text';
-                $content = $this->sqlInfo['sql'] . ';';
+                $content = $this->sqlInfo['sql'] . ';' . PHP_EOL;
+            }
+
+            //记录慢sql
+            if ($this->dbConfig['db_slow_save_log']) {
+                if ($this->sqlInfo['time'] > $this->dbConfig['db_slow_time']) {
+                    $path .= 'slow_' . date('Y_m_d_H', TIME) . '.text';
+                    $content = $this->sqlInfo['sql'] . PHP_EOL;
+                }
             }
 
             $file = fopen($path, 'a');
-            fwrite($file, $content . PHP_EOL);
+            fwrite($file, $content . $info . PHP_EOL);
             fclose($file);
         }
     }

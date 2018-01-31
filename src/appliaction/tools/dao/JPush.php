@@ -1,7 +1,7 @@
 <?php
 /**
  * 激光推送
- * @author sunpeilaing <sunpeilaing@linksus.net.cn>
+ * @author ChenMingjiang <dancefun@163.com>
  * @version $Id: JPush.php 2016-12-13 15:55:59 $
  */
 namespace app\tools\dao;
@@ -16,10 +16,11 @@ class JPush
         require_once APP_PATH . 'tools' . DS . 'vendor' . DS . 'JPush' . DS . 'autoload.php';
         $this->client = new \JPush\Client($this->app_key, $this->master_secret);
     }
+
     /**
      * 按注册ID推送
      * @date   2016-12-16T14:34:25+0800
-     * @author weijianqiang
+     * @author ChenMingjiang
      * @param  array                  $uids      会员ID
      * @param  string                 $title     推送标题
      * @param  string                 $content   推送内容
@@ -66,7 +67,7 @@ class JPush
     /**
      * [按注册ID推送]
      * @date   2016-12-16T17:44:53+0800
-     * @author weijianqiang
+     * @author ChenMingjiang
      * @param  array                    $registration_ids      注册ID
      * @param  string                   $title                 推送标题
      * @param  string                   $content               推送内容
@@ -79,7 +80,7 @@ class JPush
         $pusher = $this->client->push();
         $pusher->setPlatform('all');
         $pusher->addAlias($registration_ids);
-        $pusher->options(['apns_production' => false]); //true 苹果如果是正式环境需要增加这个参数
+        $pusher->options(['apns_production' => true]); //true 苹果如果是正式环境需要增加这个参数
         //$pusher->addRegistrationId($registration_ids);
         $pusher->iosNotification($content, array(
             'sound'  => 'sound.caf',
@@ -112,7 +113,7 @@ class JPush
     /**
      * 关闭推送功能
      * @date   2017-02-06T09:57:57+0800
-     * @author Weijianqiang
+     * @author ChenMingjiang
      * @param  int                    $uid      会员ID
      * @param  int                    $status   是否推送 （0、不推送   1、推送）
      * @return Boolean

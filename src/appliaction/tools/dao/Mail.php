@@ -4,7 +4,7 @@
  */
 namespace app\tools\dao;
 
-use denha;
+use denha\Smtp;
 
 class Mail
 {
@@ -35,7 +35,7 @@ class Mail
             return false;
         }
 
-        $smtp   = new denha\Smtp();
+        $smtp   = new Smtp();
         $result = $smtp->sendmail($to, $title, $content);
 
         //保存记录

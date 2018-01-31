@@ -4,8 +4,11 @@
  */
 namespace app\tools\dao;
 
+use denha\Smtp;
+
 class User
 {
+
     /**
      * 注册
      * @date   2017-10-13T09:14:10+0800
@@ -74,9 +77,9 @@ class User
 
         //检测验证码
         if ($code) {
-            $reslutCode = dao('Sms')->checkVerification($data['mobile'], $code);
-            if (!$reslutCode['status']) {
-                return $reslutCode;
+            $resultCode = dao('Sms')->checkVerification($data['mobile'], $code);
+            if (!$resultCode['status']) {
+                return $resultCode;
             }
         }
 
@@ -94,34 +97,41 @@ class User
             }
         }
 
-        $data['uid']      = $this->createUid();
+        //创建新账户
         $data['nickname'] = $data['username'];
         $data['salt']     = rand(10000, 99999);
         $data['password'] = md5($data['password'] . $data['salt']);
         $data['created']  = TIME;
         $data['ip']       = getIP();
-
-        $reslut = table('User')->add($data);
-        if (!$reslut) {
-            return array('status' => false, 'msg' => '注册失败');
+        if (!$data['uid']) {
+            $data['uid'] = $this->createUid();
         }
 
+        $result = table('User')->add($data);
+        if (!$result) {
+            return array('status' => false, 'msg' => '注册失败' . $data['ip']);
+        }
+
+        //添加店铺信息
         if ($data['type'] == 2) {
-            table('UserShop')->add(array('uid' => $reslut, 'name' => $data['username'], 'credit_level' => 50));
+            table('UserShop')->add(array('uid' => $result, 'name' => $data['username'], 'avatar' => empty($data['avatar']) ? '' : $data['avatar'], 'credit_level' => 50));
         } else {
             //发送站内信
-            dao('Message')->send($reslut, 'register_user');
+            dao('Message')->send($result, 'register_user');
         }
 
         //增加第三方登录信息
         if ($thirdParty) {
-            $thirdParty['uid'] = $reslut;
+            $thirdParty['uid'] = $result;
             table('UserThirdParty')->add($thirdParty);
         }
 
+        //注册支付宝账户
+        dao('TaobaoUser')->add($data['uid'], $data['nickname'], $data['salt']);
+
         //增加积分明细
-        dao('Integral')->add($reslut, 'user_registered');
-        return array('status' => true, 'msg' => '注册成功');
+        dao('Integral')->add($result, 'user_registered');
+        return array('status' => true, 'msg' => '注册成功', 'data' => $result);
     }
 
     /**
@@ -156,9 +166,9 @@ class User
 
         //检测验证码
         if ($code) {
-            $reslutCode = dao('Sms')->checkVerification($mobile, $code);
-            if (!$reslutCode['status']) {
-                return $reslutCode;
+            $resultCode = dao('Sms')->checkVerification($mobile, $code);
+            if (!$resultCode['status']) {
+                return $resultCode;
             }
         }
 
@@ -169,9 +179,9 @@ class User
 
         $data['password'] = md5($password . $salt);
         $data['token']    = '';
-        $reslut           = table('User')->where('id', $uid)->save($data);
+        $result           = table('User')->where('id', $uid)->save($data);
 
-        if (!$reslut) {
+        if (!$result) {
             return array('status' => false, 'msg' => '修改密码失败');
         }
 
@@ -204,8 +214,8 @@ class User
     //创建uid
     public function createUid()
     {
-        $id  = table('User')->order('id desc')->field('id')->find('one');
-        $uid = rand(1000, 9999) . $id + 1;
+        $user = table('User')->fieldStatus('Auto_increment');
+        $uid  = /*rand(1000, 9999) .*/$user['Auto_increment'];
         return $uid;
     }
 
@@ -233,9 +243,9 @@ class User
         $data['login_time'] = TIME;
         $data['imei']       = $imei;
 
-        $reslut = table('User')->where(array('id' => $uid))->save($data);
+        $result = table('User')->where(array('uid' => $uid))->save($data);
 
-        if (!$reslut) {
+        if (!$result) {
             return array('status' => false, 'msg' => '登录失败');
         }
 
@@ -258,11 +268,11 @@ class User
         }
 
         if (!$password) {
-            return array('status' => false, 'msg' => '请输入手机号码');
+            return array('status' => false, 'msg' => '请输入密码');
         }
         $map['type']    = $type;
         $map['_string'] = "(mobile = '$account' or username = '$account')";
-        $user           = table('User')->where($map)->field('type,password,salt,id')->find();
+        $user           = table('User')->where($map)->field('id,uid,type,password,salt,id')->find();
 
         if (!$user) {
             return array('status' => false, 'msg' => '该用户不存在');
@@ -272,24 +282,104 @@ class User
             return array('status' => false, 'msg' => '密码有误');
         }
 
-        $data['token']          = md5(TIME . $user['salt']);
-        $data['time_out']       = TIME + 3600 * 24 * 2;
-        $data['type']           = $user['type'];
-        $data['login_ip']       = getIP();
-        $data['login_time']     = TIME;
+        $data['token']      = md5(TIME . $user['salt']);
+        $data['time_out']   = TIME + 3600 * 24 * 2;
+        $data['type']       = $user['type'];
+        $data['login_ip']   = getIP();
+        $data['login_time'] = TIME;
+
         !$imei ?: $data['imei'] = (string) $imei;
 
-        $reslut      = table('User')->where(array('id' => $user['id']))->save($data);
-        $data['uid'] = $user['id'];
+        $result = table('User')->where(array('id' => $user['id']))->save($data);
 
-        if (!$reslut) {
+        //增加返回字段
+        $data['uid']  = $user['uid'];
+        $data['salt'] = $user['salt'];
+
+        if (!$result) {
             return array('status' => false, 'msg' => '登录失败');
         }
 
         //登录成功保存token
         cookie('token', $data['token'], $data['time_out']);
-
         return array('status' => true, 'msg' => '登录成功', 'data' => $data);
+    }
+
+    /**
+     * 发送邮箱验证码
+     * @date   2017-12-25T11:38:46+0800
+     * @author ChenMingjiang
+     * @param  [type]                   $uid [description]
+     * @return [type]                        [description]
+     */
+    public function sendMailCode($mail, $title = '您的验证码信息', $group = 1)
+    {
+
+        if (!$mail) {
+            return array('status' => false, 'msg' => '请填写邮箱');
+        }
+
+        $code    = rand('10000', '99999');
+        $content = '您的邮箱验证：' . $code;
+
+        $smtp   = new Smtp($group);
+        $result = $smtp->sendmail($mail, $title, $content);
+
+        if (!$result) {
+            return array('status' => false, 'msg' => '验证码发送失败，请联系管理员', 'debug' => $result);
+        }
+
+        //保存验证码
+        $map['mail'] = $mail;
+        $mailVerify  = table('MailVerify')->where($map)->field('id,created')->find();
+        if ($mailVerify) {
+
+            $data['code']    = $code;
+            $data['created'] = TIME;
+            table('MailVerify')->where('id', $mailVerify['id'])->save($data);
+
+        } else {
+            $data['code']    = $code;
+            $data['created'] = TIME;
+            $data['mail']    = $mail;
+            table('MailVerify')->add($data);
+        }
+
+        return array('status' => true, 'msg' => '验证码发送成功');
+    }
+
+    /**
+     * 验证码匹配
+     * @date   2017-12-25T14:57:44+0800
+     * @author ChenMingjiang
+     * @param  [type]                   $mail [邮箱号]
+     * @param  [type]                   $code [验证码]
+     * @return [type]                         [description]
+     */
+    public function checkMailCode($mail, $code)
+    {
+        if (!$mail) {
+            return array('status' => false, 'msg' => '请填写邮箱');
+        }
+
+        if (!$code) {
+            return array('status' => false, 'msg' => '请填写验证码');
+        }
+
+        $mailVerify = table('MailVerify')->where('mail', $mail)->field('code,created')->find();
+        if (!$mailVerify) {
+            return array('status' => false, 'msg' => '验证码不存在');
+        }
+
+        if (TIME - $mailVerify['created'] > $time) {
+            return array('status' => false, 'msg' => '验证码时间已过期');
+        }
+
+        if ($mailVerify['code'] != $code) {
+            return array('status' => false, 'msg' => '验证码错误');
+        }
+
+        return array('status' => true, 'msg' => '匹配成功');
     }
 
     /**
@@ -331,9 +421,50 @@ class User
             return false;
         }
 
-        $data = (int) table('User')->where(array('id' => $uid))->field('integral')->find('one');
+        $data = (int) table('User')->where(array('uid' => $uid))->field('integral')->find('one');
 
         return $data;
+    }
+
+    public function updateLevel($uid)
+    {
+        //获取历史积分
+        $map          = array();
+        $map['uid']   = $uid;
+        $map['value'] = array('>', 0);
+
+        $integral = table('integralLog')->where($map)->field('SUM(value) as value')->find('one');
+
+        //获取可达等级
+        $map          = array();
+        $map['value'] = array('>=', $value);
+
+        $rule = table('UserLevelRule')->where($map)->order('value desc')->find();
+        if (!$rule) {
+            return false;
+        }
+        //判断是否为当前等级
+        $level = $this->getInfo($uid, 'level');
+        if ($level == $rule['id']) {
+            return false;
+        }
+
+        //更新等级
+        $result = table('User')->where('uid', $uid)->save('level', $rule['id']);
+        if (!$result) {
+            return false;
+        }
+
+        //赠送抵扣卷
+        if ($rule['coupon_gift']) {
+            $couponGift = explode(',', $rule['coupon_gift']);
+
+            foreach ($couponGift as $key => $value) {
+                $result = dao('Coupon')->send($uid, $value, 1, 0);
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -346,7 +477,7 @@ class User
      */
     public function getInfo($uid = 0, $field = '*')
     {
-        $data = table('User')->where(array('id' => $uid))->field($field)->find();
+        $data = table('User')->where(array('uid' => $uid))->field($field)->find();
         if (count($data) == 1) {
             return $data[$field];
         }
@@ -362,7 +493,7 @@ class User
      */
     public function getNickname($uid)
     {
-        $data = (string) table('User')->where(array('id' => $uid))->field('nickname')->find('one');
+        $data = (string) table('User')->where(array('uid' => $uid))->field('nickname')->find('one');
 
         return $data;
     }

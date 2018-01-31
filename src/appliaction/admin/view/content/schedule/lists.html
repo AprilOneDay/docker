@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+	<meta name="keywords" content=""/>
+	<title>后台管理</title>
+	{include /public/global_css}
+</head>
+  	<body>
+	<div id="console-content-index-index">
+		<div class="view-content-container" >
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="console-title console-title-border clearfix">
+						<div class="pull-left">
+							<h5>汽车列表</h5>
+						</div>
+					</div>
+					<form class="form-inline ng-pristine ng-valid" action=""  method="get">
+                        <div class="form-group">
+                        	<select class="form-control" data-selected="{??$param['type']}" name="param[type]">
+                            	<option value="0">选择类型</option>
+                            	{loop $other['typeCopy'] $key $value}
+                               		<option value="{$key}">{$value}</option>
+                            	{/loop}
+                            </select>
+                            <select class="form-control" name="param[field]" data-selected="{??$param['field']}">
+                            	<option value="">选择搜索条件</option>
+                                <option value="id">ID</option>
+                                <option value="title">标题</option>
+                            </select>
+                            <input type="text" class="form-control w120" placeholder="Search" name="param[keyword]" value="{??$param['keyword']}" >
+                            <button type="submit" class="btn btn-default" @click="search()">搜索</button>
+                        </div>
+                    </form>
+					<div class="console-form">
+						<div class="mt8">
+							<form>
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th style="width:75px;">ID</th>
+											<th>标题</th>
+											<th style="width:100px;">价格</th>
+											<th style="width:100px;">类型</th>
+											<th style="width:150px;">卖家</th>
+											<th style="width:120px;">发布时间</th>
+											<th style="width:100px;">状态</th>
+											<th style="width:80px; text-align:center;">操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										{loop $list $key $value}
+									 	<tr v-for="list in list">
+											<td>{$value['id']}</td>
+											<td>{$value['title']}</td>
+											<td>{$value['price']}</td>
+											<td>{$other['typeCopy'][$value['type']]}</td>
+											<td>{$value['nickname']}</td>
+											<td>{F:date('Y-m-d H:i',$value['created'])}</td>
+											<td>
+												{if $value['status'] == 1}
+													<b style="color: green">上架</b>
+												{elseif $value['status'] == 2}
+													<b style="color: green">下架</b>
+												{elseif $value['status'] == 4}
+													<b style="color: red">用户已删除</b>
+												{/if}
+											</td>
+											<td align='center'>
+												<a config-href="{F:url('edit',array('id'=>$value['id']))}"  config-height="70%" config-width="70%"  config-title="商品详情"  class="btn-open" config-tooltip="{$value['title']}">编辑</a>
+											</td>
+										</tr>
+										{/loop}
+									</tbody>
+								    <tfoot>
+							          	<tr>
+          									<td colspan="13">{$pages}</td>
+          								</tr>
+									</tfoot>
+								</table>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{include /public/global_js}
+	<script type="text/javascript">
+	</script>
+</body>
+</html>

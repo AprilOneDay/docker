@@ -124,4 +124,62 @@ class Enjoy
         return array('status' => true, 'msg' => '操作成功');
     }
 
+    /**
+     * 游客模式添加喜欢
+     * @date   2017-12-14T14:34:40+0800
+     * @author ChenMingjiang
+     * @param  [type]                   $type  [description]
+     * @param  [type]                   $value [description]
+     * @return [type]                          [description]
+     */
+    public function notUidAdd($type, $value)
+    {
+        if (!$type || !$value) {
+            return array('status' => false, 'msg' => '参数错误');
+        }
+
+        $map['type']  = $type;
+        $map['value'] = $value;
+        $map['uid']   = $uid;
+
+        $is = table('Enjoy')->where($map)->field('id')->find('one');
+        if ($is) {
+            return array('status' => false, 'msg' => '请勿重复操作');
+        }
+
+        $data['uid']     = $uid;
+        $data['type']    = $type;
+        $data['value']   = $value;
+        $data['created'] = TIME;
+
+        $reslut = table('Enjoy')->add($data);
+        if (!$reslut) {
+            return array('status' => false, 'msg' => '操作失败');
+        }
+
+        return array('status' => true, 'msg' => '操作成功');
+    }
+
+    /**
+     * 判断用户是否喜欢
+     * @date   2017-11-17T14:32:00+0800
+     * @author ChenMingjiang
+     * @param  [type]                   $uid   [description]
+     * @param  [type]                   $type  [description]
+     * @param  [type]                   $value [description]
+     * @return boolean                         [description]
+     */
+    public function noutUidIsLike($uid = 0, $type = 0, $value = 0)
+    {
+        if (!$uid || !$type || !$value) {
+            return false;
+        }
+
+        $map['type']  = $type;
+        $map['uid']   = $uid;
+        $map['value'] = $value;
+
+        return (bool) table('Enjoy')->where($map)->field('id')->find();
+    }
+
 }

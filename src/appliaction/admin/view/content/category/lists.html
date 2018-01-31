@@ -18,6 +18,14 @@
 						</div>
 						<div class="pull-right">
 							<a class="btn btn-primary btn-open" config-href="{F:url('edit',array('parentid'=>$parentid))}"  config-height="500px" config-width="60%">添加分类</a>
+							
+							{if in_array('en',$this->lg)}
+								<a class="btn btn-primary btn-trans" config-href="{F:url('edit')}" data-parentid="{$parentid}" config-tips="该操作会覆盖原字段信息,请谨慎操作!">生成英文</a>
+							{/if}
+
+							{if in_array('jp',$this->lg)}
+								<a class="btn btn-primary btn-trans" config-href="{F:url('edit')}" data-parentid="{$parentid}" config-tips="该操作会覆盖原字段信息,请谨慎操作!">生成日文</a>
+							{/if}
 						</div>
 					</div>
 					<form class="form-inline ng-pristine ng-valid" action=""  method="get">
@@ -67,6 +75,9 @@
 	</div>
 	{include /public/global_js}
 	<script type="text/javascript">
+	$('.btn-trans').click(function(){
+		var tips = $(['config-tips']);
+	})
 	</script>
 </body>
 </html>
