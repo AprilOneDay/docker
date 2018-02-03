@@ -2,10 +2,10 @@
 /**
  * 会员模块
  */
-namespace app\fastgo\app\controller\v1\user;
+namespace app\chd\app\controller\v1\user;
 
 use app\app\controller;
-use app\fastgo\app\controller\v1\Init;
+use app\chd\app\controller\v1\Init;
 
 class Index extends Init
 {
@@ -13,26 +13,18 @@ class Index extends Init
     {
         parent::__construct();
         //检测用户登录权限
-        $this->checkIndividual('1,2');
+        $this->checkIndividual('1');
     }
 
     /** 会员中心 */
     public function index()
     {
-        $user = table('User')->where('id', $this->uid)->field('avatar,nickname,is_bind_mail,integral,moeny,moeny_aud,mail,sex,country,is_auto_moeny,level')->find();
+        $user = table('User')->where('id', $this->uid)->field('username,avatar,nickname,mail,sex')->find();
 
         $user['country_copy'] = dao('Category')->getName($user['country']);
         $user['sex_copy']     = dao('Category')->getName($user['sex']);
 
-        $map             = array();
-        $map['uid']      = $this->uid;
-        $map['use_time'] = '';
-
-        $user['coupon_num'] = (int) table('CouponLog')->where($map)->count();
-        $user['avatar']     = $this->appImg($user['avatar'], 'avatar');
-
-        $levelCopy          = (string) table('UserLevelRule')->where('id', $user['level'])->field('name')->find('one');
-        $user['level_copy'] = $levelCopy;
+        $user['avatar'] = $this->appImg($user['avatar'], 'avatar');
 
         $this->appReturn(array('data' => $user));
 
@@ -71,28 +63,11 @@ class Index extends Init
             $this->appReturn(array('status' => false, 'msg' => '请输入昵称'));
         }
 
-        /*if (!$data['mail']) {
-        $this->appReturn(array('status' => false, 'msg' => '请输入邮箱地址'));
-        }*/
-
         $reslut = table('User')->where(array('id' => $this->uid))->save($data);
 
         if (!$reslut) {
             $this->appReturn(array('status' => false, 'msg' => '执行失败'));
 
-        }
-
-        $this->appReturn(array('msg' => '保存成功'));
-    }
-
-    /** 更新自动抵扣状态 */
-    public function autoMoenyUpdate()
-    {
-        $isAutoMoeny = post('is_auto_moeny', 'intval', 0);
-
-        $result = table('User')->where('uid', $this->uid)->save('is_auto_moeny', $isAutoMoeny);
-        if (!$result) {
-            $this->appReturn(array('status' => false, 'msg' => '执行失败'));
         }
 
         $this->appReturn(array('msg' => '保存成功'));

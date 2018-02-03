@@ -2,10 +2,10 @@
 /**
  * 商家会员相关
  */
-namespace app\fastgo\app\controller\v1\common;
+namespace app\chd\app\controller\v1\common;
 
 use app\app\controller;
-use app\fastgo\app\controller\v1\Init;
+use app\chd\app\controller\v1\Init;
 
 class User extends Init
 {
@@ -66,7 +66,7 @@ class User extends Init
     {
         $account  = post('account', 'text', '');
         $password = post('password', 'text', '');
-        $type     = post('type', 'intval', 0);
+        $type     = post('type', 'intval', 1);
 
         $typeCopy = array_flip(getVar('type', 'admin.user'));
         if (!$type) {
@@ -145,7 +145,6 @@ class User extends Init
         $type      = post('type', 'intval', 1);
 
         $code = post('code', 'text', '');
-        $code = '';
 
         if (!$mobile) {
             $this->appReturn(array('status' => false, 'msg' => '请输入手机号'));
