@@ -2,40 +2,6 @@ $(function() {
     //如果某个接口返回失败了 或存在BUG哦
     var btnBlock = true; //ajax提交堵塞 ture可提交 false堵塞中不可提交
 
-    init();
-    //监听product-nav-scene的宽度变化
-    $(".product-nav-scene").bind("DOMNodeInserted",function(e){
-        $('.content-main').width(($(document).width() - $('.sidebar-inner').width() - $('.product-nav-scene').width()) );
-        return true;
-    })
-   
-    $(window).resize(function(){
-        if($('.product-nav-scene').css('display') == 'block'){
-            $('.content-main').width(($(document).width() - 150 - 150));
-        }else{
-            $('.content-main').width(($(document).width() - 150));
-        }
-    });
-
-   
-
-    //主页容器固定高宽
-    function init(){
-        //一级栏目高度
-        $('.sidebar-inner').height($(document).height() - $('.border-top').height() - 2);
-        //二级栏目高度
-        $('.product-nav-scene').height($(document).height() - $('.border-top').height() - 2)
-        //主体显示高度
-        $('.content-main').height($(document).height() - $('.border-top').height() - 2);
-        //二级栏目如果可见
-        if($('.product-nav-scene').css('display') == 'block'){
-            $('.content-main').width(($(document).width() - 150 - 150));
-        }else{
-            $('.content-main').width(($(document).width() - 150));
-        }
-
-    }
-
     //判断通道是否堵塞 如果堵塞 返回提示文案 反之则变成堵塞
     function checkBtnBlock(msg = '请勿重复提交'){
         if(!btnBlock){
@@ -48,10 +14,9 @@ $(function() {
         return true;
     }
 
-
     //绑定初试信息
     $('select').each(function() {
-        var data = $(this).attr('data-selected');
+        let data = $(this).attr('data-selected');
         if (data) {
             $(this).val(data);
         }
@@ -60,12 +25,12 @@ $(function() {
     //绑定radio值
     $(".radio").each(function(){
          //不进行渲染
-        var native = $(this).attr('data-native');
+        let native = $(this).attr('config-native');
         if(native){
             return true;
         }
 
-        var data = $(this).attr('data-radio');
+        let data = $(this).attr('data-radio');
         $(this).find('input[type=radio]').each(function(){
             if($(this).attr('value') == data){
                 $(this).attr("checked","checked");
@@ -75,7 +40,7 @@ $(function() {
 
     //tips提示
     $('[config-tooltip]').mouseover(function(){
-        var msg = $(this).attr('config-tooltip');
+        let msg = $(this).attr('config-tooltip');
         layer.tips(msg, this, {
           tips: [1, '#3595CC'],
           time: 10000
@@ -88,27 +53,30 @@ $(function() {
     //绑定checkbox
     $('.checkbox').each(function(){
         //不进行渲染
-        var native = $(this).attr('data-native');
+        let native = $(this).attr('config-native');
         if(native){
             return true;
         }
 
-        var data  = $(this).val();
-        var value = $(this).attr('data-checked');
+        let data  = $(this).val();
+        let value = $(this).attr('config-checked');
+        let checkedValue = '';
         if(typeof(value) != 'undefined' && value != ''){
-            console.log(value)
-            value =  jQuery.parseJSON(value);
+            checkedValue  = value.split(",");
         }
 
-        if($.inArray(data,value) >= 0){
-            $(this).attr("checked","checked");
+        if(checkedValue){
+            if(jQuery.inArray(data,checkedValue) >= 0){
+                $(this).attr("checked","checked");
+            }
         }
+        
     })
 
     //checkBox单选
     $('.btn-checkbox-radio').each(function(){
-        var _this = this;
-        var name = $(this).attr('name');
+        let _this = this;
+        let name = $(this).attr('name');
         $(this).click(function(){
             $('input[name="'+name+'"]').prop('checked',false);
             $(this).prop('checked',true);
@@ -117,25 +85,49 @@ $(function() {
 
     //前置触发事件
     $('.btn-before').on('mousedown',function(){
-        var eventString = $(this).attr('config-event'); 
+        let eventString = $(this).attr('config-event'); 
         console.log(eventString);
         $('.form-horizontal').unbind();
         //eventString.preventDefault();
         return;
     });
 
+    //下拉联动
+    $('.btn-linkage').change(function(){
+        let value = $(this).val();
+        let href = $(this).attr('config-href');
+        let el = $(this).attr('config-el');
+
+        $.post(href,{value:value},function(result){
+            if(!result.status){
+                return  layer.msg(result.msg);
+            }
+
+            if($(el).css('display') == 'none'){
+                $(el).css('display','block');
+            }
+
+            $(el).find('select').html('');
+
+            for(let key in result.data){
+                let content = '<option value="'+key+'">'+result.data[key]+'</option>';
+                $(el).find('select').append(content);
+            }
+        },"json");
+    })
+
    //打开弹出
     $('.btn-open').click(function() {
-        var href = $(this).attr('config-href');
-        var title = $(this).attr('config-title');
-        var width = $(this).attr('config-width');
-        var height = $(this).attr('config-height');
+        let href = $(this).attr('config-href');
+        let title = $(this).attr('config-title');
+        let width = $(this).attr('config-width');
+        let height = $(this).attr('config-height');
 
         if (!title) {
             title = $(this).text();
         }
         if (!width) {
-            width = '890px';
+            width = '80%';
         }
         if (!height) {
             height = '80%';
@@ -159,55 +151,37 @@ $(function() {
 
     //提交信息
     $('.btn-comply').click(function(){
-        var form     = $(this).parents('.form-horizontal');
-        var url      = form.attr('action');
-        var trueUrl  = $(this).attr('config-true-url'); //执行成功跳转地址
-        var falseUrl = $(this).attr('config-false-url'); //执行失败跳转地址
-        var before   = $(this).attr('config-before');
+        let form     = $(this).parents('.form-horizontal');
+        let url      = form.attr('action');
+        let trueUrl  = $(this).attr('config-true-url'); //执行成功跳转地址
+        let falseUrl = $(this).attr('config-false-url'); //执行失败跳转地址
+        let before   = $(this).attr('config-before');
+        let falseValue,trueValue,data;
 
-        //处理checked 未选中不传值的问题
-        $(form).find('input[type=checkbox]').each(function(){
-            if($(this).attr('data-native')){
-                return true;
-            }
-            var  falseValue = typeof($(this).attr('data-false-value')) != 'undefined' ?  $(this).attr('data-false-value') : 0;
-            var  trueValue  = typeof($(this).attr('data-true-value')) != 'undefined' ?  $(this).attr('data-true-value') : 0;
-            if(!$(this).prop('checked')){
-                $(this).prop('checked',true);
-                $(this).val(falseValue);
-            }else{
-                $(this).val(trueValue);
-            }
-        })
-
-        var data     = form.serializeArray();
+        data     = form.serializeArray();
         if(data.length < 1){
             return layer.msg('请上传参数');
         }
-
+        
         //处理通讯堵塞
         if(!checkBtnBlock()){
             return false;
         } 
 
         $.post(url,data,function(result){
+           submitThen(result);
+        },"json")
+
+        function submitThen(result){
             btnBlock = true; //恢复通道
+            
             //恢复checkbox 未选中的样式
-            $(form).find('input[type=checkbox]').each(function(){
-                if($(this).attr('data-native')){
-                    return true;
-                }
-                var  falseValue = typeof($(this).attr('data-false-value')) != 'undefined' ?  $(this).attr('data-false-value') : 0;
-                var  trueValue  = typeof($(this).attr('data-true-value')) != 'undefined' ?  $(this).attr('data-true-value') : 0;
-                if($(this).prop('checked',true) && $(this).val() == falseValue){
-                    $(this).prop('checked',false);
-                }
-            })
+            checkBoxChecked();
 
             layer.msg(result.msg);
             if(result.status){
                 setTimeout(function(){
-                    var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                    let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
                     if(index){
                         parent.location.reload();
                         parent.layer.close(index);
@@ -224,21 +198,63 @@ $(function() {
                     window.location.href= falseUrl;
                 },1000);
             }
-        },"json")
+        }
+
+        //处理checked 未选中不传值的问题
+        function checkBoxChecked(){
+            $(form).find('input[type=checkbox]').each(function(){
+                if($(this).attr('config-native')){
+                    return true;
+                }
+                falseValue = typeof($(this).attr('config-false-value')) != 'undefined' ?  $(this).attr('config-false-value') : 0;
+                trueValue  = typeof($(this).attr('config-true-value')) != 'undefined' ?  $(this).attr('config-true-value') : 0;
+                if(!$(this).prop('checked')){
+                    $(this).prop('checked',true);
+                    $(this).val(falseValue);
+                }else{
+                    $(this).val(trueValue);
+                }
+            })
+        }
     })
 
     //提交post信息
     $('.btn-ajax-post').click(function(){
-        var attr     = $(this).context.attributes;  //获取执行参数
-        var tips     = $(this).attr('config-tips');   //预先提示文案
-        var url      = $(this).attr('config-href');   //执行地址
-        var isReload = $(this).attr('config-reload'); //是否刷新当前页面
-        var trueUrl  = $(this).attr('config-true-url'); //执行成功跳转地址
-        var falseUrl = $(this).attr('config-false-url'); //执行失败跳转地址
+        let tagName = $(this).get(0).tagName;
+
+        let attr        = $(this).context.attributes;  //获取执行参数
+        let tips        = $(this).attr('config-tips');   //预先提示文案
+        let url         = $(this).attr('config-href');   //执行地址
+        let isReload    = $(this).attr('config-reload'); //是否刷新当前页面
+        let trueUrl     = $(this).attr('config-true-url'); //执行成功跳转地址
+        let falseUrl    = $(this).attr('config-false-url'); //执行失败跳转地址
+        let data,inputName,inputType,inputValue;
+
         var data = new Object();
-        for (var i = 0; i < attr.length; i++) {
+        for (let i = 0; i < attr.length; i++) {
             if(attr[i].localName.indexOf('data') !== -1 ){
                 data[attr[i].localName.substr(5,attr[i].localName.length)] =  attr[i].value;
+            }
+        }
+
+        //获取默认值
+        if(tagName == 'INPUT' || tagName == 'SELECT'){
+            inputName  = $(this).attr('name');
+            if(tagName == 'INPUT'){
+                inputType = $(this).attr('type');
+                if(inputType == 'checkbox'){
+                    if($(this).prop('checked') == true){
+                        data[inputName] =  $(this).attr('config-true-value');
+                    }else{
+                        data[inputName] =  $(this).attr('config-false-value');
+                    }
+                    
+                }else{
+                    inputValue = $(this).val();
+                    if(inputName){
+                        data[inputName] = inputValue;
+                    }   
+                }
             }
         }
 
@@ -246,180 +262,107 @@ $(function() {
             layer.confirm(tips, {
               btn: ['确定','取消'] //按钮
             }, function(){
-
-                //处理通讯堵塞
-                if(!checkBtnBlock()){
-                    return false;
-                } 
-
-                $.post(url,data,function(result){
-                    btnBlock = true; //恢复通道
-                    layer.msg(result.msg);
-                    if(result.status){
-                        setTimeout(function(){
-                            if(trueUrl){
-                                window.location.href= trueUrl;
-                            }else{
-                                location.reload();
-                            }
-                        },1000);
-                        
-                    }else if(!result.status && falseUrl){
-                        setTimeout(function(){
-                            window.location.href= falseUrl;
-                        },1000);
-                    }
-
-                    if(isReload){
-                        setTimeout(function(){
-                            location.reload();
-                        },1000);
-                    }   
-                },"json")
+                submit();
             }, function(){});
         }else{
+            submit();
+        }
+
+        function submit(){
             //处理通讯堵塞
             if(!checkBtnBlock()){
                 return false;
             } 
 
             $.post(url,data,function(result){
-                btnBlock = true; //恢复通道
-                if(result.msg){
-                    layer.msg(result.msg);
-                }
-
-                if(result.status){
-                    setTimeout(function(){
-                        if(trueUrl){
-                            window.location.href= trueUrl;
-                        }else{
-                            location.reload();
-                        }
-                    },1000);
-                }else if(!result.status && falseUrl){
-                    setTimeout(function(){
-                        window.location.href= falseUrl;
-                    },1000);
-                }
-
-                if(isReload){
-                    setTimeout(function(){
-                        location.reload();
-                    },1000);
-                }
+                submitThen(result);
             },"json")
+        }
+
+        function submitThen(result){
+            btnBlock = true; //恢复通道
+            layer.msg(result.msg);
+            if(result.status){
+                setTimeout(function(){
+                    if(trueUrl){
+                        window.location.href= trueUrl;
+                    }else{
+                        location.reload();
+                    }
+                },1000);
+                
+            }else if(!result.status && falseUrl){
+                setTimeout(function(){
+                    window.location.href= falseUrl;
+                },1000);
+            }
+
+            if(isReload){
+                setTimeout(function(){
+                    location.reload();
+                },1000);
+            }   
         }
 
     })
 
     //get提交
     $('.btn-ajax-get').click(function(){
-        var url = $(this).attr('config-href');
-        $.get(url,function(result){
-            layer.msg(result.msg);
-            if(result.status){
-                location.reload();
-            }
-        },"json");
-    })
-
-    
-
-    //渲染图片上传插件
-    $('.btn-ablum').each(function(){
-        var _this   = this;
-        var name    = $(this).attr('data-name');
-        var maxNum  = Math.max($(this).attr('data-max'),1);
-        var path    = $(this).attr('data-path'); 
-        var content = '<input type="file" style="display:none;" id="'+name+'"  multiple="multiple"><div class="img-list" style="margin-top:20px;"><ul></ul></div>';
-        var value   = $(this).attr('data-value');
-        if(value != '' && typeof(value) != 'undefined'){
-            value =  value.split(',');
-        }
-
-        if(maxNum == 1){
-            var ablum   = '';
+        let _this    = this;
+        let tips     = $(this).attr('config-tips');   //预先提示文案
+        if(tips){
+            layer.confirm(tips, {
+              btn: ['确定','取消'] //按钮
+            }, function(){
+                submit(); 
+            }, function(){});  
         }else{
-            var ablum   = new Array();
-        }
-       
-        $(_this).parent().append(content);
-
-        //渲染初始图片
-        for(var i=0;i<value.length;i++){
-            value[i] = '/uploadfile/'+path+'/'+value[i]
-            var content = '<li style="float:left;width:150px;height:100px;margin-left:10px;margin-top:10px;"><img src="'+value[i]+'" width="150" height="100" style="border:1px solid #ccc;"> <a style="float:right;margin-top:-100px;margin-right:2px;cursor: pointer;" class="btn-del-img"><i class="glyphicon glyphicon-remove"></i></a></li>';
-            $(_this).parent().find('.img-list ul').append(content);
+            submit();   
         }
 
-
-        //上传
-        $(_this).click(function(){
-            $('input[id='+name+']').wrap('<form>').closest('form').get(0).reset();
-            $('input[id='+name+']').trigger('click');
-        })
-
-        //转换图片url
-        $('#'+name).change(function(e){
-            var imgLength = $(_this).parent().find('.img-list ul img').length;
-            var files = e.target.files || e.dataTransfer.files;
-            if(maxNum  && maxNum < files.length + imgLength){
-                 return layer.msg('最多只能传'+maxNum+'张图片');
-            }
-
-            for(var i=0;i<files.length;i++){
-                var reader = new FileReader();
-                reader.readAsDataURL(files[i]); 
-                reader.onload = function(e){
-                    $.post('/common/upload/up_base64_img',{data:e.target.result,path:path},function(result){
-                        if(result.status){
-                            var content = '<li style="float:left;width:150px;height:100px;margin-left:10px;margin-top:10px;"><img src="'+result.data+'" width="150" height="100" style="border:1px solid #ccc;"> <a style="float:right;margin-top:-100px;margin-right:2px;cursor: pointer;" class="btn-del-img"><i class="glyphicon glyphicon-remove"></i></a></li>';
-                            $(_this).parent().find('.img-list ul').append(content);  
-                        }
-
-                        //删除照片
-                        $('.btn-del-img').click(function(){
-                            //console.log($(this).parent().html());
-                            $(this).parent().remove();
-                            bindValue();    
-                        })
-
-                        bindValue();    
-                    },"json");
+        //提交处理
+        function submit(){
+            let isFrom   = Boolean($(_this).attr('config-from'));
+            let isAsync  = Boolean($(_this).attr('config-async'));
+            let form     = $(_this).parents('.form-horizontal');
+            let url      = $(_this).attr('config-href');
+            let falseValue,trueValue,param;
+        
+            //处理checked 未选中不传值的问题
+            $(form).find('input[type=checkbox]').each(function(){
+                if($(this).attr('config-native')){
+                    return true;
                 }
-            }
-        })
-        //绑定初始值
-        bindValue();
-        //删除照片
-        $('.btn-del-img').click(function(){
-            $(this).parent().remove();
-            bindValue();
-        })
 
-        function bindValue(){
-            var data = new Array();
-            $(_this).parent().find('.img-list').find('img').each(function(){
-                var path  = $(this).attr('src');
-                path  = path.substring(path.lastIndexOf("/")+1,path.length);
-                if(path != 'nd.jpg'){
-                    data[data.length] = path.substring(path.lastIndexOf("/")+1,path.length);
+                falseValue = typeof($(this).attr('config-false-value')) != 'undefined' ?  $(this).attr('config-false-value') : 0;
+                trueValue  = typeof($(this).attr('config-true-value')) != 'undefined' ?  $(this).attr('config-true-value') : 0;
+                if(!$(this).prop('checked')){
+                    $(this).prop('checked',true);
+                    $(this).val(falseValue);
+                }else{
+                    $(this).val(trueValue);
                 }
             })
 
-            var content = '<input type="hidden" name="'+name+'" value="'+data.join(',')+'" />';
-            $('input[name='+name+']').remove();
-            $(_this).parent().append(content);
-        }
+            param     = form.serialize();
+            url       +='?'+param;
+
+            if(isAsync){
+                $.get(url,function(result){
+                    layer.msg(result.msg);
+                    if(result.status){
+                        layer.closeAll();
+                    }
+                },"json");
+            }else{
+                layer.closeAll();
+                window.open(url);
+            }
+        }    
     })
 
     //渲染编辑器
     $('.ue-editor').each(function(){
-        /*if($(this).index() == 0){
-            $.getScript("/vendor/ueditor/ueditor.config.js"); 
-            $.getScript("/vendor/ueditor/ueditor.all.js"); 
-        }*/
         var id = $(this).attr('id');
         UE.getEditor(id);
     })
@@ -492,6 +435,125 @@ $(function() {
         var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
         parent.layer.close(index);
     });
+
+    //渲染图片上传插件
+    $('.btn-ablum').each(function(){
+        var _this   = this;
+        var name    = $(this).attr('data-name');
+        var maxNum  = Math.max($(this).attr('data-max'),1);
+        var path    = $(this).attr('data-path'); 
+        var content = '<input type="file" style="display:none;" id="'+name+'"  multiple="multiple"><div class="img-list" style="margin-top:20px;"><ul></ul></div>';
+        var progress = '<div class="progress" style="margin:0px; margin-top:5px;"><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 1%;">1%</div></div>';
+        var value   = $(this).attr('data-value');
+        if(value != '' && typeof(value) != 'undefined'){
+            value =  value.split(',');
+        }
+
+        if(maxNum == 1){
+            var ablum   = '';
+        }else{
+            var ablum   = new Array();
+        }
+       
+        $(_this).parent().append(content);
+
+        //渲染初始图片
+        for(var i=0;i<value.length;i++){
+            value[i] = '/uploadfile/'+path+'/'+value[i]
+            var content = '<li style="float:left;width:150px;height:100px;margin-left:10px;margin-top:10px;"><img src="'+value[i]+'" width="150" height="100" style="border:1px solid #ccc;"> <a style="float:right;margin-top:-100px;margin-right:2px;cursor: pointer;" class="btn-del-img"><i class="glyphicon glyphicon-remove"></i></a></li>';
+            $(_this).parent().find('.img-list ul').append(content);
+        }
+
+
+        //上传
+        $(_this).click(function(){
+            $('input[id='+name+']').wrap('<form>').closest('form').get(0).reset();
+            $('input[id='+name+']').trigger('click');
+        })
+
+        //转换图片url
+        $('#'+name).change(function(e){
+            var imgLength = $(_this).parent().find('.img-list ul img').length;
+            var files = e.target.files || e.dataTransfer.files;
+            if(maxNum  && maxNum < files.length + imgLength){
+                 return layer.msg('最多只能传'+maxNum+'张图片');
+            }
+
+            for(var i=0;i<files.length;i++){
+
+                var formData = new FormData();
+                formData.append('file', files[i]);
+                formData.append('path', path);
+                formData.append('max_size', 100);
+               
+                //ajax异步上传  
+                $.ajax({  
+                    url: '/common/upload/up_file',  
+                    type: 'POST',  
+                    data: formData,
+                    dataType: 'json',  
+                    contentType: false, //必须false才会自动加上正确的Content-Type  
+                    processData: false,  //必须false才会避开jQuery对 formdata 的默认处理  
+                    xhr: function(){ //获取ajaxSettings中的xhr对象，为它的upload属性绑定progress事件的处理函数
+                        //移除之前的上传进度条
+                        $(_this).parent().find('.progress').remove();
+                        //添加现在的进度条
+                        layer.alert(progress);  
+                        myXhr = $.ajaxSettings.xhr();  
+                        if(myXhr.upload){ 
+                            //检查upload属性是否存在  
+                            //绑定progress事件的回调函数  
+                
+                            myXhr.upload.addEventListener('progress',progressHandlingFunction, false);   
+                        }  
+                        return myXhr; //xhr对象返回给jQuery使用  
+                    },  
+                    success: function(result){
+                        if(result.status){
+                            var url = '/uploadfile/'+path+'/'+result.data.name[0];
+                            var content = '<li style="float:left;width:150px;height:100px;margin-left:10px;margin-top:10px;"><img src="'+url+'" width="150" height="100" style="border:1px solid #ccc;"> <a style="float:right;margin-top:-100px;margin-right:2px;cursor: pointer;" class="btn-del-img"><i class="glyphicon glyphicon-remove"></i></a></li>';
+                            $(_this).parent().find('.img-list ul').append(content);  
+                        }
+                        bindValue();    
+                        return layer.msg(result.msg);            
+                    },  
+                });  
+
+                //上传进度回调函数：  
+                function progressHandlingFunction(e) {
+                    if (e.lengthComputable) {  
+                        $('progress').attr({value : e.loaded, max : e.total}); //更新数据到进度条  
+                        var percent = parseInt(e.loaded/e.total*100); 
+                        $('.progress-bar').css('width',percent+'%');
+                        $('.progress-bar').text(percent+'%'); 
+                    }  
+                } 
+            }
+        })
+        //绑定初始值
+        bindValue();
+
+        //删除照片
+        $('body').on('click','.btn-del-img',function(){
+            $(this).parent().remove();
+            bindValue();
+        })
+       
+        function bindValue(){
+            var data = new Array();
+            $(_this).parent().find('.img-list').find('img').each(function(){
+                var path  = $(this).attr('src');
+                path  = path.substring(path.lastIndexOf("/")+1,path.length);
+                if(path != 'nd.jpg'){
+                    data[data.length] = path.substring(path.lastIndexOf("/")+1,path.length);
+                }
+            })
+
+            var content = '<input type="hidden" name="'+name+'" value="'+data.join(',')+'" />';
+            $('input[name='+name+']').remove();
+            $(_this).parent().append(content);
+        }
+    })
 
     //上传文件
     $('.btn-files').each(function(){  
@@ -588,8 +650,9 @@ $(function() {
                 },  
                 success: function(result){
                     if(result.status){
-                        value  = value +','+ result.data.name[0];
-                        $(_this).parent().parent().find('.col-sm-8').append(fileHtml(result.data.name[0]));
+                        var url = '/uploadfile/'+path+'/'+result.data.name[0];
+                        value  = value +','+ url;
+                        $(_this).parent().parent().find('.col-sm-8').append(fileHtml(url));
                         initValue();
                     }
 
@@ -601,7 +664,7 @@ $(function() {
             function progressHandlingFunction(e) {
                 if (e.lengthComputable) {  
                     $('progress').attr({value : e.loaded, max : e.total}); //更新数据到进度条  
-                    var percent = e.loaded/e.total*100; 
+                    var percent = parseInt(e.loaded/e.total*100); 
                     $('.progress-bar').css('width',percent+'%');
                     $('.progress-bar').text(percent+'%'); 
                 }  
