@@ -15,7 +15,7 @@ class IntegralRul extends \app\admin\controller\Init
      */
     public function lists()
     {
-        $list = table('IntegralRul')->find('array');
+        $list = table('IntegralRule')->find('array');
 
         $this->assign('list', $list);
         $this->show();
@@ -40,10 +40,10 @@ class IntegralRul extends \app\admin\controller\Init
 
         //修改
         if ($id) {
-            $result = table('IntegralRul')->where(array('id' => $id))->save($data);
+            $result = table('IntegralRule')->where(array('id' => $id))->save($data);
 
         } else {
-            $result = table('IntegralRul')->add($data);
+            $result = table('IntegralRule')->add($data);
         }
 
         if (!$result) {
@@ -63,7 +63,7 @@ class IntegralRul extends \app\admin\controller\Init
     {
         $id = get('id', 'intval', 0);
         if ($id) {
-            $data = table('IntegralRul')->where(array('id' => $id))->find();
+            $data = table('IntegralRule')->where(array('id' => $id))->find();
         } else {
             $data = array('integral' => 0, 'status' => 1);
         }

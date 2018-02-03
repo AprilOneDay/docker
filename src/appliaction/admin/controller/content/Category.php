@@ -5,6 +5,7 @@
 namespace app\admin\controller\content;
 
 use app\admin\controller\Init;
+use denha\Pages;
 
 class Category extends Init
 {
@@ -61,9 +62,13 @@ class Category extends Init
         $data['sort']     = post('sort', 'intval', 0);
         $data['is_show']  = post('is_show', 'intval', 1);
 
-        $data['name']  = post('name', 'text', '');
-        $data['bname'] = post('bname', 'text', '');
-        $data['thumb'] = post('thumb', 'img', '');
+        $data['name']    = post('name', 'text', '');
+        $data['name_en'] = post('name_en', 'text', '');
+        $data['name_jp'] = post('name_jp', 'text', '');
+
+        $data['bname']   = post('bname', 'text', '');
+        $data['bname_2'] = post('bname_2', 'text', '');
+        $data['thumb']   = post('thumb', 'img', '');
 
         $data['bname'] ?: $data['bname'] = $data['name'];
 
@@ -82,7 +87,7 @@ class Category extends Init
                 foreach ($content as $key => $value) {
                     if (stripos($value, '|') !== false) {
                         $value         = explode('|', $value);
-                        $data['name']  = $value[0];
+                        $data['name']  = trim($value[0]);
                         $data['bname'] = $value[1];
                     } else {
                         $data['name'] = $data['bname'] = $value;
@@ -134,6 +139,55 @@ class Category extends Init
         }
 
         $this->appReturn(array('status' => true, 'msg' => '删除成功'));
+    }
+
+    /**
+     * 接口自动翻译 /content/category/translation?to=en&parentid=0&id=0
+     * @date   2017-12-25T10:44:29+0800
+     * @author ChenMingjiang
+     * @return [type]                   [description]
+     */
+    public function translation()
+    {
+        $param['to']       = get('to', 'text', 'en');
+        $param['parentid'] = get('parentid', 'text', '');
+        $param['id']       = get('id', 'intval', 0);
+
+        $pageNo   = get('pageNo', 'intval', 1);
+        $pageSize = get('pageSize', 'intval', 10);
+        $offer    = max(($pageNo - 1), 0) * $pageSize;
+
+        if ($param['parentid']) {
+            $map['parentid'] = array('in', $param['parentid']);
+        } elseif ($param['id']) {
+            $map['id'] = array('in', $param['id']);
+        }
+
+        $list  = table('Category')->where($map)->limit($offer, $pageSize)->find('array');
+        $total = table('Category')->where($map)->count();
+
+        $page  = new Pages($total, $pageNo, $pageSize, url('', $param));
+        $pages = $page->pages();
+
+        if ($list) {
+            foreach ($list as $key => $value) {
+                $transValue = dao('BaiduTrans')->baiduTrans($value['name'], $param['to'], 'zh');
+                if (isset($value['name_' . $param['to']]) && $transValue) {
+                    $result = table('Category')->where('id', $value['id'])->save('name_' . $param['to'], $transValue);
+                    if ($result) {
+                        echo '翻译 ' . $value['name'] . ' 为 ' . $transValue . ' 更改成功' . PHP_EOL;
+                    }
+                }
+            }
+        }
+
+        if ($pageNo < $pages['allPage']) {
+            header("refresh:5;$pages[pageUrl]/pageNo/" . ($pageNo + 1));
+            print('已执行' . $pageNo . '/' . $pages['allPage'] . '页,五秒后自动跳转到下一页');
+        } else {
+            die('执行完毕');
+        }
+
     }
 
     /**

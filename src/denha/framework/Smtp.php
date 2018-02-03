@@ -13,25 +13,32 @@ class Smtp
     public $time_out; //链接超时时间
     public $auth;
     public $sock;
+    public $from;
 
-    public function __construct()
+    public function __construct($group = 0)
     {
-        $this->init();
+
+        $this->init($group);
+
     }
 
-    public function init()
+    public function init($group)
     {
+        $smtp = getConfig('smtp'); //获取stmp配置信息
+
         $this->debug      = false;
-        $this->smtp_port  = getConfig('config', 'smtp_port');
-        $this->relay_host = getConfig('config', 'smtp_host');
+        $this->smtp_port  = $smtp[$group]['smtp_port'];
+        $this->relay_host = $smtp[$group]['smtp_host'];
         $this->time_out   = 30;
         $this->auth       = true;
-        $this->user       = getConfig('config', 'smtp_user');
-        $this->pass       = getConfig('config', 'smtp_password');
+        $this->user       = $smtp[$group]['smtp_user'];
+        $this->pass       = $smtp[$group]['smtp_password'];
+        $this->from       = $smtp[$group]['smtp_mail'] ? $smtp[$group]['smtp_mail'] : $smtp[$group]['smtp_user'];
 
         $this->host_name = 'localhost';
         $this->log_file  = '';
         $this->sock      = false;
+
     }
 
     public function smtp($relay_host = '', $smtp_port = 25, $auth = false, $user, $pass)
@@ -48,6 +55,26 @@ class Smtp
         $this->log_file  = '';
         $this->sock      = false;
 
+    }
+
+    /** debug测试 */
+    public function testDebug()
+    {
+
+        $this->debug      = true;
+        $this->smtp_port  = 25;
+        $this->relay_host = 'smtp.163.com', //服务器地址
+        $this->time_out   = 30;
+        $this->auth       = true;
+        $this->user       = 'senddebug', //账户
+        $this->pass       ='uVqe2aZ0Wc0DiAVo', //密码
+        $this->from       = 'senddebug@163.com', //发送邮箱名
+
+        $this->host_name = 'localhost';
+        $this->log_file  = '';
+        $this->sock      = false;
+
+        $this->sendmail('cheng6251@163.com','测试邮箱','测邮箱信息能否通过','HTML')；
     }
 
     /**
@@ -67,7 +94,7 @@ class Smtp
     {
 
         //获取发件邮箱名称
-        $from      = getConfig('config', 'smtp_mail') ? getConfig('config', 'smtp_mail') : getConfig('config', 'smtp_user');
+        $from      = $this->from;
         $mail_from = $this->get_address($this->strip_comment($from));
         $body      = preg_replace('/(^|(\r\n))(\\.)/', "$1.$3", $body);
         $header    = 'MIME-Version:1.0\r\n';

@@ -48,15 +48,15 @@ class Controller
 
         if (!$peg) {
             if (!$viewPath) {
-                $path = APP_PATH . APP . DS . 'view' . DS . MODULE . DS . CONTROLLER . DS . ACTION . '.html';
+                $path = APP_MAIN_PATH . DS . 'view' . DS . MODULE . DS . CONTROLLER . DS . ACTION . '.html';
             }
             //绝对路径
             elseif (stripos($viewPath, '/') === 0) {
-                $path = APP_PATH . APP . DS . 'view' . DS . substr($viewPath, 1) . '.html';
+                $path = APP_MAIN_PATH . DS . 'view' . DS . substr($viewPath, 1) . '.html';
             }
             //相对路径
             else {
-                $path = APP_PATH . APP . DS . 'view' . DS . MODULE . DS . $viewPath . '.html';
+                $path = APP_MAIN_PATH . DS . 'view' . DS . MODULE . DS . $viewPath . '.html';
             }
         } else {
             $path = $viewPath;
@@ -69,6 +69,9 @@ class Controller
         }
 
         $cachePath = DATA_PATH . md5($path) . '.php';
+
+        ob_start();
+        //开启页面缓存
         if (is_file($cachePath) && filemtime($path) == filemtime($cachePath) && !Start::$config['trace']) {
             include $cachePath;
         } else {
@@ -78,9 +81,56 @@ class Controller
             include $template->loadPath;
         }
 
+        $content = ob_get_clean();
+
+        //标签翻译功能
+        if (Start::$config['tag_trans']) {
+            $content = $this->tagTrans($content);
+        }
+
+        echo $content;
+
+        //模块debug功能
         if (Start::$config['trace'] && $trace) {
             Trace::run();
         }
+    }
+
+    /** 标签翻译功能 */
+    protected function tagTrans($content)
+    {
+
+        $regular = '/{FY:(.*?):(.*?)}/is';
+        preg_match_all('/{FY:(.*?):(.*?)}/is', $content, $matches);
+        if ($matches) {
+
+            //组合翻译结构
+            foreach ($matches[0] as $key => $value) {
+                $transArray[$matches[2][$key]][] = $matches[1][$key];
+            }
+
+            //批量翻译
+            foreach ($transArray as $key => $value) {
+                if ($key != 'zh') {
+                    $transValue[$key] = dao('BaiduTrans')->baiduTrans($value, $key, 'zh');
+                } else {
+                    foreach ($value as $key => $value) {
+                        $transValue['zh'][$value] = $value;
+                    }
+
+                }
+
+            }
+
+            foreach ($transValue as $key => $value) {
+                foreach ($value as $k => $v) {
+                    $content = str_replace("{FY:$k:$key}", $v, $content);
+                }
+
+            }
+        }
+
+        return $content;
     }
 
     /**
@@ -90,7 +140,7 @@ class Controller
      * @param  [type]                   $value [description]
      * @return [type]                          [description]
      */
-    protected function ajaxReturn($value)
+    protected function ajaxReturn($value, $lg)
     {
         header("Content-Type:application/json; charset=utf-8");
         $array = array(
@@ -99,10 +149,21 @@ class Controller
             'msg'    => '操作成功',
         );
         $value = array_merge($array, $value);
+        if ($lg != 'zh') {
+            $value['msg'] = dao('BaiduTrans')->baiduTrans($value['msg'], $this->lg);
+        }
         exit(json_encode($value));
     }
 
-    protected function appReturn($value)
+    /**
+     * app返回参数
+     * @date   2018-01-30T16:43:24+0800
+     * @author ChenMingjiang
+     * @param  [type]                   $value [description]
+     * @param  [type]                   $lg    [国家]
+     * @return [type]                          [description]
+     */
+    protected function appReturn($value, $lg)
     {
         header("Content-Type:application/json; charset=utf-8");
         $array = array(
@@ -111,7 +172,27 @@ class Controller
             'data'   => array(),
             'msg'    => '获取数据成功',
         );
+
+        //控制开关
+        if (Start::$config['app_debug']) {
+            $debug = array(
+                'debug' => array(
+                    'param' => array(
+                        'post'  => (array) post('all'),
+                        'get'   => (array) get('all'),
+                        'files' => $_FILES,
+                    ),
+                    'ip'    => getIP(),
+                ),
+            );
+            $array = array_merge($array, $debug);
+        }
+
         $value = array_merge($array, $value);
+        if ($lg != 'zh') {
+            $value['msg'] = dao('BaiduTrans')->baiduTrans($value['msg'], $this->lg);
+        }
+
         exit(json_encode($value));
     }
 

@@ -6,6 +6,7 @@ namespace app\tools\dao;
 
 class Message
 {
+
     /**
      * 发送站内推送
      * @date   2017-09-26T11:07:25+0800
@@ -22,8 +23,11 @@ class Message
             return false;
         }
 
-        $data['content'] = $this->analysisTemplate($flag, $param);
-        if (!$data['content']) {
+        $content = $this->getContent($flag);
+        $content = $this->analysisTemplate($content, $param);
+
+        //消息模板不存在 或则 关闭
+        if (!$content || !$content['status']) {
             return false;
         }
 
@@ -31,13 +35,17 @@ class Message
         $data['uid']      = $uid;
         $data['created']  = TIME;
         $data['to_uid']   = $toUid;
-        $data['jump_app'] = $jumpData ? json_encode($jumpData) : '';
+        $data['flag']     = $flag;
+        $data['param']    = $param ? json_encode($param, JSON_UNESCAPED_UNICODE) : '';
+        $data['jump_app'] = $jumpData ? json_encode($jumpData, JSON_UNESCAPED_UNICODE) : '';
 
         //如果存在相同推送内容信息则直接更新时间
-        $map['type']       = array('!=', 1);
-        $map['uid']        = $uid;
-        $map['to_uid']     = $toUid;
-        $map['content']    = $data['content'];
+        $map['flag']   = $flag;
+        $map['type']   = $type;
+        $map['uid']    = $uid;
+        $map['to_uid'] = $toUid;
+        $data['param'] = $param ? json_encode($param, JSON_UNESCAPED_UNICODE) : '';
+
         $map['del_status'] = 0;
 
         $id = table('UserMessage')->where($map)->field('id')->find('one');
@@ -49,7 +57,7 @@ class Message
         }
 
         //发送推送信息
-        dao('JPush')->sendByRegId($toUid, $data['content'], $data['content'], $jumpData);
+        dao('JPush')->sendByRegId($toUid, $content['title'], $content['content'], $jumpData);
 
     }
 
@@ -61,9 +69,8 @@ class Message
      * @param  [type]                   $param   [description]
      * @return [type]                            [description]
      */
-    private function analysisTemplate($flag, $param)
+    private function analysisTemplate($content, $param)
     {
-        $content = $this->getContent($flag);
         if (!$content) {
             return '';
         }
@@ -73,7 +80,8 @@ class Message
         }
 
         foreach ($param as $key => $value) {
-            $content = str_replace('{' . $key . '}', $value, $content);
+            $content['title']   = str_replace('{$' . $key . '}', $value, $content['title']);
+            $content['content'] = str_replace('{$' . $key . '}', $value, $content['content']);
         }
 
         return $content;
@@ -87,43 +95,80 @@ class Message
      * @param  array                    $data [description]
      * @return [type]                         [description]
      */
-    public function getContent($flag, $param)
+    public function getContent($flag, $lg = 'zh')
     {
-        $content = '';
-        switch ($flag) {
-            case 'register_user':
-                $content = '恭喜你成为会员,祝你购车愉快';
-                break;
-            case 'comment':
-                $content = '会员{nickname},给你留言了,请尽快查看哦！';
-                break;
-            case 'newComment':
-                $content = '你有新的消息';
-                break;
-            case 'user_appointment_success':
-                $content = '商家：[{nickname}]已确认你的预约，准时到达，商家电话：{mobile}';
-                break;
-            case 'user_appointment_fail':
-                $content = '商家：[{nickname}]拒绝了你的预约';
-                break;
-            case 'user_appointment_edit_time':
-                $content = '商家：[{nickname}]修改了预约时间,请及时确认';
-                break;
-            case 'user_get_coupon':
-                $content = '你有一张代金券可以免费领取,确认订单即可领取';
-                break;
-            case 'seller_appointment_success':
-                $content = '你有新的预约订单';
-                break;
-            case 'seller_appointment_refuse_time':
-                $content = '会员{nickname}，拒绝了你设置的预约时间';
-                break;
-            default:
-                # code...
-                break;
+        $map         = array();
+        $map['flag'] = $flag;
+
+        if ($lg != 'zh') {
+            $field = "title_$lg,content_$lg";
+        } else {
+            $field = 'title,content';
         }
+
+        $content = table('SysNoticeRule')->where($map)->find();
+
+        if ($content) {
+            $content['title']   = $lg == 'zh' ? $content['title'] : $content['title_' . $lg];
+            $content['content'] = $lg == 'zh' ? $content['content'] : $content['content_' . $lg];
+        }
+
+        $content = $content ? $content : '';
+
+        /*$content = '';
+        switch ($flag) {
+        case 'register_user':
+        $content = '恭喜你成为会员,祝你购车愉快';
+        break;
+        case 'comment':
+        $content = '会员{nickname},给你留言了,请尽快查看哦！';
+        break;
+        case 'newComment':
+        $content = '你有新的消息';
+        break;
+        case 'user_appointment_success':
+        $content = '商家：[{nickname}]已确认你的预约，准时到达，商家电话：{mobile}';
+        break;
+        case 'user_appointment_fail':
+        $content = '商家：[{nickname}]拒绝了你的预约';
+        break;
+        case 'user_appointment_edit_time':
+        $content = '商家：[{nickname}]修改了预约时间,请及时确认';
+        break;
+        case 'user_get_coupon':
+        $content = '你有一张代金券可以免费领取,确认订单即可领取';
+        break;
+        case 'seller_appointment_success':
+        $content = '你有新的预约订单';
+        break;
+        case 'seller_appointment_refuse_time':
+        $content = '会员{nickname}，拒绝了你设置的预约时间';
+        break;
+        default:
+        # code...
+        break;
+        }*/
 
         return $content;
     }
 
+    public function getList($lg = 'zh', $mapValue = array())
+    {
+        $map = array();
+
+        $map = array_merge($map, $mapValue);
+
+        $list = table('UserMessage')->where($map)->find('array');
+
+        foreach ($list as $key => $value) {
+            $content = $this->getContent($value['flag'], $lg);
+
+            $content = $this->analysisTemplate($content, json_decode($value['param'], true));
+
+            $list[$key]['title']   = $content['title'];
+            $list[$key]['content'] = $content['content'];
+        }
+
+        return $list;
+    }
 }

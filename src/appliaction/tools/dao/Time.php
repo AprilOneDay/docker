@@ -39,13 +39,15 @@ class Time
 
     /**
      * 计算相隔时间
-     * @date   2017-11-16T16:51:58+0800
+     * @date   2018-01-08T11:02:46+0800
      * @author ChenMingjiang
-     * @param  [type]                   $startTime [description]
-     * @param  [type]                   $endTime [description]
-     * @return [type]                          [description]
+     * @param  integer                  $startTime [开始时间]
+     * @param  integer                  $endTime   [结束时间]
+     * @param  integer                  $pointer   [显示样式]
+     * @param  string                   $lg        [语音版本]
+     * @return [type]                              [description]
      */
-    public function diffDate($startTime = 0, $endTime = 0)
+    public function diffDate($startTime = 0, $endTime = 0, $pointer = 0, $lg = 'zh')
     {
 
         //交换时间
@@ -88,6 +90,11 @@ class Time
             'secs'  => $secs,
         );
 
+        $lgCopy = array(
+            'zh' => array('year' => '年', 'month' => '月', 'day' => '日', 'mins' => '分', 'secs' => '秒'),
+            'en' => array('year' => 'year', 'month' => 'month', 'day' => 'day', 'mins' => 'mins', 'secs' => 'secs'),
+        );
+
         //最合适的值放第一个
         foreach ($data as $key => $value) {
             if ($value) {
@@ -98,6 +105,12 @@ class Time
 
                 break;
             }
+        }
+
+        //直接返回第一个数据
+        if ($pointer == 1) {
+            $pointerData = reset($data) . $lgCopy[$lg][key($data)];
+            return $pointerData;
         }
 
         return $data;

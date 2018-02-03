@@ -73,6 +73,7 @@
 									</div>
 									<label class="clo-sm-2">如：<br/>菜单名称|别名<br/>关于我们|about us<br/>竖线以及后面的名称可留空</label>
 								</div>
+
 								<div class="form-group add1">
 									<label class="control-label col-sm-3">
 										<span class="text-danger">*</span>
@@ -82,6 +83,31 @@
 										<input type="text" value="{??$data['name']}" name="name" placeholder="菜单名称" class="form-control">	
 									</div>
 								</div>
+								
+								{if in_array('en',$this->lg)}
+								<div class="form-group add1">
+									<label class="control-label col-sm-3">
+										<span class="text-danger">*</span>
+										<span>英文菜单名称</span>
+									</label>
+									<div class="col-sm-8">
+										<input type="text" value="{??$data['name_en']}" name="name_en" placeholder="英文菜单名称" class="form-control">	
+									</div>
+								</div>
+								{/if}
+								
+								{if in_array('jp',$this->lg)}
+								<div class="form-group add1">
+									<label class="control-label col-sm-3">
+										<span class="text-danger">*</span>
+										<span>日文菜单名称</span>
+									</label>
+									<div class="col-sm-8">
+										<input type="text" value="{??$data['name_jp']}" name="name_jp" placeholder="日文菜单名称" class="form-control">	
+									</div>
+								</div>
+								{/if}
+
 								<div class="form-group add1">
 									<label class="control-label col-sm-3">
 										<span class="text-danger">*</span>
@@ -91,6 +117,31 @@
 										<input type="text" value="{??$data['bname']}" name="bname" placeholder="别名" class="form-control">	
 									</div>
 								</div>
+	
+								{if in_array('en',$this->lg)}
+								<div class="form-group add1">
+									<label class="control-label col-sm-3">
+										<span class="text-danger">*</span>
+										<span>英文别名</span>
+									</label>
+									<div class="col-sm-8">
+										<input type="text" value="{??$data['bname_en']}" name="bname_en" placeholder="别名" class="form-control">	
+									</div>
+								</div>
+								{/if}
+								
+								{if in_array('jp',$this->lg)}
+								<div class="form-group add1">
+									<label class="control-label col-sm-3">
+										<span class="text-danger">*</span>
+										<span>日文别名</span>
+									</label>
+									<div class="col-sm-8">
+										<input type="text" value="{??$data['bname_jp']}" name="bname_jp" placeholder="别名" class="form-control">	
+									</div>
+								</div>
+								{/if}
+
 								<div class="form-group">
 									<label class="control-label col-sm-3">
 										<span class="text-danger">*</span>

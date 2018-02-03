@@ -68,7 +68,7 @@
 									<tbody>
 										{loop $list $key $value}
 									 	<tr v-for="list in list">
-									 		<td><input type="checkbox" class="checkbox" value="{$value['id']}" name="id[]" data-checked='{F:json_encode($checkValue)}'></td>
+									 		<td><input type="checkbox" class="checkbox" value="{$value['id']}" name="id[]" config-checked='{$checkValue}'></td>
 											<td>{$value['id']}</td>
 											<td>{$value['title']}</td>
 											<td>{$other['typeCopy'][$value['type']]}</td>

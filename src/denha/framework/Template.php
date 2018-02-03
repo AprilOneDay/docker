@@ -26,6 +26,8 @@ class Template
         $this->content = preg_replace('/' . $this->left . '\$(.*?)' . $this->right . '/is', '<?php echo $\1; ?>', $this->content);
         //??$xx  be !isset($xx) ?: $xx
         $this->content = preg_replace('/' . $this->left . '\?\?(.*?)' . $this->right . '/is', '<?php echo !isset(\1) ? null : \1; ?>', $this->content);
+        //机器翻译标签 {FY:xxx:en}
+        $this->content = preg_replace('/' . $this->left . 'FY:\$(.*?):(.*?)' . $this->right . '/is', '<?php echo \'{FY:\'.$\1.\':\2}\'; ?>', $this->content);
         //替换php函数 {F:XXX}  be echo XXX;
         $this->content = preg_replace('/' . $this->left . 'F:(.*?)' . $this->right . '/', '<?php echo \1; ?>', $this->content);
         //替换{if XXX}
@@ -54,6 +56,7 @@ class Template
         fclose($file);
         //同步修改时间
         touch($this->loadPath, filemtime($this->viewPath), filemtime($this->viewPath));
+
     }
 
     public function stampInclude()
@@ -74,6 +77,8 @@ class Template
                 else {
                     $path = APP_PATH . APP . DS . 'view' . DS . MODULE . DS . $value . '.html';
                 }
+
+                $path = str_replace('\\', DS, $path);
 
                 if (is_file($path)) {
                     $file    = fopen($path, 'r');

@@ -1,5 +1,9 @@
 CACHE MANIFEST
+<<<<<<< HEAD
 # 2017-11-23 v1.5.3
+=======
+# 2017-11-23 v1.5.4
+>>>>>>> f638a7fab3307e2ac30e0f9b1ea76fba6cd4117b
 css/common.css
 css/css.css
 i_vendor/letterfx/jquery-letterfx.css

@@ -15,30 +15,42 @@ class Coupon
      */
     public function add($uid = 0, $param = array())
     {
-        $data['uid']         = $uid;
-        $data['category']    = (int) $param['category'];
-        $data['type']        = (int) $param['type'];
-        $data['start_time']  = (int) $param['start_time'];
-        $data['end_time']    = (int) $param['end_time'];
-        $data['num']         = $data['remainder_num']         = (int) $param['num'];
-        $data['title']       = (string) $param['title'];
+        $id = (int) $param['id'];
+
+        $data['uid']        = $uid;
+        $data['category']   = (int) $param['category'];
+        $data['type']       = (int) $param['type'];
+        $data['start_time'] = (int) $param['start_time'];
+        $data['end_time']   = (int) $param['end_time'];
+        $data['num']        = $data['remainder_num']        = (int) $param['num'];
+
+        $data['title']    = (string) $param['title'];
+        $data['title_en'] = (string) $param['title_en'];
+        $data['title_jp'] = (string) $param['title_jp'];
+
+        $data['description']    = (string) $param['description'];
+        $data['description_en'] = (string) $param['description_en'];
+        $data['description_jp'] = (string) $param['description_jp'];
+
         $data['is_exchange'] = (int) $param['is_exchange'];
+        $data['unit']        = $param['unit'] == '' ? 'CNY' : (string) $param['unit'];
 
         $data['created'] = TIME;
-        if (!$data['title']) {
-            return array('stauts' => false, 'msg' => '请输入抵扣卷名称');
-        }
 
         if (!$data['title']) {
-            return array('stauts' => false, 'msg' => '请输入抵扣卷名称');
+            return array('status' => false, 'msg' => '请输入抵扣卷名称');
+        }
+
+        if (!$data['unit']) {
+            return array('status' => false, 'msg' => '请输入抵扣币种');
         }
 
         if (!$data['start_time'] || !$data['end_time']) {
-            return array('stauts' => false, 'msg' => '请输入完整的抵扣卷生效时间');
+            return array('status' => false, 'msg' => '请输入完整的抵扣卷生效时间');
         }
 
         if (!$data['type']) {
-            return array('stauts' => false, 'msg' => '请选择抵扣卷类型');
+            return array('status' => false, 'msg' => '请选择抵扣卷类型');
         }
 
         if ($data['type'] == 1) {
@@ -47,30 +59,54 @@ class Coupon
             $data['less'] = (int) $param['less'];
 
             if (!$data['less']) {
-                return array('stauts' => false, 'msg' => '请输入抵扣金额');
+                return array('status' => false, 'msg' => '请输入抵扣金额');
             }
 
         } else {
             $data['discount'] = (int) $param['discount'];
             if (!$data['discount']) {
-                return array('stauts' => false, 'msg' => '请输入折扣值[数字]');
+                return array('status' => false, 'msg' => '请输入折扣值[数字]');
             }
 
             if ($data['discount'] >= 10) {
-                return array('stauts' => false, 'msg' => '最多9.9折');
+                return array('status' => false, 'msg' => '最多9.9折');
             }
 
             if ($data['discount'] < 1) {
-                return array('stauts' => false, 'msg' => '最少9.9折');
+                return array('status' => false, 'msg' => '最少9.9折');
             }
         }
 
-        $result = table('Coupon')->add($data);
-        if (!$result) {
-            return array('stauts' => false, 'msg' => '创建失败');
+        //编辑
+        if (isset($id)) {
+            if (!$this->checkCoupon($id)) {
+                return array('status' => false, 'msg' => '抵扣卷已在使用了');
+            }
+
+            $result = table('Coupon')->where('id', $id)->save($data);
+        }
+        //添加
+        else {
+            $result = table('Coupon')->add($data);
         }
 
-        return array('stauts' => true, 'msg' => '创建成功');
+        if (!$result) {
+            return array('status' => false, 'msg' => '创建失败');
+        }
+
+        return array('status' => true, 'msg' => '操作成功');
+    }
+
+    /** 检测抵扣卷模板是否已在使用 true:未使用 false:已有人使用 */
+    public function checkCoupon($id)
+    {
+        $log = table('CouponLog')->where('coupon_id', $id)->find();
+        if ($log) {
+            return false;
+        }
+
+        return true;
+
     }
 
     /**
@@ -82,20 +118,29 @@ class Coupon
      * @param  integer                  $pageSize [description]
      * @return [type]                             [description]
      */
-    public function lists($map, $offer = 0, $pageSize = 1000)
+    public function lists($map, $lg = 'zh', $offer = 0, $pageSize = 1000)
     {
         $couponLog = table('CouponLog')->tableName();
         $coupon    = table('Coupon')->tableName();
 
-        $field = "$coupon.title,$coupon.uid as shop_uid,$coupon.start_time,$coupon.end_time,$coupon.type,$coupon.full,$coupon.less,$coupon.discount,$coupon.category,$couponLog.use_time,$couponLog.uid,$couponLog.id,$couponLog.origin";
-        $list  = table('CouponLog')->join($coupon, "$coupon.id = $couponLog.coupon_id")->where($map)->limit($offer, $pageSize)->field($field)->order("$couponLog.id desc,$couponLog.use_time asc,$coupon.end_time desc")->find('array');
+        if ($lg == 'zh') {
+            $field = "$coupon.title,$coupon.description,";
+        } else {
+            $field = "$coupon.title_$lg,$coupon.description_$lg,";
+        }
+
+        $field .= "$coupon.uid as shop_uid,$coupon.start_time,$coupon.end_time,$coupon.type,$coupon.full,$coupon.less,$coupon.discount,$coupon.category,$couponLog.use_time,$couponLog.uid,$couponLog.id,$couponLog.origin";
+
+        $list = table('CouponLog')->join($coupon, "$coupon.id = $couponLog.coupon_id")->where($map)->limit($offer, $pageSize)->field($field)->order("$couponLog.id desc,$couponLog.use_time asc,$coupon.end_time desc")->find('array');
+
         foreach ($list as $key => $value) {
             $list[$key]['status'] = dao('Time')->hdStatus($value['start_time'], $value['end_time']);
             if ($value['use_time']) {
                 $list[$key]['status'] = 3;
             }
-            $list[$key]['shop_name']   = dao('User')->getInfo($value['shop_uid'], 'nickname');
-            $list[$key]['origin_copy'] = $value['origin'] == 2 ? '积分兑换' : '消费赠送';
+
+            $list[$key]['title']       = $lg != 'zh' ? (string) $value['title_' . $lg] : (string) $value['title'];
+            $list[$key]['description'] = $lg != 'zh' ? (string) $value['description_' . $lg] : (string) $value['description'];
         }
 
         $list = $list ? $list : array();

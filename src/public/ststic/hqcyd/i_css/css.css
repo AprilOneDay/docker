@@ -83,8 +83,14 @@ body{ background: #fff;  font-family: "微软雅黑"; overflow:hidden; padding: 
 .main-1000{ width: 1000px; margin:0 auto; }
 .main img{ display: block; }
 .main .zt{ width: 100%; height: 686px; background: url(../i_images/main.jpg) no-repeat center;  }
+<<<<<<< HEAD
 .main .logo { display: block; width: 211px; margin:0 auto; margin-bottom: 5px; }
 .main .btn-home { display: block; width: 211px; margin:0 auto; margin-bottom: 20px;}
+=======
+.main .logo { display: block; width: 295px; margin:0 auto; margin-bottom: 5px; }
+.main .logo img{ width: 295px; }
+.main .btn-home { display: block; width: 295px; margin:0 auto; margin-bottom: 20px;}
+>>>>>>> f638a7fab3307e2ac30e0f9b1ea76fba6cd4117b
 
 
 /** 笔记本分辨率调整 */

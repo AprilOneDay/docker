@@ -19,38 +19,50 @@
 								<span>店铺名称</span>
 							</label>
 							<div class="col-sm-8">
-								<input type="text" value="{??$data['name']}" name="name" placeholder="标题"  disabled class="form-control">	
+								<input type="text" value="{??$data['name']}" name="name" placeholder="标题"  class="form-control">	
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="control-label col-sm-3">
 								<span class="text-danger"></span>
-								<span>店铺头图</span>
+								<span>店铺缩略图</span>
 							</label>
 							<div class="col-sm-8">
-								<img src="{$data['avatar']}" width="150" height="100" style="margin-left: 10px;">
+								<a class="btn btn-primary btn-ablum" data-name="avatar" data-value="{??$data['avatar']}" data-path="shop" data-max="1">添加图片</a>
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="control-label col-sm-3">
 								<span class="text-danger"></span>
-								<span for="myDate">店铺评分</span>
+								<span for="myDate">手机号</span>
 							</label>
 							<div class="col-sm-8">
-								<input type="text" value="{??$data['credit_level']['value']}"  disabled class="form-control">	
+								<input type="text" value="{??$data['mobile']}"  class="form-control">	
 							</div>
 						</div>
+						
+						{if !$data['id']}
 						<div class="form-group">
 							<label class="control-label col-sm-3">
-								<span class="text-danger"></span>
-								<span for="myDate">店铺照片</span>
+								<span class="text-danger">*</span>
+								<span>新密码</span>
 							</label>
 							<div class="col-sm-8">
-								{loop $data['ablum'] $key $value}
-									<img src="{$value}" width="150" height="100" style="margin-left: 10px;">
-								{/loop}
+								<input type="text" value="{??$data['password']}" name="password" placeholder="密码"  class="form-control">	
 							</div>
 						</div>
+
+						<div class="form-group">
+							<label class="control-label col-sm-3">
+								<span class="text-danger">*</span>
+								<span>再次确认密码</span>
+							</label>
+							<div class="col-sm-8">
+								<input type="text" value="{??$data['password2']}" name="password2" placeholder="密码"  class="form-control">	
+							</div>
+						</div>
+						{/if}
+						{if $data['id']}
 						<div class="form-group">
 							<label class="control-label col-sm-3">
 								<span class="text-danger"></span>
@@ -106,6 +118,7 @@
 								</label>
 							</div>
 						</div>
+						{/if}
 					</fieldset>
 				</div>
 				<div class="modal-footer">

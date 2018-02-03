@@ -5,12 +5,41 @@ class Route
 {
     public static $path;
     public static $class;
+    private $uri;
+    private $rule;
 
     //后台快捷路由
     public static function admin()
     {
         $uri   = self::parseUri();
         $array = explode('/', $uri);
+    }
+
+    //执行主体
+    public static function main($route = 'mca')
+    {
+        $uri   = self::parseUri();
+        $array = explode('/s/', $uri);
+        //转换路由
+        $pathArray = array_values(array_filter(explode('/', $array[0])));
+
+        $config = getConfig('route.' . APP);
+
+        //如果存在路由配置文件 按路由配置文件处理
+        if (isset($config) && isset($config[$pathArray[0]])) {
+
+            $base = &$config[$pathArray[0]];
+            self::$path .= APP . '\\' . $base['path'];
+            $route = isset($base['rule']) ? $base['rule'] : 'mca';
+            self::$route();
+        }
+        //如果不存在配置文件
+        else {
+            self::$route();
+        }
+
+        //debug
+        //print_r(self::$path);die;
 
     }
 
@@ -18,44 +47,95 @@ class Route
     //v1/user/index/index/2/ be appliaction/app/controller/v1/user/Index_2.php 中 index
     public static function app()
     {
-        $uri   = self::parseUri();
-        $array = explode('/', $uri);
 
-        if (count($array) >= 3) {
-            $version = $array[0];
-            define('MODULE', $array[1]);
-            define('CONTROLLER', $array[2]);
+        $uri = self::parseUri();
+
+        $array = explode('/s/', $uri);
+        //转换路由
+        $pathArray = array_values(array_filter(explode('/', $array[0])));
+
+        if (count($pathArray) >= 3) {
+            $version = $pathArray[0];
+            define('MODULE', $pathArray[1]);
+            define('CONTROLLER', $pathArray[2]);
 
             //index方法 默认
-            if (is_numeric($array[3])) {
+            if (is_numeric($pathArray[3])) {
                 define('ACTION', 'index');
             } else {
-                define('ACTION', $array[3]);
+                define('ACTION', $pathArray[3]);
             }
 
-            self::$path  = APP . DS;
-            self::$class = 'app\\' . APP . '\\' . 'controller\\' . $array[0] . '\\' . parsename(MODULE, false) . '\\' . parsename(CONTROLLER, true);
+            if (is_null(self::$path)) {
+                self::$path = stripos(APP, '\\') === false ? APP . '\\' . 'app' : substr(APP, 0, stripos(APP, '\\'));
+            }
+
+            self::$class = 'app\\' . self::$path . '\\' . 'controller\\' . $pathArray[0] . '\\' . parsename(MODULE, false) . '\\' . parsename(CONTROLLER, true);
 
             //切换小版本
-            if (is_numeric($array[3])) {
-                $version = $array[0] . '.' . $array[3];
-                self::$class .= '_' . $array[3];
-            } elseif (isset($array[4]) && is_numeric($array[4])) {
-                $version = $array[0] . '.' . $array[4];
-                self::$class .= '_' . $array[4];
+            if (is_numeric($pathArray[3])) {
+                $version = $pathArray[0] . '.' . $pathArray[3];
+                self::$class .= '_' . $pathArray[3];
+            } elseif (isset($pathArray[4]) && is_numeric($pathArray[4])) {
+                $version = $pathArray[0] . '.' . $pathArray[4];
+                self::$class .= '_' . $pathArray[4];
             }
 
+            define('APP_MAIN_PATH', self::$path);
             define('APP_VERSION', $version);
+
+            //转换参数
+            self::changeGetValue($array);
         }
 
     }
 
+    //smca 路由结构
+    // /h5/pay/cashier/index be appliaction/h5/controller/pay/cashier.php 中 index
+    public static function smca()
+    {
+
+        $uri   = self::parseUri();
+        $array = explode('/s/', $uri);
+
+        //转换路由
+        $pathArray = array_values(array_filter(explode('/', $array[0])));
+
+        if (count($pathArray) >= 3) {
+            $_GET['module']     = $pathArray[1];
+            $_GET['controller'] = $pathArray[2];
+
+            //index方法 默认
+            if (is_numeric($pathArray[3]) || !isset($pathArray[3])) {
+                $_GET['action'] = 'index';
+            } else {
+                $_GET['action'] = $pathArray[3];
+            }
+        }
+
+        $module     = self::initValue('module', 'index');
+        $controller = self::initValue('controller', 'index');
+        $action     = self::initValue('action', 'index');
+
+        is_null(self::$path) ?: self::$path = stripos(APP, '\\') !== false ? substr(APP, 0, stripos(APP, '\\')) . '\\' . $pathArray[0] : APP . '\\' . $pathArray[0];
+
+        define('MODULE', $module);
+        define('CONTROLLER', $controller);
+        define('ACTION', $action);
+        define('APP_MAIN_PATH', APP_PATH . self::$path);
+
+        //转换参数
+        self::changeGetValue($array);
+
+        self::$class = 'app\\' . self::$path . '\\' . 'controller\\' . parsename(MODULE, false) . '\\' . parsename(CONTROLLER, true);
+    }
+
+    //mca 路由结构
+    // /pay/cashier/index be appliaction/controller/pay/cashier.php 中 index
     public static function mca()
     {
         if (!isset($_GET['module']) && isset($_SERVER['SCRIPT_NAME']) && isset($_SERVER['REQUEST_URI'])) {
-            $uri = self::parseUri();
-
-            //var_dump($uri);die;
+            $uri   = self::parseUri();
             $array = explode('/s/', $uri);
 
             //转换路由
@@ -86,29 +166,21 @@ class Route
             }
 
             //转换参数
-            if (isset($array[1])) {
-                $paramArray = array_values(array_filter(explode('/', $array[1])));
-                $total      = count($paramArray);
-
-                for ($i = 0; $i < $total;) {
-                    $_GET[$paramArray[$i]] = urldecode($paramArray[$i + 1]);
-                    $i += 2;
-                }
-
-            }
-
+            self::changeGetValue($array);
         }
 
         $module     = self::initValue('module', 'index');
         $controller = self::initValue('controller', 'index');
         $action     = self::initValue('action', 'index');
 
+        !is_null(self::$path) ?: self::$path = APP ? APP : '';
+
         define('MODULE', $module);
         define('CONTROLLER', $controller);
         define('ACTION', $action);
+        define('APP_MAIN_PATH', APP_PATH . self::$path);
 
-        self::$path  = APP ? APP . DS : '';
-        self::$class = 'app\\' . APP . '\\' . 'controller\\' . parsename(MODULE) . '\\' . parsename(CONTROLLER, true);
+        self::$class = 'app\\' . self::$path . '\\' . 'controller\\' . parsename(MODULE) . '\\' . parsename(CONTROLLER, true);
 
     }
 
@@ -148,7 +220,9 @@ class Route
         define('MODULE', '');
         define('CONTROLLER', $controller);
         define('ACTION', $action);
-        self::$path  = APP . DS;
+        define('APP_MAIN_PATH', APP_PATH . APP);
+
+        self::$path  = APP . '\\';
         self::$class = 'app\\' . APP . '\\' . 'controller\\' . parsename(CONTROLLER, true);
     }
 
@@ -170,6 +244,7 @@ class Route
             $uri = substr($uri, strlen($_SERVER['SCRIPT_NAME']));
         }
 
+        //拆分数组
         $uri = trim($uri, '/');
 
         if (!$uri) {
@@ -186,6 +261,28 @@ class Route
             return $uri;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * 转换GET参数
+     * @date   2018-01-16T11:29:07+0800
+     * @author ChenMingjiang
+     * @param  [type]                   $array [description]
+     * @return [type]                          [description]
+     */
+    private static function changeGetValue($array)
+    {
+        //转换参数
+        if (isset($array[1])) {
+            $paramArray = array_values(explode('/', $array[1]));
+
+            $total = count($paramArray);
+
+            for ($i = 0; $i < $total;) {
+                $_GET[$paramArray[$i]] = urldecode($paramArray[$i + 1]);
+                $i += 2;
+            }
         }
     }
 

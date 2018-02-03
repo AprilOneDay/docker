@@ -33,35 +33,59 @@ class Shop extends \app\admin\controller\Init
     {
         $id = get('id', 'intval', 0);
         if (!$id) {
-            denha\Log::error('参数错误');
-        }
-
-        $data['is_ide']       = post('is_ide', 'intval', 0);
-        $data['status']       = post('status', 'intval', 0);
-        $data['is_recommend'] = post('is_recommend', 'intval', 0);
-
-        $shop = table('UserShop')->where('id', $id)->field('uid,status')->find();
-
-        if ($shop['status'] != $data['status']) {
-            //开启店铺商品
-            if ($data['status'] == 1) {
-                table('GoodsCar')->where(array('uid' => $shop['uid']))->save('is_show', 1);
-                table('GoodsService')->where(array('uid' => $shop['uid']))->save('is_show', 1);
+            
+			$data['username']     = post('name', 'text', 0);
+			$data['password']     = post('password', 'text', '');
+			$data['mobile']       = post('mobile', 'intval', 0);
+			$data['type']         = 2;
+			$data['avatar']         = post('avatar', 'text', '');
+			
+			
+			$password2 = post('password2', 'text', '');
+			
+			$result = dao('User')->register($data, $password2);
+            if (!$result['status']) {
+                $this->ajaxReturn($result);
             }
-            //屏蔽店铺商品
-            else {
-                table('GoodsCar')->where(array('uid' => $shop['uid']))->save('is_show', 0);
-                table('GoodsService')->where(array('uid' => $shop['uid']))->save('is_show', 0);
-            }
-        }
+			
+			if (!$result) {
+				$this->ajaxReturn(array('status' => false, 'msg' => '操作失败'));
+			}
 
-        $reslut = table('UserShop')->where(array('id' => $id))->save($data);
+			$this->ajaxReturn(array('msg' => '操作成功'));
+			
+        }else{
+			
+			
+			$data['is_ide']       = post('is_ide', 'intval', 0);
+			$data['status']       = post('status', 'intval', 0);
+			$data['is_recommend'] = post('is_recommend', 'intval', 0);
+			$data['avatar'] = post('avatar', 'text', 0);
 
-        if (!$reslut) {
-            $this->ajaxReturn(array('status' => false, 'msg' => '提交失败'));
-        }
+			$shop = table('UserShop')->where('id', $id)->field('uid,status')->find();
 
-        $this->ajaxReturn(array('status' => true, 'msg' => '操作成功'));
+			if ($shop['status'] != $data['status']) {
+				//开启店铺商品
+				if ($data['status'] == 1) {
+					table('GoodsCar')->where(array('uid' => $shop['uid']))->save('is_show', 1);
+					table('GoodsService')->where(array('uid' => $shop['uid']))->save('is_show', 1);
+				}
+				//屏蔽店铺商品
+				else {
+					table('GoodsCar')->where(array('uid' => $shop['uid']))->save('is_show', 0);
+					table('GoodsService')->where(array('uid' => $shop['uid']))->save('is_show', 0);
+				}
+			}
+
+			$reslut = table('UserShop')->where(array('id' => $id))->save($data);
+
+			if (!$reslut) {
+				$this->ajaxReturn(array('status' => false, 'msg' => '提交失败'));
+			}
+
+			$this->ajaxReturn(array('status' => true, 'msg' => '操作成功'.$data['avatar']));
+			
+		}
 
     }
 
@@ -72,7 +96,6 @@ class Shop extends \app\admin\controller\Init
         $data                 = table('UserShop')->where(array('id' => $id))->find();
         $data['ide_ablum']    = (array) imgUrl($data['ide_ablum'], 'ide');
         $data['ablum']        = imgUrl($data['ablum'], 'shop');
-        $data['avatar']       = imgUrl($data['avatar'], 'avatar');
         $data['credit_level'] = dao('User')->getShopCredit($data['uid']);
 
         $other = array(

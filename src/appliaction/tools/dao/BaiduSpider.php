@@ -34,6 +34,7 @@ class BaiduSpider
             CURLOPT_POSTFIELDS     => implode("\n", $urls),
             CURLOPT_HTTPHEADER     => array('Content-Type: text/plain'),
         );
+
         curl_setopt_array($ch, $options);
         $result = curl_exec($ch);
         $result = json_decode($result, true);

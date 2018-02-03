@@ -52,7 +52,7 @@
 													<span class="text-explode">|</span>
 													<a class="btn-open" config-href="{F:url('edit',array('id'=>$value['id']))}" config-title="编辑菜单" data-id="list.id"  config-height="800px" config-tooltip="{$value['name']}">编辑</a>
 													<span class="text-explode">|</span>
-													<a onclick="del(list.id)">删除</a>
+													<a class="btn-ajax-post" config-href="{F:url('delete')}" data-id="{$value['id']}" config-tips="确定删除【{$value['name']}】?<br/>请谨慎操作！删除后不可恢复！不可恢复">删除</a>
 												</td>
 											</tr>
 											{/loop}

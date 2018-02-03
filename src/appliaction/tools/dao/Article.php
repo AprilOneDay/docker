@@ -105,4 +105,30 @@ class Article
 
     }
 
+    /**
+     * 根据语言返回字段
+     * @date   2018-01-29T12:13:44+0800
+     * @author ChenMingjiang
+     * @param  [type]                   $data [description]
+     * @param  [type]                   $name [description]
+     * @param  [type]                   $lg   [description]
+     * @return [type]                         [description]
+     */
+    public function getLgValue($data, $name, $lg)
+    {
+        if (!$data || !$name) {
+            return '';
+        }
+
+        $lg = $lg ? $lg : 'zh';
+        if ($lg != 'zh') {
+            $value = isset($data[$name . '_' . $lg]) ? $data[$name . '_' . $lg] : $data[$name];
+        } else {
+            $value = $data[$name];
+        }
+
+        return $value;
+
+    }
+
 }

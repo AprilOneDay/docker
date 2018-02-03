@@ -16,6 +16,9 @@
 						<div class="pull-left">
 							<h5>抵扣券模板列表</h5>
 						</div>
+						<div class="pull-right">
+							<a class="btn btn-primary btn-open" config-href="{F:url('edit_coupon')}" config-width="90%" config-height="800px">添加</a>
+						</div>
 					</div>
 					<form class="form-inline ng-pristine ng-valid" action=""  method="get">
                         <div class="form-group">
@@ -54,14 +57,14 @@
 											<th style="width:75px;">ID</th>
 											<th>标题</th>
 											<th style="width:100px;text-align: center;">所属店铺</th>
-											<th style="width:100px;text-align: center;">使用类型</th>
+											<!--<th style="width:100px;text-align: center;">使用类型</th> -->
 											<th style="width:80px;text-align: center;">折扣类型</th>
 											<th style="width:120px;">开始时间</th>
 											<th style="width:120px;">结束时间</th>
 											<th style="width:100px;text-align: center;">发放数量</th>
 											<th style="width:100px;text-align: center;">剩余数量</th>
 											<th style="width:120px;">状态</th>
-											
+											<th style="width:120px;">操作</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -70,14 +73,17 @@
 											<td>{$value['id']}</td>
 											<td>{$value['title']}</td>
 											<td align="center">{$value['seller']['nickname']}</td>
-											<td align="center">{$other['categoryCopy'][$value['category']]}</td>
+											<!--<td align="center">{$other['categoryCopy'][$value['category']]}</td> -->
 											<td align="center">{$other['typeCopy'][$value['type']]}</td>
 											<td>{F:date('Y-m-d H:i',$value['start_time'])}</td>
 											<td>{F:date('Y-m-d H:i',$value['end_time'])}</td>
 											<td align="center">{$value['num']}</td>
 											<td align="center">{$value['remainder_num']}</td>
 											<td>{$other['statusCopy'][$value['status']]}</td>
-											
+											<td>
+												<a class="btn-open" config-href="{F:url('edit_coupon',array('id'=>$value['id']))}" config-width="90%" config-height="800px">编辑</a>
+												<a class="btn-ajax-post" config-href="{F:url('del_coupon')}" data-id="{$value['id']}" config-tips="确定删除该抵扣卷？" config-width="90%" config-height="800px">删除</a>
+											</td>
 										</tr>
 										{/loop}
 									</tbody>
