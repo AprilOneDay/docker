@@ -6,12 +6,6 @@ use app\admin\tools\util\MenuTree;
 
 class Menus extends Init
 {
-    public $type;
-
-    public function __construct()
-    {
-        $this->type = array();
-    }
 
     /**
      * [index 菜单管理首页]

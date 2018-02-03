@@ -18,7 +18,7 @@ class Mail
      * @param  string                   $content [内容]
      * @return [type]                            [description]
      */
-    public function send($to, $title = '', $content = '')
+    public function send($to, $title = '', $content = '', $group = 0)
     {
         if (!$to) {
             return false;
@@ -35,7 +35,7 @@ class Mail
             return false;
         }
 
-        $smtp   = new Smtp();
+        $smtp   = new Smtp($group);
         $result = $smtp->sendmail($to, $title, $content);
 
         //保存记录

@@ -107,6 +107,12 @@ class User
             $data['uid'] = $this->createUid();
         }
 
+        //注册支付宝账户
+        $result = dao('TaobaoUser')->add($data['uid'], $data['nickname'], $data['salt']);
+        if (!$result) {
+            return array('status' => false, 'msg' => '通讯组件注册失败,请重试');
+        }
+
         $result = table('User')->add($data);
         if (!$result) {
             return array('status' => false, 'msg' => '注册失败' . $data['ip']);
@@ -125,9 +131,6 @@ class User
             $thirdParty['uid'] = $result;
             table('UserThirdParty')->add($thirdParty);
         }
-
-        //注册支付宝账户
-        dao('TaobaoUser')->add($data['uid'], $data['nickname'], $data['salt']);
 
         //增加积分明细
         dao('Integral')->add($result, 'user_registered');
@@ -437,7 +440,7 @@ class User
 
         //获取可达等级
         $map          = array();
-        $map['value'] = array('>=', $value);
+        $map['value'] = array('>=', (int) $value);
 
         $rule = table('UserLevelRule')->where($map)->order('value desc')->find();
         if (!$rule) {

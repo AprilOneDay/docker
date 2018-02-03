@@ -4,7 +4,9 @@
  */
 namespace app\admin\controller\content;
 
-class IntegralRul extends \app\admin\controller\Init
+use app\admin\controller\Init;
+
+class IntegralRul extends Init
 {
 
     /**

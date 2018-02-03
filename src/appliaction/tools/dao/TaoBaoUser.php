@@ -7,7 +7,7 @@ namespace app\tools\dao;
 
 use denha\Start;
 
-class TaoBaoUser
+class TaobaoUser
 {
     private static $config;
     private static $client;
