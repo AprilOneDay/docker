@@ -63,18 +63,18 @@ class Smtp
 
         $this->debug      = true;
         $this->smtp_port  = 25;
-        $this->relay_host = 'smtp.163.com', //服务器地址
+        $this->relay_host = 'smtp.163.com'; //服务器地址
         $this->time_out   = 30;
         $this->auth       = true;
-        $this->user       = 'senddebug', //账户
-        $this->pass       ='uVqe2aZ0Wc0DiAVo', //密码
-        $this->from       = 'senddebug@163.com', //发送邮箱名
+        $this->user       = 'senddebug'; //账户
+        $this->pass       = 'uVqe2aZ0Wc0DiAVo'; //密码
+        $this->from       = 'senddebug@163.com'; //发送邮箱名
 
         $this->host_name = 'localhost';
         $this->log_file  = '';
         $this->sock      = false;
 
-        $this->sendmail('cheng6251@163.com','测试邮箱','测邮箱信息能否通过','HTML')；
+        $this->sendmail('cheng6251@163.com', '测试邮箱', '测邮箱信息能否通过', 'HTML');
     }
 
     /**
@@ -138,8 +138,8 @@ class Smtp
             fclose($this->sock);
             $this->log_write('Disconnected from remote host' . PHP_EOL);
         }
-        //echo "<br>";
-        //echo $header;
+        echo "<br>";
+        echo $header;
         return $sent;
     }
 

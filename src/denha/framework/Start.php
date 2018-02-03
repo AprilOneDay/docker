@@ -22,8 +22,8 @@ class Start
         self::$client = APP_CONFIG;
         //获取配置文档信息
         self::$config = include CONFIG_PATH . 'config.php';
-        if (is_file(CONFIG_PATH . 'config.' . APP_CONFIG . '.php')) {
-            self::$config = array_merge(include (CONFIG_PATH . 'config.php'), include (CONFIG_PATH . 'config.' . APP_CONFIG . '.php'));
+        if (is_file(CONFIG_PATH . 'config.' . APP . '.php')) {
+            self::$config = array_merge(include (CONFIG_PATH . 'config.php'), include (CONFIG_PATH . 'config.' . APP . '.php'));
         }
 
         define('TRACE', self::$config['trace']); //定义Trace

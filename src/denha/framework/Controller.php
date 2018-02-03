@@ -102,7 +102,8 @@ class Controller
 
         $regular = '/{FY:(.*?):(.*?)}/is';
         preg_match_all('/{FY:(.*?):(.*?)}/is', $content, $matches);
-        if ($matches) {
+
+        if (array_filter($matches)) {
 
             //组合翻译结构
             foreach ($matches[0] as $key => $value) {
@@ -110,24 +111,24 @@ class Controller
             }
 
             //批量翻译
-            foreach ($transArray as $key => $value) {
-                if ($key != 'zh') {
-                    $transValue[$key] = dao('BaiduTrans')->baiduTrans($value, $key, 'zh');
-                } else {
-                    foreach ($value as $key => $value) {
-                        $transValue['zh'][$value] = $value;
+            if ($transArray) {
+                foreach ($transArray as $key => $value) {
+                    if ($key != 'zh') {
+                        $transValue[$key] = dao('BaiduTrans')->baiduTrans($value, $key, 'zh');
+                    } else {
+                        foreach ($value as $key => $value) {
+                            $transValue['zh'][$value] = $value;
+                        }
                     }
-
                 }
 
-            }
-
-            foreach ($transValue as $key => $value) {
-                foreach ($value as $k => $v) {
-                    $content = str_replace("{FY:$k:$key}", $v, $content);
+                foreach ($transValue as $key => $value) {
+                    foreach ($value as $k => $v) {
+                        $content = str_replace("{FY:$k:$key}", $v, $content);
+                    }
                 }
-
             }
+
         }
 
         return $content;
@@ -140,7 +141,7 @@ class Controller
      * @param  [type]                   $value [description]
      * @return [type]                          [description]
      */
-    protected function ajaxReturn($value, $lg)
+    protected function ajaxReturn($value, $lg = 'zh')
     {
         header("Content-Type:application/json; charset=utf-8");
         $array = array(
@@ -163,7 +164,7 @@ class Controller
      * @param  [type]                   $lg    [国家]
      * @return [type]                          [description]
      */
-    protected function appReturn($value, $lg)
+    protected function appReturn($value, $lg = 'zh')
     {
         header("Content-Type:application/json; charset=utf-8");
         $array = array(

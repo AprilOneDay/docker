@@ -159,60 +159,67 @@ class Mysqli
     public function where($where, $value = null)
     {
 
+        if (!$where) {
+            return $this;
+        }
+
+        $newWhere = '';
         if ($value !== null && !is_array($where)) {
-            $this->where = ' WHERE ' . $where . ' = \'' . $value . '\'';
+            $newWhere = $where . ' = \'' . $value . '\' AND ';
         } else {
-            if ($where) {
-                if (is_array($where)) {
-                    $newWhere = '';
-                    foreach ($where as $k => $v) {
+            if (is_array($where)) {
+                foreach ($where as $k => $v) {
 
-                        if (strripos($k, '`') === false && $k != '_string') {
-                            $k = strripos($k, '.') !== false ? str_replace('.', '.`', $k) . '`' : '`' . $k . '`';
-                        }
-
-                        if (is_array($v)) {
-                            if ($v[0] == '>' || $v[0] == '<' || $v[0] == '>=' || $v[0] == '<=' || $v[0] == '!=' || $v[0] == 'like') {
-                                $newWhere .= $k . '  ' . $v[0] . ' \'' . $v[1] . '\' AND ';
-                            } elseif ($v[0] == 'in' || $v['0'] == 'not in') {
-                                if (!$v[1]) {
-                                    $newWhere .= $k . '  ' . $v[0] . ' (\'\') AND ';
-                                } else {
-
-                                    if (stripos($v[1], ',') !== false && !is_array($v[1])) {
-                                        $v[1] = explode(',', $v[1]);
-                                    }
-
-                                    $v[1] = is_array($v[1]) ? $v[1] : (array) $v[1];
-
-                                    $commonInValue = '';
-                                    foreach ($v[1] as $inValue) {
-
-                                        $commonInValue .= '\'' . $inValue . '\',';
-                                    }
-
-                                    $commonInValue = substr($commonInValue, 0, -1);
-
-                                    $newWhere .= $k . '  ' . $v[0] . ' (' . $commonInValue . ') AND ';
-                                }
-                            } elseif ($v[0] == 'instr') {
-                                $newWhere .= $v[0] . '(' . $k . ',\'' . $v[1] . '\') AND ';
-                            } elseif ($v[0] == 'between') {
-                                $newWhere .= $k . '  ' . $v[0] . ' \'' . $v[1] . '\' AND \'' . $v[2] . '\' AND ';
-                            } elseif ($v[0] == 'or') {
-                                $newWhere .= $k . ' = \'' . $v[1] . '\' OR ';
-                            }
-                        } elseif ($k == '_string') {
-                            $newWhere .= $v . ' AND ';
-                        } else {
-                            $newWhere .= $k . ' = \'' . $v . '\' AND ';
-                        }
+                    if (strripos($k, '`') === false && $k != '_string') {
+                        $k = strripos($k, '.') !== false ? str_replace('.', '.`', $k) . '`' : '`' . $k . '`';
                     }
-                } else {
-                    $newWhere = $where;
+
+                    if (is_array($v)) {
+                        if ($v[0] == '>' || $v[0] == '<' || $v[0] == '>=' || $v[0] == '<=' || $v[0] == '!=' || $v[0] == 'like') {
+                            $newWhere .= $k . '  ' . $v[0] . ' \'' . $v[1] . '\' AND ';
+                        } elseif ($v[0] == 'in' || $v['0'] == 'not in') {
+                            if (!$v[1]) {
+                                $newWhere .= $k . '  ' . $v[0] . ' (\'\') AND ';
+                            } else {
+
+                                if (stripos($v[1], ',') !== false && !is_array($v[1])) {
+                                    $v[1] = explode(',', $v[1]);
+                                }
+
+                                $v[1] = is_array($v[1]) ? $v[1] : (array) $v[1];
+
+                                $commonInValue = '';
+                                foreach ($v[1] as $inValue) {
+
+                                    $commonInValue .= '\'' . $inValue . '\',';
+                                }
+
+                                $commonInValue = substr($commonInValue, 0, -1);
+
+                                $newWhere .= $k . '  ' . $v[0] . ' (' . $commonInValue . ') AND ';
+                            }
+                        } elseif ($v[0] == 'instr') {
+                            $newWhere .= $v[0] . '(' . $k . ',\'' . $v[1] . '\') AND ';
+                        } elseif ($v[0] == 'between') {
+                            $newWhere .= $k . '  ' . $v[0] . ' \'' . $v[1] . '\' AND \'' . $v[2] . '\' AND ';
+                        } elseif ($v[0] == 'or') {
+                            $newWhere .= $k . ' = \'' . $v[1] . '\' OR ';
+                        }
+                    } elseif ($k == '_string') {
+                        $newWhere .= $v . ' AND ';
+                    } else {
+                        $newWhere .= $k . ' = \'' . $v . '\' AND ';
+                    }
                 }
-                $this->where = ' WHERE ' . substr($newWhere, 0, -4);
+            } else {
+                $newWhere = $where;
             }
+        }
+
+        if (stripos($this->where, 'WHERE') === false) {
+            $this->where = ' WHERE ' . substr($newWhere, 0, -4);
+        } else {
+            $this->where .= ' AND ' . substr($newWhere, 0, -4);
         }
 
         return $this;
