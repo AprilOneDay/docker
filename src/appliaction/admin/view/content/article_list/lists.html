@@ -17,7 +17,7 @@
 							<h5>文章列表</h5>
 						</div>
 						<div class="pull-right">
-							<a class="btn btn-primary btn-open" config-href="{F:url('article_edit/edit',array('column_id'=>$param['column_id']))}" config-width="90%" config-height="800px">添加</a>
+							<a class="btn btn-primary btn-open" config-href="{F:url('article_edit/edit',array('column_id'=>$param['column_id']))}" config-width="90%" config-height="90%">添加</a>
 						</div>
 					</div>
 					<form class="form-inline ng-pristine ng-valid" action=""  method="get">
@@ -70,7 +70,7 @@
 											<td>{F:date('Y-m-d H:i',$value['created'])}</td>
 											<td>{$other['isShowCopy'][$value['is_review']]}</td>
 											<td align='center'>
-												<a config-href="{F:url('article_edit/edit',array('column_id'=>$value['column_id'],'id'=>$value['id']))}" config-title="编辑文章" config-width="90%"  config-height="800px" class="btn-open">编辑</a>
+												<a config-href="{F:url('article_edit/edit',array('column_id'=>$value['column_id'],'id'=>$value['id']))}" config-title="编辑文章" config-width="90%"  config-height="90%" class="btn-open">编辑</a>
 												<span class="text-explode">|</span>
 												<a config-href="{F:url('article_edit/del_article')}" class="btn-ajax-post" config-tips="确定删除【{$value['title']}】?" data-id="{$value['id']}">删除</a>
 											</td>
