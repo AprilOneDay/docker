@@ -5,9 +5,9 @@
 namespace app\flower\app\controller\v1\index;
 
 use app\app\controller;
-use app\flower\app\controller\v1\Init;
+use app\flower\app\controller\v1\WeixinSmallInit;
 
-class Banner extends Init
+class Banner extends WeixinSmallInit
 {
     public function lists()
     {

@@ -202,24 +202,15 @@ function files($name)
  * @param  array                    $header [头标记]
  * @return [type]                           [description]
  */
-function response($url, $method = 'GET', $param = array(), $headers = array(), $isJson = true)
+function response($url, $method = 'GET', $param = array(), $headers = array(), $isJson = true, $debug = false)
 {
 
     $ch = curl_init(); //初始化curl
 
-    curl_setopt($ch, CURLOPT_URL, $url); // 要访问的地址
-    curl_setopt($ch, CURLOPT_HEADER, 0); // 是否显示返回的Header区域内容
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers); //设置请求头
-    curl_setopt($ch, CURLOPT_AUTOREFERER, 1); // 自动设置Referer
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); // 获取的信息以文件流的形式返回
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0); // 从证书中检查SSL加密算法是否存在
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0); // 对认证证书来源的检查
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30); // 请求超时时间
-
     switch ($method) {
         case 'GET':
             foreach ($param as $key => $value) {
-                if (stripos($url, '?') !== fasle) {
+                if (stripos($url, '?') === false) {
                     $url .= '?' . $key . '=' . $value;
                 } else {
                     $url .= '&' . $key . '=' . $value;
@@ -246,10 +237,35 @@ function response($url, $method = 'GET', $param = array(), $headers = array(), $
             break;
     }
 
+    curl_setopt($ch, CURLOPT_HEADER, 0); // 是否显示返回的Header区域内容
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers); //设置请求头
+    curl_setopt($ch, CURLOPT_AUTOREFERER, 1); // 自动设置Referer
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); // 获取的信息以文件流的形式返回
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0); // 从证书中检查SSL加密算法是否存在
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0); // 对认证证书来源的检查
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30); // 请求超时时间
+    curl_setopt($ch, CURLOPT_URL, $url); // 要访问的地址
+
     $data = curl_exec($ch);
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE); // 获取返回的状态码
 
     curl_close($ch); // 关闭CURL会话
+
+    if ($debug) {
+        print_r('-------输入参数Url-----' . PHP_EOL);
+        print_r($url . PHP_EOL);
+        print_r('-------END-----' . PHP_EOL);
+        print_r('-------输入参数header-----' . PHP_EOL);
+        print_r($headers);
+        print_r('-------END-----' . PHP_EOL);
+        print_r('-------请求Code-----' . PHP_EOL);
+        print_r($code . PHP_EOL);
+        print_r('-------END-----' . PHP_EOL);
+        print_r('-------返回结果-----' . PHP_EOL);
+        print_r($data . PHP_EOL);
+        print_r('-------END-----' . PHP_EOL);
+        die;
+    }
 
     if ('200' == $code) {
         if ($isJson) {
@@ -724,6 +740,8 @@ function ping($address)
  */
 function auth($string, $operation = 'ENCODE', $key = '', $expiry = 0)
 {
+    $key = $key ? $key : \denha\Start::$config['authKey'];
+
     $ckey_length = 4;
     $key         = md5($key != '' ? $key : getConfig('config', 'authKey'));
     $keya        = md5(substr($key, 0, 16));

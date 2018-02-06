@@ -2,12 +2,12 @@
 /**
  * 会员模块
  */
-namespace app\chd\app\controller\v1\user;
+namespace app\flower\app\controller\v1\user;
 
 use app\app\controller;
-use app\chd\app\controller\v1\Init;
+use app\flower\app\controller\v1\WeixinSmallInit;
 
-class Index extends Init
+class Index extends WeixinSmallInit
 {
     public function __construct()
     {
@@ -19,13 +19,7 @@ class Index extends Init
     /** 会员中心 */
     public function index()
     {
-        $user = table('User')->where('id', $this->uid)->field('username,avatar,nickname,mail,sex')->find();
-
-        $user['country_copy'] = dao('Category')->getName($user['country']);
-        $user['sex_copy']     = dao('Category')->getName($user['sex']);
-
-        $user['avatar'] = $this->appImg($user['avatar'], 'avatar');
-
+        $user = table('UserThirdParty')->where('id', $this->uid)->field('avatar,nickname')->find();
         $this->appReturn(array('data' => $user));
 
     }

@@ -5,10 +5,10 @@
 namespace app\flower\app\controller\v1\index;
 
 use app\app\controller;
-use app\flower\app\controller\v1\Init;
+use app\flower\app\controller\v1\WeixinSmallInit;
 use denha\Start;
 
-class Service extends Init
+class Service extends WeixinSmallInit
 {
 
     /** 栏目分类 */

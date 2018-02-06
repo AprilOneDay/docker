@@ -200,7 +200,7 @@ class Category extends Init
         //格式化菜单
         $map['parentid'] = $id;
 
-        $result = table('Category')->field('id,parentid,name')->find('array');
+        $result = table('Category')->field('id,parentid,name')->limit(0, 99999)->find('array');
         if ($result) {
             $tree = new \app\admin\tools\util\MenuTree();
             $tree->setConfig('id', 'parentid');

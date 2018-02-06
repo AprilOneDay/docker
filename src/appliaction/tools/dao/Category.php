@@ -49,7 +49,7 @@ class Category
     {
         $map['parentid'] = $id;
 
-        $field = 'id,name,bname,bname_2';
+        $field = 'id,thumb,name,bname,bname_2';
         if ($lg && $lg != 'zh') {
             $field .= ',name_' . $lg;
         }
