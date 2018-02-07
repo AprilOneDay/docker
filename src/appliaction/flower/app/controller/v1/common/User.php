@@ -23,12 +23,14 @@ class User extends WeixinSmallInit
         $user = table('UserThirdParty')->where('weixin_id', $result['data']['openid'])->find();
         if (!$user) {
             $dataUser['weixin_id'] = $result['data']['openid'];
+            $dataUser['created']   = TIME;
             $uid                   = table('userThirdParty')->add($dataUser);
 
             //创建家庭信息
             $dataUser              = array();
             $dataUser['family_sn'] = dao('Orders')->createOrderSn();
             $dataUser['uid']       = $uid;
+            $dataUser['created']   = TIME;
 
             $result = table('BillFamily')->add($dataUser);
 
