@@ -254,8 +254,9 @@ class Menus extends Init
      */
     public function treeList()
     {
-        //格式化菜单
-        $result = table('Column')->field('id,parentid,name,bname')->find('array');
+        $map             = array();
+        $map['web_type'] = $this->webType;
+        $result          = table('Column')->where($map)->field('id,parentid,name,bname')->find('array');
         if ($result) {
             $tree = new MenuTree();
             $tree->setConfig('id', 'parentid');

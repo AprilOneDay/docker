@@ -57,6 +57,8 @@ class OrdersLog
     /** 获取订单详情 */
     public function getOrdersList($mapValue, $type = 0, $pageNo, $pageSize, $field = '*', $tableArray = array())
     {
+        //预处理异常订单状态
+        $this->repairFieldIsNew();
 
         $offer = max($pageNo - 1) * $pageSize;
 
@@ -133,5 +135,26 @@ class OrdersLog
         }
 
         return $list;
+    }
+
+    /** 修复is_new */
+    public function repairFieldIsNew($pageNo = 0, $pageSize = 100)
+    {
+        $offer = max(($pageNo - 1) * $pageSize, 0);
+
+        $map['is_new'] = 1;
+
+        //获取异常数据
+        $list = table('OrdersLog')->where($map)->field("count(id) as num,order_sn,max(id) as id")->group('concat(is_new,order_sn) HAVING num > 1')->find('array');
+
+        if ($list) {
+            foreach ($list as $key => $value) {
+                //关闭全部状态
+                table('OrdersLog')->where('order_sn', $value['order_sn'])->save('is_new', 0);
+                //开启最新状态
+                table('OrdersLog')->where('id', $value['id'])->save('is_new', 1);
+            }
+        }
+
     }
 }

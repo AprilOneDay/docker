@@ -31,22 +31,22 @@ class TaobaoUser
     }
 
     /** 增加用户 */
-    public function add($uid = 0, $nickname = '', $password = '', $data)
+    public function add($param)
     {
 
-        if (!$uid || !$nickname || !$password) {
+        if (!$param['uid'] || !$param['nickname'] || !$param['password']) {
             return array('status' => false, 'msg' => '淘宝用户添加API参数错误');
         }
 
         $req                 = new \OpenimUsersAddRequest;
         $userinfos           = new \Userinfos;
-        $userinfos->nick     = $nickname;
+        $userinfos->nick     = $param['nickname'];
         $userinfos->icon_url = " ";
         $userinfos->email    = " ";
         $userinfos->mobile   = " ";
         $userinfos->taobaoid = " ";
-        $userinfos->userid   = $uid;
-        $userinfos->password = $password;
+        $userinfos->userid   = $param['uid'];
+        $userinfos->password = $param['password'];
         $userinfos->remark   = " ";
         $userinfos->extra    = "{}";
         $userinfos->career   = "";
@@ -68,6 +68,41 @@ class TaobaoUser
         return array('status' => true, 'msg' => '添加成功');
     }
 
+    /** 更新用户 */
+    public function update($param)
+    {
+
+        if (!$param['uid']) {
+            return array('status' => false, 'msg' => '参数错误');
+        }
+
+        $req       = new \OpenimUsersUpdateRequest;
+        $userinfos = new \Userinfos;
+
+        $userinfos->userid = $param['uid'];
+        if ($param['nickname']) {
+            $userinfos->nick = $param['nickname'];
+        }
+
+        if ($param['password']) {
+            $userinfos->password = $param['password'];
+        }
+
+        if ($param['name']) {
+            $userinfos->name = $param['name'];
+        }
+
+        $req->setUserinfos(json_encode($userinfos));
+        $resp = self::$client->execute($req);
+
+        if ($resp->fail_msg) {
+            return array('status' => false, 'msg' => '更新失败');
+        }
+
+        return array('status' => true, 'msg' => '更新成功');
+
+    }
+
     public function index($uid)
     {
 
@@ -75,11 +110,10 @@ class TaobaoUser
         $req->setUserids($uid);
         $resp = self::$client->execute($req);
 
-        print_r($resp);
-        print_r((array) $resp->userinfos->userinfos);
-
         if (isset($resp->code)) {
             return array('status' => false, 'msg' => '淘宝用户查询API调用异常');
+        } elseif (!$resp) {
+            return array('status' => false, 'msg' => '信息不存在');
         }
 
         return array('status' => true, 'msg' => '用户查询成功', 'data' => $resp);

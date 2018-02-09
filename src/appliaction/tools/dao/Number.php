@@ -16,7 +16,6 @@ class Number
      */
     public function price($price = 0, $lg = 'zh')
     {
-        $price = sprintf('%.2f', $price);
         if ($price > 10000) {
             $price = sprintf('%.2f', ($price / 10000)) . '万';
         }

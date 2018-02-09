@@ -110,7 +110,7 @@
 
 								<div class="form-group add1">
 									<label class="control-label col-sm-3">
-										<span class="text-danger">*</span>
+										<span class="text-danger"></span>
 										<span>别名</span>
 									</label>
 									<div class="col-sm-8">
@@ -144,7 +144,7 @@
 
 								<div class="form-group">
 									<label class="control-label col-sm-3">
-										<span class="text-danger">*</span>
+										<span class="text-danger"></span>
 										<span>栏目图片</span>
 									</label>
 									<div class="col-sm-8">
@@ -153,16 +153,17 @@
 								</div>
 								<div class="form-group">
 									<label class="control-label col-sm-3">
-										<span class="text-danger">*</span>
+										<span class="text-danger"></span>
 										<span>栏目简介</span>
 									</label>
 									<div class="col-sm-8">
 										<textarea class="form-control" rows="3" name="description">{??$data['description']}</textarea>
 									</div>
 								</div>
+								{if $this->group == 1}
 								<div class="form-group">
 									<label class="control-label col-sm-3">
-										<span class="text-danger">*</span>
+										<span class="text-danger"></span>
 										<span>模块名称</span>
 									</label>
 									<div class="col-sm-8">
@@ -171,7 +172,7 @@
 								</div>
 								<div class="form-group">
 									<label class="control-label col-sm-3">
-										<span class="text-danger">*</span>
+										<span class="text-danger"></span>
 										<span>控制器名称</span>
 									</label>
 									<div class="col-sm-8">
@@ -180,7 +181,7 @@
 								</div>
 								<div class="form-group">
 									<label class="control-label col-sm-3">
-										<span class="text-danger">*</span>
+										<span class="text-danger"></span>
 										<span>方法名称</span>
 									</label>
 									<div class="col-sm-8">
@@ -189,7 +190,7 @@
 								</div>
 								<div class="form-group">
 									<label class="control-label col-sm-3">
-										<span class="text-danger">*</span>
+										<span class="text-danger"></span>
 										<span>后台请求地址</span>
 									</label>
 									<div class="col-sm-8">
@@ -205,6 +206,7 @@
 										<input type="text" value="{??$data['jump_url']}" name="jump_url" placeholder="请求地址" class="form-control">
 									</div>
 								</div>
+								{/if}
 								<div class="form-group radio" data-radio="{??$data['is_show']}">
 									<label class="control-label col-sm-3">
 										<span class="text-danger"></span>

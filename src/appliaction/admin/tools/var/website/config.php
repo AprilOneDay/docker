@@ -1,4 +1,4 @@
 <?php return array (
   'lg' => 'zh',
-  'site_id' => 5,
+  'site_id' => 4,
 );

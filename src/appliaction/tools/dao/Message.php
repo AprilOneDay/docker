@@ -17,7 +17,7 @@ class Message
      * @param  [type]                   $uid   [发送信息uid]
      * @return [type]                          [description]
      */
-    public function send($toUid = 0, $flag = '', $param = array(), $jumpData = array(), $uid = 0, $type = 1)
+    public function send($toUid = 0, $flag = '', $param = array(), $uid = 0, $type = 1, $lg = 'zh', $isPush = ture)
     {
         if (!$toUid) {
             return false;
@@ -31,13 +31,12 @@ class Message
             return false;
         }
 
-        $data['type']     = $type;
-        $data['uid']      = $uid;
-        $data['created']  = TIME;
-        $data['to_uid']   = $toUid;
-        $data['flag']     = $flag;
-        $data['param']    = $param ? json_encode($param, JSON_UNESCAPED_UNICODE) : '';
-        $data['jump_app'] = $jumpData ? json_encode($jumpData, JSON_UNESCAPED_UNICODE) : '';
+        $data['type']    = $type;
+        $data['uid']     = $uid;
+        $data['created'] = TIME;
+        $data['to_uid']  = $toUid;
+        $data['flag']    = $flag;
+        $data['param']   = $param ? json_encode($param, JSON_UNESCAPED_UNICODE) : '';
 
         //如果存在相同推送内容信息则直接更新时间
         $map['flag']   = $flag;
@@ -57,7 +56,10 @@ class Message
         }
 
         //发送推送信息
-        dao('JPush')->sendByRegId($toUid, $content['title'], $content['content'], $jumpData);
+        if ($isPush) {
+            $content = $this->getContent($flag, $lg);
+            dao('JPush')->sendByRegId($toUid, $content['title'], $content['content'], json_encode($param, JSON_UNESCAPED_UNICODE));
+        }
 
     }
 

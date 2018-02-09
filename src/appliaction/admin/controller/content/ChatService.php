@@ -63,4 +63,20 @@ class ChatService extends Init
 
         $this->ajaxReturn(array('status' => true, 'msg' => '操作成功'));
     }
+
+    public function del()
+    {
+        $id = post('id', 'intval', 0);
+
+        if (!$id) {
+            $this->ajaxReturn(array('status' => false, 'msg' => '删除成功'));
+        }
+
+        $result = table('ChatService')->where('id', $id)->delete();
+        if (!$result) {
+            $this->ajaxReturn(array('status' => false, 'msg' => '删除失败'));
+        }
+
+        $this->ajaxReturn(array('status' => true, 'msg' => '操作成功'));
+    }
 }

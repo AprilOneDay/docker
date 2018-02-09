@@ -215,4 +215,23 @@ class Category extends Init
         return $list;
     }
 
+    public function import()
+    {
+        $files = files('file');
+
+        /* $result = dao('Upload')->uploadfile($files, 'tmp', 10, 'xls,xlsx');
+        if (!$result['status']) {
+        $this->ajaxReturn($result);
+        }*/
+
+        $path = $result['data']['name'][0];
+        $path = '1518077756224_306.xls';
+        $path = PUBLIC_PATH . 'uploadfile' . DS . 'tmp' . DS . $path;
+
+        $result = dao('File')->xlsImport($path);
+
+        print_r($result);
+
+    }
+
 }

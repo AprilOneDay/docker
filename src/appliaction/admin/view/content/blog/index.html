@@ -17,7 +17,7 @@
 							<h5>文章列表</h5>
 						</div>
 						<div class="pull-right">
-							<a class="btn btn-primary btn-open" config-href="{F:url('edit')}" config-width="90%" config-height="800px">添加文章</a>
+							<a class="btn btn-primary btn-open" config-href="{F:url('edit')}" config-width="90%" config-height="90%">添加文章</a>
 						</div>
 					</div>
 					<form class="form-inline ng-pristine ng-valid" action=""  method="get">
@@ -71,7 +71,7 @@
 											<td>{F:date('Y-m-d H:i',$value['created'])}</td>
 											<td>{$other['isShowCopy'][$value['is_show']]}</td>
 											<td align='center'>
-												<a config-href="{F:url('edit',array('id'=>$value['id']))}" config-title="编辑文章" config-width="90%"  config-height="800px" class="btn-open">编辑</a>
+												<a config-href="{F:url('edit',array('id'=>$value['id']))}" config-title="编辑文章" config-width="90%"  config-height="90%" class="btn-open">编辑</a>
 												<span class="text-explode">|</span>
 												<a>评价</a>
 												<span class="text-explode">|</span>

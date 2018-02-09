@@ -17,7 +17,7 @@
 							<h5>抵扣券模板列表</h5>
 						</div>
 						<div class="pull-right">
-							<a class="btn btn-primary btn-open" config-href="{F:url('edit')}" config-width="90%" config-height="800px">添加</a>
+							<a class="btn btn-primary btn-open" config-href="{F:url('edit')}" config-width="90%" config-height="90%">添加</a>
 						</div>
 					</div>
 					<form class="form-inline ng-pristine ng-valid" action=""  method="get">
@@ -50,11 +50,11 @@
 											<td>{$value['id']}</td>
 											<td>{$value['name']}</td>
 											<td>{$value['username']}</td>
-											<td>{$other['group_id']}</td>
+											<td>{$value['group_id']}</td>
 											<td>{$other['statusCopy'][$value['status']]}</td>
 											<td>
-												<a class="btn-open" config-href="{F:url('edit',array('id'=>$value['id']))}" config-width="90%" config-height="800px">编辑</a>
-												<a class="btn-ajax-post" config-href="{F:url('del_coupon')}" data-id="{$value['id']}" config-tips="确定删除该抵扣卷？" config-width="90%" config-height="800px">删除</a>
+												<a class="btn-open" config-href="{F:url('edit',array('id'=>$value['id']))}" config-width="90%" config-height="90%">编辑</a>
+												<a class="btn-ajax-post" config-href="{F:url('del')}" data-id="{$value['id']}" config-tips="确定删除该客服？">删除</a>
 											</td>
 										</tr>
 										{/loop}

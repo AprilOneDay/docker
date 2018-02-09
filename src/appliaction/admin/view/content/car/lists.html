@@ -17,7 +17,7 @@
 							<h5>汽车列表</h5>
 						</div>
 						<div class="pull-right">
-							<a class="btn btn-primary btn-open" config-href="{F:url('edit')}" config-width="90%" config-height="800px">添加</a>
+							<a class="btn btn-primary btn-open" config-href="{F:url('edit')}" config-width="90%" config-height="90%">添加</a>
 						</div>
 					</div>
 					<form class="form-inline ng-pristine ng-valid" action=""  method="get">
@@ -94,7 +94,7 @@
 												{/if}
 											</td>
 											<td align='center'>
-												<a config-href="{F:url('edit',array('id'=>$value['id']))}"  config-height="800px" config-width="90%"  config-title="商品详情"  class="btn-open" config-tooltip="{$value['title']}">编辑</a>
+												<a config-href="{F:url('edit',array('id'=>$value['id']))}"  config-height="90%" config-width="90%"  config-title="商品详情"  class="btn-open" config-tooltip="{$value['title']}">编辑</a>
 											</td>
 										</tr>
 										{/loop}

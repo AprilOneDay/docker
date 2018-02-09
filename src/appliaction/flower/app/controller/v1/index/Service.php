@@ -76,22 +76,11 @@ class Service extends WeixinSmallInit
 
         foreach ($data['list'] as $key => $value) {
             $data['list'][$key]['thumb'] = $this->appImg($value['thumb'], 'article');
-            $data['list'][$key]['video'] = $value['video'] ? Start::$config['h5Url'] . $value['video'] : '';
+            $data['list'][$key]['video'] = $value['video'] ? Start::$config['imgUrl'] . $value['video'] : '';
 
             $data['list'][$key]['finally_title']       = dao('Article')->getLgValue($value, 'title', $this->lg);
             $data['list'][$key]['finally_description'] = dao('Article')->getLgValue($value, 'description', $this->lg);
 
-            //获取栏目学习状态
-            $status = 0;
-            if (!$this->uid) {
-                $status = 0;
-            } else {
-                $map              = array();
-                $map['uid']       = $this->uid;
-                $map['column_id'] = $value['id'];
-                $status           = (int) table('ChdUser')->where($map)->field('status')->find('one');
-            }
-            $data['list'][$key]['user_status'] = $status;
         }
 
         $this->appReturn(array('msg' => '获取数据成功', 'data' => $data));
@@ -145,17 +134,6 @@ class Service extends WeixinSmallInit
             $data['list'][$key]['finally_description'] = dao('Article')->getLgValue($value, 'description', $this->lg);
             $data['list'][$key]['finally_address']     = dao('Article')->getLgValue($value, 'address', $this->lg);
 
-            //获取栏目学习状态
-            $status = 0;
-            if (!$this->uid) {
-                $status = 0;
-            } else {
-                $map              = array();
-                $map['uid']       = $this->uid;
-                $map['column_id'] = $value['id'];
-                $status           = (int) table('ChdUser')->where($map)->field('status')->find('one');
-            }
-            $data['list'][$key]['user_status'] = $status;
         }
 
         $this->appReturn(array('msg' => '获取数据成功', 'data' => $data));
@@ -193,54 +171,11 @@ class Service extends WeixinSmallInit
         $map['is_show']   = 1;
         $checkColumnArray = table('Column')->where($map)->field('id')->find('one', true);
 
-        if (in_array($data['column_id'], $checkColumnArray)) {
-            if (!$this->uid) {
-                $this->appReturn(array('status' => false, 'msg' => '请登录', 'code' => 501));
-            }
-
-            //增加记录浏览记录
-            $dataLog               = array();
-            $dataLog['uid']        = $this->uid;
-            $dataLog['article_id'] = $data['id'];
-            $dataLog['column_id']  = $data['column_id'];
-            $result                = table('ChdLog')->add($dataLog);
-
-            //获取用户浏览当前栏目下的文章ID
-            $map              = array();
-            $map['column_id'] = $data['column_id'];
-            $map['uid']       = $this->uid;
-            $userLog          = table('ChdLog')->where($map)->field('article_id')->find('one', true);
-
-            //检测是否浏览完所有文章
-            $map               = array();
-            $map['column_id']  = $data['column_id'];
-            $map['is_review']  = 1;
-            $map['is_show']    = 1;
-            $checkArticleArray = table('Article')->where($map)->field('id')->find('one', true);
-            $status            = !array_diff($userLog, $checkArticleArray) ? 2 : 1;
-
-            //记录课件学习状态
-            $map              = array();
-            $map['uid']       = $this->uid;
-            $map['column_id'] = $data['column_id'];
-            $chdId            = table('ChdUser')->where($map)->field('id')->find('one');
-
-            $dataLog              = array();
-            $dataLog['uid']       = $this->uid;
-            $dataLog['column_id'] = $data['column_id'];
-            if ($chdId) {
-                $result = table('ChdLog')->where('id', $chdId)->save($dataLog);
-            } else {
-                $result = table('ChdLog')->add($dataLog);
-            }
-
-        }
-
         $data['finally_content']     = dao('Article')->getLgValue($data, 'content', $this->lg);
         $data['finally_title']       = dao('Article')->getLgValue($data, 'title', $this->lg);
         $data['finally_description'] = dao('Article')->getLgValue($data, 'description', $this->lg);
 
-        $data['content'] = str_replace('src="', 'src="' . Start::$config['h5Url'], $data['content']);
+        $data['content'] = str_replace('src="', 'src="' . Start::$config['imgUrl'], $data['content']);
         $this->assign('data', $data);
 
         $this->appReturn(array('msg' => '获取数据成功', 'data' => $data));

@@ -44,11 +44,11 @@ class Upload
      * @author ChenMingjiang
      * @param  [type]                   $files [files数组]
      * @param  [type]                   $path  [保存地址]
-     * @param  integer                  $size  [最大上传M]
+     * @param  integer                  $maxSize  [最大上传M]
      * @param  string                   $type  [上传类型限制]
      * @return [type]                          [保存后的图片路径 数组]
      */
-    public function uploadfile($files, $path, $size = 10, $type = '')
+    public function uploadfile($files, $path, $maxSize = 10, $type = '')
     {
         set_time_limit(0);
 
@@ -73,8 +73,8 @@ class Upload
         $id        = $uploadLog['Auto_increment'];
 
         foreach ($files as $key => $value) {
-            if ($value['size'] >= $size * 1024 * 1024) {
-                return array('status' => false, 'msg' => '请上传小于' . $size . 'M的文件');
+            if ($value['size'] >= $maxSize * 1024 * 1024) {
+                return array('status' => false, 'msg' => '请上传小于' . $maxSize . 'M的文件');
             }
 
             $ext = str_replace(substr($value['type'], 0, stripos($value['type'], '/') + 1), '', $value['type']);

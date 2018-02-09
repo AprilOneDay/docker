@@ -22,6 +22,7 @@
 								<a class="btn btn-primary btn-comply">更新排序</a>
 							</div>
 						</div>
+						<p class="bg-info">点击栏目名称 进入列表页</p>
 						<div class="console-form">
 							<div class="mt8">
 									<table class="table table-hover">
@@ -40,10 +41,12 @@
 										 		<td align="center"><input type="text" class="form-control" value="{$value['sort']}" name="id[{$value['id']}]"></td>
 												<td>{$value['id']}</td>
 												<td>
-													<a href="{$value['url']}?param[column_id]={$value['id']}" target="iframe0" style="display: block;width: 100%;"><span>{$value['delimiter']}</span>{$value['name']}
+													<a href="{$value['url']}?param[column_id]={$value['id']}" target="iframe0" style="display: block;width: 100%;">
+														<span>{$value['delimiter']}</span>
 														{if !$value['is_show']}
 														<span style="color: red">[隐]</span>
 														{/if}
+														{$value['name']}
 													</a>
 												</td>
 												<td align='center'>{$value['is_show_copy']}</td>

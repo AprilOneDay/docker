@@ -80,10 +80,9 @@ class ArticleEdit extends Init
         $data['is_recommend'] = post('is_recommend', 'intval', 1);
         $data['column_id']    = post('column_id', 'intval', 1);
         $data['uid']          = post('uid', 'intval', '');
+        $data['created']      = $data['publish_time']      = post('created', 'time', '');
 
         $data['model_id'] = self::$modelId;
-
-        //var_dump($data);die;
 
         $modelId = table('Column')->where('id', $data['column_id'])->field('model_id')->find('one');
         if ($modelId != self::$modelId) {
@@ -160,7 +159,7 @@ class ArticleEdit extends Init
 
             $other = array(
                 'tag'            => getVar('tags', 'admin.article'),
-                'columnListCopy' => dao('Column', 'admin')->columnList(),
+                'columnListCopy' => dao('Column', 'admin')->columnList(0, $this->webType),
                 'depotCopy'      => dao('Category')->getList(743),
             );
 
@@ -509,8 +508,6 @@ class ArticleEdit extends Init
         if (!$rs) {
             Log::error('附属表异常');
         }
-
-        $rs['created'] = date('Y-m-d', $rs['created']);
 
         return $rs;
     }

@@ -31,17 +31,9 @@ class User
             return array('status' => false, 'msg' => '注册类型不存在');
         }
 
-        /* if (!$data['mobile']) {
-        return array('status' => false, 'msg' => '请输入手机号码');
-        }*/
-
         if (!$data['username']) {
             return array('status' => false, 'msg' => '请输入用户名');
         }
-
-        /* if (!preg_match("/^[a-zA-Z0-9_@.]+$/", $data['username'])) {
-        return array('status' => false, 'msg' => '用户名请勿使用特殊字符汉字字符');
-        }*/
 
         if (!$data['password']) {
             return array('status' => false, 'msg' => '请输入密码');
@@ -108,7 +100,13 @@ class User
         }
 
         //注册支付宝账户
-        $result = dao('TaobaoUser')->add($data['uid'], $data['nickname'], $data['salt']);
+        $result = dao('TaobaoUser')->index($data['uid']);
+        if ($result['status']) {
+            $result = dao('TaobaoUser')->update(array('uid' => $data['uid'], 'nickname' => $data['nickname'], 'password' => $data['salt']));
+        } else {
+            $result = dao('TaobaoUser')->add(array('uid' => $data['uid'], 'nickname' => $data['nickname'], 'password' => $data['salt']));
+        }
+
         if (!$result) {
             return array('status' => false, 'msg' => '通讯组件注册失败,请重试');
         }
@@ -218,7 +216,7 @@ class User
     public function createUid()
     {
         $user = table('User')->fieldStatus('Auto_increment');
-        $uid  = /*rand(1000, 9999) .*/$user['Auto_increment'];
+        $uid  = rand(1000, 9999) . $user['Auto_increment'];
         return $uid;
     }
 

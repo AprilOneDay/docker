@@ -6,7 +6,6 @@ class Column
 
     public function columnList($columnId = 0, $webType = 1)
     {
-        $map['web_type'] = $webType;
         if ($columnId) {
             $map            = array();
             $map['id']      = $columnId;
@@ -15,6 +14,8 @@ class Column
         } else {
             $map = array();
         }
+
+        $map['web_type'] = $webType;
 
         $tree = new \app\admin\tools\util\MenuTree();
         $tree->setConfig('id', 'parentid', '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
