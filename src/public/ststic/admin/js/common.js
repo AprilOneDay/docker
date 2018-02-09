@@ -228,9 +228,7 @@ $(function() {
         let isReload    = $(this).attr('config-reload'); //是否刷新当前页面
         let trueUrl     = $(this).attr('config-true-url'); //执行成功跳转地址
         let falseUrl    = $(this).attr('config-false-url'); //执行失败跳转地址
-        let data,inputName,inputType,inputValue;
-
-        var data = new Object();
+        let data = new Object(),inputName,inputType,inputValue;
         for (let i = 0; i < attr.length; i++) {
             if(attr[i].localName.indexOf('data') !== -1 ){
                 data[attr[i].localName.substr(5,attr[i].localName.length)] =  attr[i].value;
@@ -555,6 +553,7 @@ $(function() {
         }
     })
 
+
     //上传文件
     $('.btn-files').each(function(){  
         var _this    = this;
@@ -643,7 +642,6 @@ $(function() {
                     if(myXhr.upload){ 
                         //检查upload属性是否存在  
                         //绑定progress事件的回调函数  
-            
                         myXhr.upload.addEventListener('progress',progressHandlingFunction, false);   
                     }  
                     return myXhr; //xhr对象返回给jQuery使用  
@@ -658,7 +656,7 @@ $(function() {
 
                     return layer.msg(result.msg);               
                 },  
-            });  
+            }); 
 
             //上传进度回调函数：  
             function progressHandlingFunction(e) {
@@ -668,9 +666,61 @@ $(function() {
                     $('.progress-bar').css('width',percent+'%');
                     $('.progress-bar').text(percent+'%'); 
                 }  
-            } 
-
+            }  
         });
         
     })
+
+    function upload(e,path){
+        //获取资源
+        var files = e.target.files || e.dataTransfer.files;
+        //资源赋值
+        var formData = new FormData();
+        formData.append('file', files[0]);
+        formData.append('path', path);
+       
+        //ajax异步上传  
+        $.ajax({  
+            url: '/common/upload/up_file',  
+            type: 'POST',  
+            data: formData,
+            dataType: 'json',  
+            contentType: false, //必须false才会自动加上正确的Content-Type  
+            processData: false,  //必须false才会避开jQuery对 formdata 的默认处理  
+            xhr: function(){ //获取ajaxSettings中的xhr对象，为它的upload属性绑定progress事件的处理函数
+                //移除之前的上传进度条
+                $(_this).parent().find('.progress').remove();
+                //添加现在的进度条
+                layer.alert(progress);  
+                myXhr = $.ajaxSettings.xhr();  
+                if(myXhr.upload){ 
+                    //检查upload属性是否存在  
+                    //绑定progress事件的回调函数  
+                    myXhr.upload.addEventListener('progress',progressHandlingFunction, false);   
+                }  
+                return myXhr; //xhr对象返回给jQuery使用  
+            },  
+            success: function(result){
+                if(result.status){
+                    var url = '/uploadfile/'+path+'/'+result.data.name[0];
+                    value  = value +','+ url;
+                    $(_this).parent().parent().find('.col-sm-8').append(fileHtml(url));
+                    initValue();
+                }
+
+                return layer.msg(result.msg);               
+            },  
+        }); 
+
+        //上传进度回调函数：  
+        function progressHandlingFunction(e) {
+            if (e.lengthComputable) {  
+                $('progress').attr({value : e.loaded, max : e.total}); //更新数据到进度条  
+                var percent = parseInt(e.loaded/e.total*100); 
+                $('.progress-bar').css('width',percent+'%');
+                $('.progress-bar').text(percent+'%'); 
+            }  
+        }  
+    }
+
 })
