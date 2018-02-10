@@ -331,7 +331,11 @@ class Mysqli
         } else {
             $newValue = $value;
         }
-        $this->order = ' ORDER BY ' . $newValue;
+
+        if ($newValue) {
+            $this->order = ' ORDER BY ' . $newValue;
+        }
+
         return $this;
     }
 
@@ -505,10 +509,6 @@ class Mysqli
 
         if (!$this->limit && $value != 'array' && !$isArray) {
             $this->limit(1);
-        }
-
-        if ($value == 'array' || ($value == 'one' && $isArray)) {
-            if ($this->limit == '') {$this->limit(1000);}
         }
 
         $this->_sql = 'SELECT ' . $this->field . ' FROM ' . $this->table;
