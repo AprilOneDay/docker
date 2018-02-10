@@ -154,7 +154,7 @@ class Article
 
     }
 
-    public function appContent($content)
+    public function appContent($content, $fontSize = 0.8)
     {
 
         $content = str_replace(PHP_EOL, '', $content);
@@ -213,7 +213,7 @@ class Article
                 $value['content'] = URL . $value['content'];
                 $content .= '<p><img src="' . $value['content'] . '" style="width:96%;margin-left:2%;display:block;" /></p>';
             } elseif ($value['type'] == 0) {
-                $content .= '<p style="font-size:1.3rem;text-align:justify;line-height:2rem; padding-left:0.2rem">' . $value['content'] . '</p>';
+                $content .= '<p style="font-size:' . $fontSize . 'rem;text-align:justify;line-height:2rem; padding-left:0.2rem">' . $value['content'] . '</p>';
             } elseif ($value['type'] == 2) {
                 $content .= '<iframe height="450" width="100%" src="' . $value['content'] . '" frameborder="0"></iframe>';
             }
