@@ -58,12 +58,6 @@ class Service extends WeixinSmallInit
 
         $map['column_id'] = $columnId;
 
-        if ($keyword) {
-            $field            = $this->lg != 'zh' ? 'title_' . $this->lg : 'title';
-            $map[$field]      = array('instr', $keyword);
-            $map['column_id'] = array('not in', '61,62,63,64,65');
-        }
-
         $field = 'title,description';
         if ($this->lg != 'zh') {
             $field = "title_{$this->lg},description_{$this->lg}";
@@ -76,7 +70,7 @@ class Service extends WeixinSmallInit
 
         foreach ($data['list'] as $key => $value) {
             $data['list'][$key]['thumb'] = $this->appImg($value['thumb'], 'article');
-            $data['list'][$key]['video'] = $value['video'] ? Start::$config['imgUrl'] . $value['video'] : '';
+            $data['list'][$key]['video'] = $value['video'] ? Start::$config['h5Url'] . $value['video'] : '';
 
             $data['list'][$key]['finally_title']       = dao('Article')->getLgValue($value, 'title', $this->lg);
             $data['list'][$key]['finally_description'] = dao('Article')->getLgValue($value, 'description', $this->lg);
@@ -166,16 +160,11 @@ class Service extends WeixinSmallInit
 
         $data = dao('Article')->getRowContent($map, $field, 1);
 
-        $map              = array();
-        $map['parentid']  = 58;
-        $map['is_show']   = 1;
-        $checkColumnArray = table('Column')->where($map)->field('id')->find('one', true);
-
         $data['finally_content']     = dao('Article')->getLgValue($data, 'content', $this->lg);
         $data['finally_title']       = dao('Article')->getLgValue($data, 'title', $this->lg);
         $data['finally_description'] = dao('Article')->getLgValue($data, 'description', $this->lg);
+        $data['finally_content']     = dao('Article')->appContent($data['finally_content']);
 
-        $data['content'] = str_replace('src="', 'src="' . Start::$config['imgUrl'], $data['content']);
         $this->assign('data', $data);
 
         $this->appReturn(array('msg' => '获取数据成功', 'data' => $data));
