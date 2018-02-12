@@ -102,10 +102,6 @@ class Bill extends WeixinSmallInit
         $time   = get('time', 'time', '');
         $remark = get('remark', 'text', '');
 
-        if (!in_array($type, array(1055, 1056))) {
-            $this->appReturn(array('status' => false, 'msg' => '参数错误'));
-        }
-
         if (!$sign) {
             $this->appReturn(array('status' => false, 'msg' => '请选择收支项目'));
         }
