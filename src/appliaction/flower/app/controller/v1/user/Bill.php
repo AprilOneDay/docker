@@ -97,10 +97,10 @@ class Bill extends WeixinSmallInit
 
     public function add()
     {
-        $money = get('money', 'float', 0.00);
-        $type  = get('type', 'text', '');
-        $sign  = get('sign', 'text', '');
-        $time  = get('time', 'time', '');
+        $money  = get('money', 'float', 0.00);
+        $sign   = get('sign', 'text', '');
+        $time   = get('time', 'time', '');
+        $remark = get('remark', 'text', '');
 
         if (!in_array($type, array(1055, 1056))) {
             $this->appReturn(array('status' => false, 'msg' => '参数错误'));
@@ -116,10 +116,11 @@ class Bill extends WeixinSmallInit
 
         $data['family_sn'] = $this->familySn;
         $data['uid']       = $this->uid;
-        $data['money']     = $money;
+        $data['money']     = abs($money);
         $data['sign']      = $sign;
-        $data['type']      = $type == 1056 ? 1 : 2;
+        $data['type']      = $money >= 0 ? 1 : 2;
         $data['created']   = $time ? $time : TIME;
+        $data['remark']    = $remark;
 
         $result = table('BillLog')->add($data);
         if (!$result) {
