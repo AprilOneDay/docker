@@ -68,6 +68,10 @@ class Upload
         $filePath = PUBLIC_PATH . 'uploadfile' . DS . $path . DS;
         is_dir($filePath) ? '' : mkdir($filePath, 0755, true);
 
+        if (!isWritable($filePath)) {
+            return array('status' => false, 'msg' => '文件不可写入');
+        }
+
         //获取最近附件记录id
         $uploadLog = table('UploadLog')->fieldStatus('Auto_increment');
         $id        = $uploadLog['Auto_increment'];
