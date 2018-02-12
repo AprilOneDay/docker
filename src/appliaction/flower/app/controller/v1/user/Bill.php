@@ -110,7 +110,7 @@ class Bill extends WeixinSmallInit
             $this->appReturn(array('status' => false, 'msg' => '请选择收支项目'));
         }
 
-        if (!$money || !is_numeric($money)) {
+        if (!is_numeric($money)) {
             $this->appReturn(array('status' => false, 'msg' => '请输入金额'));
         }
 
