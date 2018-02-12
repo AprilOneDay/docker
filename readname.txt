@@ -126,10 +126,13 @@ cd
 cd docker
 git pull
 docker-compose up -d
-docker exec -it php /bin/bash
 docker exec -it nginx /bin/bash
+
+# 修改写入权限
+docker exec -it php /bin/bash
 chmod -R 777 /var/www/html/data
-chmod -R 777 /var/www/html/public_html/uploadfile
+chmod -R 777 /var/www/html/public/uploadfile
+chmod -R 777 /var/www/html/appliaction/admin/tools/var
 exit
 
 # 修改mysql密码

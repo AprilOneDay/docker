@@ -39,7 +39,7 @@ class BillCharts extends WeixinSmallInit
         }
 
         $field = "SUM(money) as money,sign,type";
-        $list  = table('BillLog')->where($map)->grou('sign')->field($field)->find('array');
+        $list  = table('BillLog')->where($map)->group('sign')->field($field)->find('array');
 
         if ($list) {
             foreach ($list as $key => $value) {
