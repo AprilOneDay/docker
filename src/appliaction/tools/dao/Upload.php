@@ -100,6 +100,8 @@ class Upload
                 $data['name'][$key] = $value['name'];
                 //保存日志记录
                 $this->saveLog($value, $path);
+            } else {
+                return array('status' => false, 'msg' => $value['old_name'] . '上传失败');
             }
 
         }
