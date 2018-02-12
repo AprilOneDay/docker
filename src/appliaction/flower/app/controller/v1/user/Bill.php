@@ -114,6 +114,15 @@ class Bill extends WeixinSmallInit
             $this->appReturn(array('status' => false, 'msg' => '请输入金额'));
         }
 
+        $map['uid']     = $this->uid;
+        $map['money']   = abs($money);
+        $map['sign']    = $sign;
+        $map['created'] = array('between', TIME - 60 * 60, TIME);
+        $isLog          = table('BillLog')->where($map)->field('id')->find();
+        if ($isLog) {
+            $this->appReturn(array('status' => false, 'msg' => '请勿重复提交记录'));
+        }
+
         $data['family_sn'] = $this->familySn;
         $data['uid']       = $this->uid;
         $data['money']     = abs($money);
