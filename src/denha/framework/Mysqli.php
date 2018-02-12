@@ -52,7 +52,8 @@ class Mysqli
 
         Mysqli::$link = $this->openMysql();
         mysqli_query(Mysqli::$link, 'set names utf8mb4');
-        mysqli_query(Mysqli::$link, 'SET sql_mode =\'ANSI,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION\'');
+        //mysqli_query(Mysqli::$link, 'SET sql_mode =\'ANSI,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION\'');
+        mysqli_query(Mysqli::$link, 'SET sql_mode =\'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION\'');
 
         $this->linkId = Mysqli::$link;
 
