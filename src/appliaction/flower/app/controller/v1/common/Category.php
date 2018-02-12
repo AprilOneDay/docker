@@ -32,7 +32,7 @@ class Category extends WeixinSmallInit
      */
     public function getAllList()
     {
-        $id = get('id', 'intval', 0);
+        $id = get('id', 'text', 0);
 
         $list = dao('Category')->getListAllInfo($id, '', $this->lg);
 
