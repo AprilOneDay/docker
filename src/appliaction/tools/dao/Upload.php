@@ -101,7 +101,7 @@ class Upload
                 //保存日志记录
                 $this->saveLog($value, $path);
             } else {
-                return array('status' => false, 'msg' => $value['old_name'] . '上传失败');
+                return array('status' => false, 'msg' => $value['old_name'] . '上传失败', 'debug' => $value);
             }
 
         }
