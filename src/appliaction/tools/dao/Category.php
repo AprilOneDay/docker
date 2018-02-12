@@ -47,7 +47,8 @@ class Category
      */
     public function getListAllInfo($id = 0, $fieldValue = '', $lg = '')
     {
-        $map['parentid'] = $id;
+
+        $map['parentid'] = array('in', $id);
 
         $field = 'id,thumb,name,bname,bname_2';
         if ($lg && $lg != 'zh') {
@@ -55,7 +56,7 @@ class Category
         }
 
         $field .= $fieldValue ? $fieldValue : '';
-        $list = table('Category')->where($map)->field($field)->order('bname asc,sort asc')->find('array');
+        $list = table('Category')->where($map)->field($field)->order('parentid asc,sort asc,name asc')->find('array');
 
         foreach ($list as $key => $value) {
             if ($lg != 'zh' && $lg) {

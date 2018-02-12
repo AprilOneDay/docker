@@ -97,7 +97,7 @@ class Bill extends WeixinSmallInit
 
     public function add()
     {
-        $money = get('money', 'text', '');
+        $money = get('money', 'float', 0.00);
         $type  = get('type', 'text', '');
         $sign  = get('sign', 'text', '');
         $time  = get('time', 'time', '');
@@ -111,7 +111,7 @@ class Bill extends WeixinSmallInit
         }
 
         if (!$money || !is_numeric($money)) {
-            $this->appReturn(array('status' => false, 'msg' => '金额有误'));
+            $this->appReturn(array('status' => false, 'msg' => '请输入金额'));
         }
 
         $data['family_sn'] = $this->familySn;
