@@ -27,7 +27,7 @@ password=siyue1q2w3e4r
 default-character-set=utf8
 
 [mysqld]
-sql-mode="STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
+sql-mode="NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
 
 # skip-name-resolve
 explicit_defaults_for_timestamp=true
