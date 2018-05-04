@@ -1,10 +1,10 @@
 #安装docker
 yum -y install docker 
-#docker开启启动
+# docker开启启动
 systemctl  enable docker.service
 #安装docker-compose
 
-#第一种方法
+# 第一种方法
 sudo curl -L https://github.com/docker/compose/releases/download/1.17.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
@@ -15,7 +15,7 @@ pip install docker-compose
 待安装完成后，执行查询版本的命令，即可安装docker-compose
 docker-compose version
 
-#启动docker
+# 启动docker
 systemctl start docker
 #进入文件路径
 #启动docker-compose
@@ -92,7 +92,7 @@ docker cp mysql:/etc/mysql/ ~/www/
 docker cp mysql:/var/lib/mysql ~/www/data/
 docker cp nginx:/etc/nginx ~/www/test/nginx/
 
-#从宿主机拷文件到docker里面
+# 从宿主机拷文件到docker里面
 docker cp ~/www/nginx/conf/mime.types nginx:/etc/nginx/mime.types
 
 #vim安装
@@ -103,18 +103,10 @@ apt-get install vim-gnome
 
 docker run -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7
 
-#查看Linux系统版本的命令
+# 查看Linux系统版本的命令
 cat /etc/issue
 uname -a
 
-
-安装Docker Compose
-
-curl -L https://github.com/docker/compose/releases/download/1.4.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-chmod  +x /usr/local/bin/docker-compose
-
-#docker-compose版本
-docker-compose version
 
 su -c "setenforce 0"
 docker ps | awk  '{print $1}' | xargs docker stop
