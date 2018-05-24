@@ -1,10 +1,12 @@
 # 安装docker
+yum -y install epel-release
 yum -y install docker 
 
 # 安装docker-compose
 
 ## 第一种方法
-sudo curl -L https://github.com/docker/compose/releases/download/1.17.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+yum -y update nss
+curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
 ## 第二种方法
@@ -27,8 +29,11 @@ vi /etc/docker/daemon.json
   "registry-mirrors": ["https://he7u0ka4.mirror.aliyuncs.com"]
 }
 
-# 进入文件路径
-# 启动docker-compose
+# 如果需要安装jenkins 需修改文件夹的归属者和组
+chown -R 1000:1000 jenkins/src
+
+
+# 进入文件路径 启动docker-compose
 docker-compose up
 
 # 关闭所有正在运行容器
