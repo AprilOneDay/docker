@@ -1,4 +1,4 @@
-# name:cmj_nginx
+# name:docker_nginx
 # use:store  
 # date:2017-09-04  
   

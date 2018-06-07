@@ -1,3 +1,6 @@
+# docker 包地址
+https://hub.docker.com/
+
 # 安装docker
 yum -y install epel-release
 yum -y install docker 
@@ -7,6 +10,10 @@ yum -y install docker
 ## 第一种方法
 yum -y update nss
 curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+## 如果太慢使用国内镜像
+curl -L https://get.daocloud.io/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
 ## 第二种方法
@@ -24,6 +31,8 @@ systemctl  enable docker.service
 systemctl start docker
 
 # docker国内镜像加速
+https://he7u0ka4.mirror.aliyuncs.com
+http://acaa7b37.m.daocloud.io
 vi /etc/docker/daemon.json
 {
   "registry-mirrors": ["https://he7u0ka4.mirror.aliyuncs.com"]
@@ -51,9 +60,9 @@ docker cp ~/www/nginx/conf/mime.types nginx:/etc/nginx/mime.types
 
 # 修改写入权限
 docker exec -it php /bin/bash
-chmod -R 777 /var/www/html/data
-chmod -R 777 /var/www/html/public/uploadfile
-chmod -R 777 /var/www/html/appliaction/admin/tools/var
+
+chmod -R 777 /var/www/html/kljgj/runtime
+chmod -R 777 /var/www/html/kljgj/public
 exit
 
 # 修改mysql密码

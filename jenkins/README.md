@@ -41,21 +41,22 @@ export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
-project_path=/home/data/test
-
-if [ ! -d "/home/data" ]; then
-	mkdir /home/data
-fi
+project_path=/docker/src/kljgj
 
 if [ ! -d "${project_path}" ]; then
 	mkdir ${project_path}
 fi
 
-cd /home/data
+cd /docker/src
 
 unzip -o ${JOB_NAME}_${BUILD_NUMBER}.zip -d ${project_path}
+
+rm -rf  ${JOB_NAME}_${BUILD_NUMBER}.zip
 
 if [  -f "${project_path}/del.sh" ];then
 	. ${project_path}/del.sh
 	rm -rf ${project_path}/del.sh
 fi
+
+#初次复制代码
+cp /docker/jenkins/src/workspace/kljgj /docker/src/kljgj

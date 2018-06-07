@@ -1,4 +1,5 @@
 #!/bin/bash
+# 更换用户 密码
 mysql -uroot -p$MYSQL_ROOT_PASSWORD <<EOF
 source $WORK_PATH/$FILE_1;
 use  mysql;

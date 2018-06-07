@@ -62,18 +62,30 @@ class FileStatic
         //处理增量文件
         if ($this->buildId !== 1 && !empty($this->fileArr)) {
 
-            foreach ($this->fileArr as $file) {
+            if (key($this->fileArr['logentry']) == '0') {
+                $list = $this->fileArr['logentry'];
+            } else {
+                $list[] = $this->fileArr;
+            }
+
+            // print_r($this->fileArr);
+            // var_dump(key($this->fileArr['logentry']));
+            // print_r($list);
+            // die;
+
+            foreach ($list as $file) {
 
                 $file = isset($file['logentry']) ? $file['logentry'] : $file;
 
-                echo 'author : ' . $file['author'] . ' version : ' . implode(',', $file['@attributes']) . ' msg : ' . implode(',', $file['msg']) . PHP_EOL;
+                echo 'author : ' . $file['author'] . ' version : ' . implode(',', $file['@attributes']) . ' msg : ' . implode(',', (array) $file['msg']) . PHP_EOL;
 
                 if (!empty($file['paths']['path'])) {
-                    foreach ($file['paths']['path'] as $value) {
+                    foreach ((array) $file['paths']['path'] as $value) {
 
                         $path   = $this->workPath . $value;
                         $tmpDir = $this->sourcePath . pathinfo($value, PATHINFO_DIRNAME);
 
+                        //复制文件
                         if (is_file($path)) {
 
                             if (!is_dir($tmpDir)) {
@@ -83,8 +95,17 @@ class FileStatic
                             copy($path, $this->sourcePath . $value);
                             echo 'change file :' . $value . PHP_EOL;
 
-                        } else {
-                            $notFiles[] = $value;
+                        }
+                        //复制文件夹
+                        elseif (is_dir($this->workPath . $value)) {
+                            $this->copyDir($this->workPath . $value, $this->sourcePath . $value);
+                            echo 'change dir :' . $value . PHP_EOL;
+                        }
+                        //需要删除的文件夹/文件
+                        else {
+                            if ($value != '/') {
+                                $notFiles[] = $value;
+                            }
                         }
 
                     }
@@ -103,7 +124,7 @@ class FileStatic
         }
     }
 
-    /** 创建删除脚本 */
+    /** 创建删除Shell脚本 */
     private function createDelSh($file, $path)
     {
         $fileName = $this->sourcePath . DIRECTORY_SEPARATOR . 'del.sh';
@@ -116,6 +137,12 @@ class FileStatic
         $file = fopen($fileName, 'w');
         fwrite($file, $content);
         fclose($file);
+    }
+
+    /** 创建删除php脚本 */
+    private function createDelPHP()
+    {
+        $fileName = $this->sourcePath . DIRECTORY_SEPARATOR . 'jekninsDel.php';
     }
 
     /**
@@ -132,6 +159,40 @@ class FileStatic
         }
 
         return mkdir($dir, $mode);
+    }
+
+    /**
+     * 复制文件夹
+     * @date   2018-06-07T11:32:57+0800
+     * @author ChenMingjiang
+     * @param  [type]                   $source [原文件夹]
+     * @param  [type]                   $dest   [复制文件夹]
+     * @return [type]                           [description]
+     */
+    private function copyDir($source, $dest)
+    {
+        if (!file_exists($dest)) {
+            mkdir($dest, 0755, true);
+        }
+
+        $handle = opendir($source);
+        while (($item = readdir($handle)) !== false) {
+            if ($item == '.' || $item == '..') {
+                continue;
+            }
+
+            $_source = $source . '/' . $item;
+            $_dest   = $dest . '/' . $item;
+            if (is_file($_source)) {
+                copy($_source, $_dest);
+            }
+
+            if (is_dir($_source)) {
+                $this->copyDir($_source, $_dest);
+            }
+
+        }
+        closedir($handle);
     }
 
 }
