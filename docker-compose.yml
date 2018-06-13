@@ -65,6 +65,7 @@
             - ./src/:/var/www/html/:rw
             - ./php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
             - ./php/log/:/var/log:rw
+            - ./php/etc/crontab:/etc/crontab:rw
         expose:
             - "9000"        
     nginx:

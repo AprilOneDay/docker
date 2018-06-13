@@ -131,7 +131,7 @@ class FileStatic
 
         $content = '#!/bin/bash' . PHP_EOL;
         foreach ($file as $key => $value) {
-            $content .= 'rm -rf ' . $path . $value . PHP_EOL;
+            $content .= 'rm -rf $1' . $path . $value . PHP_EOL;
         }
 
         $file = fopen($fileName, 'w');
