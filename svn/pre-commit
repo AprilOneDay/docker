@@ -1,0 +1,20 @@
+#!/bin/sh
+REPOS="$1"
+TXN="$2"
+
+SVNLOOK=/usr/bin/svnlook
+
+# Make sure that the log message contains some text.
+LOGMSG=`$SVNLOOK log -t "$TXN" "$REPOS" | grep "[a-zA-Z0-9]" | wc -c`
+LOGMSGL=`$SVNLOOK log -t "$TXN" "$REPOS" | wc -c`
+MSG=`$SVNLOOK log -t "$TXN" "$REPOS"`
+if [ "$LOGMSGL" -lt 4 ];then 
+   # echo `$SVNLOOK log -t "$TXN" "$REPOS"` 1>&2
+   echo "$LOGMSGL" 1>&2
+   echo "提交失败： 注释不能低于4个字" 1>&2 
+   exit 1
+fi
+
+curl -H "Content-Type:application/json" -d '{"msgtype": "text","text": {"content": "'${MSG}',  @+86-13206136326 请更新到beta"},"at": {"atMobiles": ["+86-13206136326"], "isAtAll": false}}' https://oapi.dingtalk.com/robot/send?access_token=7a9e5d4da8e0c34f8d2d02b78891915a4f00ec294b42b16a9eadf06ffc740a59
+
+exit 0
