@@ -15,10 +15,23 @@ class FileStatic
     public $bulidPath; //构建日志目录
     public $buildId; //构建日志ID
     public $delPath;
+    public $isSend; //是否发送消息推送
+    public $atLists;
 
     public function __construct()
     {
-        $options = getopt('n:v:d:');
+
+        //@上传者对应手机号
+        $this->atLists = array(
+            'cmj' => '15923882847',
+            'tjw' => '15095909535',
+            'dyp' => '15223777043',
+            'll'  => '13647602430',
+            'ghl' => '13647602430',
+            'xy'  => '13647602430',
+        );
+
+        $options = getopt('n:v:d:a:');
 
         if (empty($options['n'])) {
             die('Fail : options not find projectName' . PHP_EOL);
@@ -32,6 +45,7 @@ class FileStatic
         $this->projectName = $options['n'];
         $this->buildId     = $options['v'];
         $this->delPath     = isset($options['d']) ? $options['d'] : '';
+        $this->isSend      = $options['a'] ? $options['a'] : false;
 
         $this->bulidPath = $this->homePath . DIRECTORY_SEPARATOR . 'jobs' . DIRECTORY_SEPARATOR . $this->projectName . DIRECTORY_SEPARATOR . 'builds' . DIRECTORY_SEPARATOR . $this->buildId . DIRECTORY_SEPARATOR . 'changelog.xml';
 
@@ -77,7 +91,12 @@ class FileStatic
 
                 $file = isset($file['logentry']) ? $file['logentry'] : $file;
 
-                echo 'author : ' . $file['author'] . ' version : ' . implode(',', $file['@attributes']) . ' msg : ' . implode(',', (array) $file['msg']) . PHP_EOL;
+                echo '上传人 : ' . $file['author'] . ' SVN版本 : ' . implode(',', $file['@attributes']) . ' 备注 : ' . implode(',', (array) $file['msg']) . PHP_EOL;
+
+                //发送推送信息
+                if ($this->isSend) {
+                    echo $this->sendDD($file);
+                }
 
                 if (!empty($file['paths']['path'])) {
                     foreach ((array) $file['paths']['path'] as $value) {
@@ -193,6 +212,45 @@ class FileStatic
 
         }
         closedir($handle);
+    }
+
+    /** curl模拟 */
+    public function sendMsg($url, $params)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json;charset=utf-8'));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // 线下环境不用开启curl证书验证, 未调通情况可尝试添加该代码
+        // curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        // curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        $data = curl_exec($ch);
+        curl_close($ch);
+
+        return $data;
+    }
+
+    /** 发送钉钉推送信息 */
+    public function sendDD($params)
+    {
+
+        $webhook = "https://oapi.dingtalk.com/robot/send?access_token=7a9e5d4da8e0c34f8d2d02b78891915a4f00ec294b42b16a9eadf06ffc740a59";
+        $message = '上传人 : ' . $params['author'] . ' SVN版本 : ' . implode(',', $params['@attributes']) . ' 备注 : ' . implode(',', (array) $params['msg']) . ' 更新完毕' . PHP_EOL;
+
+        $at = '';
+        if (isset($this->atLists[$params['author']])) {
+            $message = $message . '@' . $this->atLists[$params['author']];
+            $at      = $this->atLists[$params['author']];
+        }
+
+        $jsonString = '{"msgtype": "text","text": {"content": "' . $message . '"},"at": {"atMobiles": ["' . $at . '"], "isAtAll": false}}';
+
+        $curl = 'curl -H "Content-Type:application/json" -d \'' . $jsonString . '\' ' . $webhook;
+        print_r($curl);
+        system($curl);
     }
 
 }

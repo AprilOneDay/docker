@@ -43,7 +43,7 @@
         links:
             - svn:svn
     svn:
-        image: garethflowers/svn-server
+        image: ./svn/
         restart: always
         privileged: true
         ports:

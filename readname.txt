@@ -153,6 +153,7 @@ docker restart nginx;
 
 docker-compose up -d
 docker exec -it mysql /bin/bash
+docker exec -it svn /bin/sh
 mysqldump -hlocalhost -usiyue -psiyue1q2w3e4r --databases blog > /usr/local/work/blog.sql
 
 cd docker 
