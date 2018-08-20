@@ -3,6 +3,7 @@
     mysql:
         # image: mysql:5.7
         build: ./mysql/
+        container_name: mysql
         restart: always
         privileged: true
         ports:
@@ -13,7 +14,6 @@
             - ./mysql/log/:/var/log/mysql/:rw
         environment:
             MYSQL_ROOT_PASSWORD: "1qq2ww3ee4rr"
-        container_name: mysql
     # mysql主重备份
     # mysqlsrv:
     #     # image: mysql:5.7
@@ -31,26 +31,26 @@
     #     container_name: mysqlsrv
     jenkins:
         build: ./jenkins/
+        container_name: jenkins
         restart: always
         privileged: true
+        links:
+            - svn:svn
         ports:
             - "8080:8080"
             - "50000:50000"
         volumes:
             - ./jenkins/src:/var/jenkins_home:rw
             # - ./src/:/var/jenkins_home/workspace:rw
-        container_name: jenkins
-        links:
-            - svn:svn
     svn:
         image: garethflowers/svn-server
+        container_name: svn
         restart: always
         privileged: true
         ports:
             - "3690:3690"
         volumes:
             - ./svn/src:/var/opt/svn:rw
-        container_name: svn
     php:
         #depends_on:
         #    - mysql
@@ -65,6 +65,7 @@
             - ./src/:/var/www/html/:rw
             - ./php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
             - ./php/log/:/var/log:rw
+            - ./php/etc/crontab:/etc/crontab:rw
         expose:
             - "9000"        
     nginx:
@@ -89,7 +90,7 @@
         container_name: redis
         restart: always
         privileged: true
-        command: redis-server --appendonly yes
+        command: redis-server --appendonly yes --requirepass "11qq22ww33ee44rr~@#"
         volumes:
             - ./redis/data:/data:rw
         ports:

@@ -17,6 +17,10 @@ COPY ./source.list /etc/apk/repositories
 RUN apt-get update
 RUN apt-get upgrade -y
 
+# 安装定时任务模块
+RUN apt-get install -y curl
+RUN apt-get install -y cron
+
 # mcrypt
 RUN apt-get install -y libmcrypt-dev
 RUN docker-php-ext-install mcrypt
