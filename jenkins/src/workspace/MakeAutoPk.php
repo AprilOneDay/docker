@@ -55,7 +55,7 @@ class FileStatic
         $this->workPath = $this->homePath . DIRECTORY_SEPARATOR . 'workspace' . DIRECTORY_SEPARATOR . $this->projectName;
 
         //存放增量代码目录
-        $this->sourcePath = $this->homePath . DIRECTORY_SEPARATOR . 'workspace' . DIRECTORY_SEPARATOR . 'tmpPakage';
+        $this->sourcePath = $this->homePath . DIRECTORY_SEPARATOR . 'workspace' . DIRECTORY_SEPARATOR . 'tmp_' . $this->projectName . '_pakage';
 
         if (!is_dir($this->sourcePath)) {
             mkdir($this->sourcePath, 0755, true);
@@ -251,7 +251,6 @@ class FileStatic
         $jsonString = '{"msgtype": "text","text": {"content": "' . $message . '"},"at": {"atMobiles": ["' . $at . '"], "isAtAll": false}}';
 
         $curl = 'curl -H "Content-Type:application/json" -d \'' . $jsonString . '\' ' . $webhook;
-        print_r($curl);
         system($curl);
     }
 

@@ -123,8 +123,8 @@ git clone https://github.com/AprilOneDay/docker.git
 cd docker
 docker-compose up
 docker exec -it php /bin/bash
-chmod -R 777 /var/www/html/data
-chmod -R 777 /var/www/html/public/uploadfile
+chmod -R 777 /var/www/html/lingsi/data
+chmod -R 777 /var/www/html/lingsi/public
 
 docker ps | awk  '{print $1}' | xargs docker stop
 docker rm $(docker ps -a -q)
@@ -136,9 +136,9 @@ docker exec -it nginx /bin/bash
 
 # 修改写入权限
 docker exec -it php /bin/bash
-chmod -R 777 /var/www/html/data
-chmod -R 777 /var/www/html/public/uploadfile
-chmod -R 777 /var/www/html/appliaction/admin/tools/var
+chmod -R 777 /var/www/html/banxing/data
+chmod -R 777 /var/www/html/banxing/public
+
 exit
 
 # 修改mysql密码
@@ -167,6 +167,9 @@ CHANGE MASTER TO MASTER_HOST='74.121.150.93',MASTER_USER='siyue',MASTER_PASSWORD
 
 俺的centos vps上面不知道添加了多少个账户，今天想清理一下，但是以前还未查看过linux用户列表，google了一下，找到方便的放：
 一般情况下是
+
+# 容器互连
+docker run -it --rm --network mynetwork svn
 
 cat /etc/passwd 可以查看所有用户的列表
 w 可以查看当前活跃的用户列表
@@ -249,3 +252,7 @@ IPv4 forwarding is disabled. Networking will not work
 vi  /usr/lib/sysctl.d/00-system.conf
 增加 net.ipv4.ip_forward=1
 systemctl restart network systemctl restart docker
+
+
+# 本地Curl
+D:\phpStudy\php\php-5.6.27-nts\php-cgi.exe -b 127.0.0.1:9001 -c D:\phpStudy\php\php-5.6.27-nts\php.ini
