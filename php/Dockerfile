@@ -2,7 +2,7 @@
 # use:store  
 # date:2017-09-04  
   
-FROM php:5.6-fpm
+FROM php:7.1.21-fpm
 
 MAINTAINER siyue 350375092@qq.com  
 
@@ -80,6 +80,12 @@ RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/$P
     && mv phpredis-$PHPREDIS_VERSION /usr/src/php/ext/redis \
     && docker-php-ext-install redis \
     && rm -rf /usr/src/php
+
+# memcached
+ENV PHPMEMCACHED_VERSION 3.0.4
+RUN apt-get install -y libmemcached-dev \
+	&& pecl install memcached-$PHPMEMCACHED_VERSION \
+	&& docker-php-ext-enable memcached
 
 # More extensions
 # RUN docker-php-ext-install exif

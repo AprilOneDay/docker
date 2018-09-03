@@ -7,11 +7,19 @@
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 
+# 默认值
+if [ ! $3 ]; then  
+       $3=0  
+fi  
+
 project=$1 # kluser
 project_path=$2 # /docker/src/kluser
+is_send=$3 # 是否发送钉钉机器人消息
 TMP_PAKAGE=tmp_${project}_pakage
 
 cd ${JENKINS_HOME}/workspace
+
+
 
 if [ ! -d "pakage" ]; then
 	mkdir pakage

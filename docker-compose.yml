@@ -90,11 +90,18 @@
         container_name: redis
         restart: always
         privileged: true
-        command: redis-server --appendonly yes --requirepass "11qq22ww33ee44rr~@#"
+        command: redis-server --appendonly yes --requirepass "11QQ22ww33ee44rr~@#"
         volumes:
             - ./redis/data:/data:rw
         ports:
             - "6379:6379"
+    memcached:
+        build: ./memcached/
+        container_name: memcached
+        restart: always
+        privileged: true
+        ports:
+            - "11211:11211"
 
     
             
