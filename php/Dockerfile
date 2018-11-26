@@ -2,7 +2,7 @@
 # use:store  
 # date:2017-09-04  
   
-FROM php:7.1-fpm
+FROM php:5.6-fpm
 
 MAINTAINER siyue 350375092@qq.com  
 
@@ -43,8 +43,8 @@ RUN docker-php-ext-install mysqli
 RUN docker-php-ext-install mysql
 
 # SOAP Client
-RUN apt-get install -y libxml2-dev
-RUN docker-php-ext-install soap
+# RUN apt-get install -y libxml2-dev
+# RUN docker-php-ext-install soap
 
 # General extensions that may had be installed default
 # If not, install them with following command
@@ -73,7 +73,7 @@ RUN apt-get install -y libcurl4-openssl-dev
 RUN docker-php-ext-install curl
 
 # redis
-ENV PHPREDIS_VERSION 4.1.1
+ENV PHPREDIS_VERSION 3.1.3
 RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.gz \
     && tar xfz /tmp/redis.tar.gz \
     && rm -r /tmp/redis.tar.gz \
@@ -83,10 +83,10 @@ RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/$P
     && rm -rf /usr/src/php
 
 # memcached
-ENV PHPMEMCACHED_VERSION 3.0.4
-RUN apt-get install -y libmemcached-dev
-RUN pecl install memcached-$PHPMEMCACHED_VERSION
-RUN docker-php-ext-enable memcached
+# ENV PHPMEMCACHED_VERSION 2.2.0
+# RUN apt-get install -y libmemcached-dev
+# RUN pecl install memcached-$PHPMEMCACHED_VERSION
+# RUN docker-php-ext-enable memcached
 	
 # More extensions
 # RUN docker-php-ext-install exif

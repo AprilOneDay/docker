@@ -29,6 +29,7 @@ if [ ! -d "${TMP_PAKAGE}" ]; then
 	mkdir ${TMP_PAKAGE}
 fi
 
+find ./${TMP_PAKAGE} -type d -name ".htaccess"|xargs rm -rf
 rm -rf ${TMP_PAKAGE}/*
 
 /usr/bin/php /${JENKINS_HOME}/workspace/MakeAutoPk.php -v${BUILD_NUMBER} -n${JOB_NAME} -d${project_path} -a0
@@ -36,7 +37,6 @@ rm -rf ${TMP_PAKAGE}/*
 if [ ! "`ls -A ${TMP_PAKAGE}`" = "" ]; then
 	cd ${TMP_PAKAGE}
 	find . -type d -name ".svn"|xargs rm -rf
-    
 	zip -rq ${JENKINS_HOME}/workspace/pakage/${JOB_NAME}_${BUILD_NUMBER}_${SVN_REVISION}.zip ./*
 	cp -r ${JENKINS_HOME}/workspace/pakage/${JOB_NAME}_${BUILD_NUMBER}_${SVN_REVISION}.zip ${WORKSPACE}
-fi
+fi1   

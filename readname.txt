@@ -5,7 +5,7 @@ systemctl  enable docker.service
 #安装docker-compose
 
 # 第一种方法
-sudo curl -L https://github.com/docker/compose/releases/download/1.17.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
 ## 如果太慢使用国内镜像
@@ -137,8 +137,8 @@ docker exec -it nginx /bin/bash
 
 # 修改写入权限
 docker exec -it php /bin/bash
-chmod -R 777 /var/www/html/banxing/data
-chmod -R 777 /var/www/html/banxing/public
+chmod -R 777 /var/www/html/sowenan/data
+chmod -R 777 /var/www/html/sowenan/public
 
 exit
 
@@ -185,78 +185,9 @@ cat /etc/passwd|grep -v nologin|grep -v halt|grep -v shutdown|awk -F":" '{ print
 
 docker run -itd -p 8080:8080 -p 50000:50000 --name jenkins --privileged=true  -v /home/jenkins/src:/var/jenkins_home jenkins2
 
-#!/bin/bash
-#
-# 打包脚本执行
-# 
-
-export LANG=en_US.UTF-8
-export LANGUAGE=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-
-cd ..
-
-if [ ! -d "pakage" ]; then
-	mkdir pakage
-fi
-
-
-if [ ! -d "tmpPakage" ]; then
-	mkdir tmpPakage
-fi
-
-rm -rf tmpPakage/*
-
-
-/usr/bin/php /${JENKINS_HOME}/workspace/MakeAutoPk.php -v${BUILD_NUMBER} -n${JOB_NAME} -d/home/data/test
-
-
-if [ ! "`ls -A tmpPakage`" = "" ]; then
-	cd tmpPakage
-	find . -type d -name ".svn"|xargs rm -rf
-	zip -rq ${JENKINS_HOME}/workspace/pakage/${JOB_NAME}_${BUILD_NUMBER}.zip ./*
-	cp ${JENKINS_HOME}/workspace/pakage/${JOB_NAME}_${BUILD_NUMBER}.zip ${WORKSPACE}
-fi
-
-
-#!/bin/bash
-#
-# 解压脚本执行
-# 
-
-export LANG=en_US.UTF-8
-export LANGUAGE=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-
-project_path=/home/data/test
-
-if [ ! -d "/home/data" ]; then
-	mkdir /home/data
-fi
-
-if [ ! -d "${project_path}" ]; then
-	mkdir ${project_path}
-fi
-
-cd /home/data
-
-unzip -o ${JOB_NAME}_${BUILD_NUMBER}.zip -d ${project_path}
-
-if [  -f "${project_path}/del.sh" ];then
-	. ${project_path}/del.sh
-	rm -rf ${project_path}/del.sh
-fi
-
-
-IPv4 forwarding is disabled. Networking will not work
-
-vi  /usr/lib/sysctl.d/00-system.conf
-增加 net.ipv4.ip_forward=1
-systemctl restart network systemctl restart docker
-
 
 # 本地Curl
-D:\phpStudy\php\php-5.6.27-nts\php-cgi.exe -b 127.0.0.1:9001 -c D:\phpStudy\php\php-5.6.27-nts\php.ini
+D:\phpStudy\php\php-7.0.12-nts\php-cgi.exe -b 127.0.0.1:9001 -c D:\phpStudy\php\php-7.0.12-nts\php.ini
 
 
 curl -O https://launchpadlibrarian.net/165454254/libmemcached-1.0.18.tar.gz 
@@ -265,3 +196,7 @@ mv libmemcached-1.0.18 memcached
 cd memcached
 ./configure --with-memcached --disable-memcached-sasl
 make  &&  make install
+
+# 运行容器安装宝塔
+docker run  --name yyxt  -p 8080:443 -p 8889:8888  -v /docker/src:/var/www  -d -it centos  
+yum install -y wget && wget -O install.sh http://download.bt.cn/install/install.sh && sh install.sh -y

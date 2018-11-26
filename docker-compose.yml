@@ -95,13 +95,13 @@
             - ./redis/data:/data:rw
         ports:
             - "6379:6379"
-    memcached:
-        build: ./memcached/
-        container_name: memcached
-        restart: always
-        privileged: true
-        ports:
-            - "11211:11211"
+    # memcached:
+    #    build: ./memcached/
+    #    container_name: memcached
+    #    restart: always
+    #    privileged: true
+    #    ports:
+    #        - "11211:11211"
 
     
             
