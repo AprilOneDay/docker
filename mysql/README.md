@@ -10,3 +10,7 @@ FLUSH PRIVILEGES;
 SELECT HOST,USER,authentication_string FROM mysql.user
 # 查询当前用户
 SELECT USER();
+# 容器内检查cron 是否执行
+/etc/init.d/crond status 或者 /etc/init.d/cron status
+# 启动cron
+/etc/init.d/cron restart

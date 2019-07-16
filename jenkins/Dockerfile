@@ -7,8 +7,13 @@ FROM jenkins:latest
 
 MAINTAINER siyue 350375092@qq.com  
 
+# 保证时间一致
+COPY /etc/localtime /etc/localtime
+
 # 让jenkins容器中具有执行sudo命令的权限
 USER root
+
+
 RUN apt-get update && apt-get install -y \ 
 		zip \
 		unzip \

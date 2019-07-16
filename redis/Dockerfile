@@ -6,3 +6,5 @@ FROM redis:latest
 
 MAINTAINER siyue 350375092@qq.com  
 
+# 保证时间一致
+COPY /etc/localtime /etc/localtime

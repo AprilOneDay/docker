@@ -158,6 +158,7 @@ class FileStatic
         $file = fopen($fileName, 'w');
         fwrite($file, $content);
         fclose($file);
+        echo 'Create del.sh Success' . PHP_EOL;
     }
 
     /** 创建删除php脚本 */

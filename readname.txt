@@ -1,15 +1,15 @@
-#安装docker
+####安装docker
 yum -y install docker 
 # docker开启启动
 systemctl  enable docker.service
-#安装docker-compose
 
+####安装docker-compose
 # 第一种方法
-sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+sudo curl -L https://github.com/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
-## 如果太慢使用国内镜像
-curl -L https://get.daocloud.io/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+# 如果太慢使用国内镜像
+curl -L https://get.daocloud.io/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
 #第二种方法
@@ -19,10 +19,10 @@ pip install docker-compose
 待安装完成后，执行查询版本的命令，即可安装docker-compose
 docker-compose version
 
-# 启动docker
+#### 启动docker
 systemctl start docker
-#进入文件路径
-#启动docker-compose
+##### 进入文件路径
+##### 启动docker-compose
 docker-compose up
 
 docker 启动Mysql
@@ -64,6 +64,11 @@ docker ps | awk  '{print $1}' | xargs docker stop
 docker rm $(docker ps -a -q)
 docker rmi docker_nginx
 
+查询容器ip
+docker inspect  容器名称/id
+
+
+
 docker stop test_apache-php
 docker rm test_apache-php
 docker port  test_apache-php 80
@@ -85,7 +90,7 @@ vi index.php
 #linux 端口查看
 lsof -i tcp:443
 
-#docker复制本地
+# 从容器拷贝文件到本地
 docker cp apache2:/root/etc//local/apache2/conf/httpd.conf ~/www/apache2/conf/httpd.conf
 docker cp apache2:/usr/local/apache2/logs/ ~/www/apache2/logs
 docker cp apache2:/usr/local/apache2/htdocs/ ~/www/src
@@ -96,8 +101,12 @@ docker cp mysql:/etc/mysql/ ~/www/
 docker cp mysql:/var/lib/mysql ~/www/data/
 docker cp nginx:/etc/nginx ~/www/test/nginx/
 
-# 从宿主机拷文件到docker里面
-docker cp ~/www/nginx/conf/mime.types nginx:/etc/nginx/mime.types
+# 从本地拷文件到docker容器里面
+docker cp /www/nginx/conf/mime.types nginx:/etc/nginx/mime.types
+
+容器时间同步
+docker cp /etc/localtime php:/etc/localtime
+docker run --name <name> -v /etc/localtime:/etc/localtime:ro
 
 #vim安装
 apt-get update
@@ -106,6 +115,8 @@ apt-get install vim-gnome
 #---end
 
 docker run -p 3306:3306 --name mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7
+
+hwclock --set --date '019-07-01 15:50:20' 
 
 # 查看Linux系统版本的命令
 cat /etc/issue
@@ -139,6 +150,7 @@ docker exec -it nginx /bin/bash
 docker exec -it php /bin/bash
 chmod -R 777 /var/www/html/sowenan/data
 chmod -R 777 /var/www/html/sowenan/public
+chmod -R 777 /var/www/html/moershi/moershi/appliaction/tools/vendor/captcha
 
 exit
 
@@ -185,6 +197,14 @@ cat /etc/passwd|grep -v nologin|grep -v halt|grep -v shutdown|awk -F":" '{ print
 
 docker run -itd -p 8080:8080 -p 50000:50000 --name jenkins --privileged=true  -v /home/jenkins/src:/var/jenkins_home jenkins2
 
+# composer 操作
+composer 项目根目录操作
+composer install - 如有 composer.lock 文件，直接安装，否则从 composer.json 安装最新扩展包和依赖；
+composer update - 从 composer.json 安装最新扩展包和依赖；
+composer update vendor/package - 从 composer.json 或者对应包的配置，并更新到最新；
+composer require new/package - 添加安装 new/package, 可以指定版本，如： composer require new/package ~2.5
+# composer 替换国内镜像
+composer config -g repo.packagistcomposerhttps://packagist.phpcomposer.com
 
 # 本地Curl
 D:\phpStudy\php\php-7.0.12-nts\php-cgi.exe -b 127.0.0.1:9001 -c D:\phpStudy\php\php-7.0.12-nts\php.ini
@@ -200,3 +220,6 @@ make  &&  make install
 # 运行容器安装宝塔
 docker run  --name yyxt  -p 8080:443 -p 8889:8888  -v /docker/src:/var/www  -d -it centos  
 yum install -y wget && wget -O install.sh http://download.bt.cn/install/install.sh && sh install.sh -y
+
+# 阿里云远程链接数据库 需要在控制面板开启3306端口号
+

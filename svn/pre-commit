@@ -15,6 +15,6 @@ if [ "$LOGMSGL" -lt 4 ];then
    exit 1
 fi
 
-curl -H "Content-Type:application/json" -d '{"msgtype": "text","text": {"content": "'${MSG}',  @+86-13206136326 请更新到beta"},"at": {"atMobiles": ["+86-13206136326"], "isAtAll": false}}' https://oapi.dingtalk.com/robot/send?access_token=7a9e5d4da8e0c34f8d2d02b78891915a4f00ec294b42b16a9eadf06ffc740a59
+curl -H "Content-Type:application/json" -d '{"msgtype": "text","text": {"content": "${MSG}"}}' https://oapi.dingtalk.com/robot/send?access_token=7a9e5d4da8e0c34f8d2d02b78891915a4f00ec294b42b16a9eadf06ffc740a59
 
 exit 0

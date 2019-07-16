@@ -12,10 +12,11 @@ if [ ! $3 ]; then
        $3=0  
 fi  
 
-project=$1 # kluser
-project_path=$2 # /docker/src/kluser
+# ${JENKINS_HOME} jenkins 项目更目录
+project=$1 # kluser [jenkins项目名称]
+project_path=$2 # /docker/src/kluser [远程项目路径]
 is_send=$3 # 是否发送钉钉机器人消息
-TMP_PAKAGE=tmp_${project}_pakage
+TMP_PAKAGE=tmp_${project}_pakage # 更新文件临时存放路径
 
 cd ${JENKINS_HOME}/workspace
 

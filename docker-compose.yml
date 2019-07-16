@@ -63,9 +63,11 @@
             - redis:redis
         volumes:
             - ./src/:/var/www/html/:rw
-            - ./php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+            - ./php/php-fpm.d/:/usr/local/etc/php-fpm.d/:ro
             - ./php/log/:/var/log:rw
-            - ./php/etc/crontab:/etc/crontab:rw
+            - ./php/etc/crontab/:/etc/crontab/:rw
+        cap_add:
+            - SYS_PTRACE
         expose:
             - "9000"        
     nginx:

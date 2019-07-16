@@ -6,6 +6,9 @@ FROM garethflowers/svn-server
 
 MAINTAINER siyue 350375092@qq.com  
 
+# 保证时间一致
+COPY /etc/localtime /etc/localtime
+
 # CURL For nghttp2-dev, we need this respository.
 RUN echo https://dl-cdn.alpinelinux.org/alpine/edge/testing >>/etc/apk/repositories 
 
