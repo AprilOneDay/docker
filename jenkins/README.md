@@ -58,5 +58,8 @@ if [  -f "${project_path}/del.sh" ];then
 	rm -rf ${project_path}/del.sh
 fi
 
-#初次复制代码
+# 初次复制代码
 cp /docker/jenkins/src/workspace/kljgj /docker/src/kljgj
+
+# 更改文件夹权限
+chown -R 1000:1000 jenkins/src

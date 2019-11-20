@@ -1,0 +1,22 @@
+version: '2'
+services:
+    php7.1:
+        #depends_on:
+        #    - mysql
+        build: ./
+        container_name: php7.1
+        restart: always
+        privileged: true
+        links:
+            - mysql:mysql
+        volumes:
+            - ../../src/:/var/www/html/:rw
+            - ./php-fpm.d/:/usr/local/etc/php-fpm.d/:ro
+            - ./log/:/var/log:rw
+            - ./etc/crontab/:/etc/crontab/:rw
+        cap_add:
+            - SYS_PTRACE
+        expose:
+            - "9001:9000"
+
+# docker run -d  --name=php7.1 -p 9001:9000 --privileged -v /home/src/:/var/www/html/ -v /home/php/php-7.1/php-fpm.d/:/usr/local/etc/php-fpm.d/ -v /home/php/php-7.1/etc/crontab/:/etc/crontab/ --link=mysql:mysql --restart=always --cap-add=SYS_PTRACE php:7.1-fpm

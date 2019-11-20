@@ -1,18 +1,33 @@
+#Xdebug
+f8				打开调试面板快速连接
+Shift+f8		打开调试面板
+ctrl+f8 		新增/删除 断点
+Ctrl+Shift+f5   运行到下一个断点
+Ctrl+Shift+f6   单步
+ctrl+shift+f7   进入函数
+Ctrl+Shift+f8	退出函数
+ctrl+shift+f9   启动xdebug模式
+ctrl+shift+f10	退出xdebug模式
+ctrl+shift+f11	隐藏xdebug面板
+
+###Docker配置文件：
+/etc/sysconfig/docker
+
 ####安装docker
 yum -y install docker 
 # docker开启启动
 systemctl  enable docker.service
 
 ####安装docker-compose
-# 第一种方法
-sudo curl -L https://github.com/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+## 第一种方法
+sudo curl -L https://github.com/docker/compose/releases/download/1.25.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
-# 如果太慢使用国内镜像
-curl -L https://get.daocloud.io/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+### 如果太慢使用国内镜像
+curl -L https://get.daocloud.io/docker/compose/releases/download/1.25.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
-#第二种方法
+## 第二种方法
 yum -y install epel-release
 yum -y install python-pip
 pip install docker-compose
@@ -24,6 +39,8 @@ systemctl start docker
 ##### 进入文件路径
 ##### 启动docker-compose
 docker-compose up
+
+
 
 docker 启动Mysql
 docker run -e MSYQL_ROOT_PASSWORD=admin --name mysql_bname -v /data/mysql/data:/var/lib/mysql -p 3306:3306 -d mysql:5.6
@@ -65,9 +82,7 @@ docker rm $(docker ps -a -q)
 docker rmi docker_nginx
 
 查询容器ip
-docker inspect  容器名称/id
-
-
+docker inspect  容器名称orid
 
 docker stop test_apache-php
 docker rm test_apache-php
@@ -83,17 +98,14 @@ mysql -h172.17.0.2 -P3306 -uroot  -p1q2w3e4r
 mysql -h74.121.150.93 -P3306 -uroot  -p1q2w3e4r
 select database();
 
-cd /
-cd var/www/html
-vi index.php
-
 #linux 端口查看
 lsof -i tcp:443
 
 # 从容器拷贝文件到本地
-docker cp apache2:/root/etc//local/apache2/conf/httpd.conf ~/www/apache2/conf/httpd.conf
+docker cp mysql:/var/lib/mysql/ ~/mysql
 docker cp apache2:/usr/local/apache2/logs/ ~/www/apache2/logs
 docker cp apache2:/usr/local/apache2/htdocs/ ~/www/src
+docker cp apache2:/root/etc//local/apache2/conf/httpd.conf ~/www/apache2/conf/httpd.conf
 
 docker cp php:/usr/local/php ~/www/php
 docker cp apache:/usr/local/apache2/ ~/www/
@@ -122,12 +134,10 @@ hwclock --set --date '019-07-01 15:50:20'
 cat /etc/issue
 uname -a
 
-
 su -c "setenforce 0"
 docker ps | awk  '{print $1}' | xargs docker stop
 docker rm $(docker ps -a -q)
 docker rmi docker_mysql
-docker rmi docker_slave1
 cd
 rm -rf docker 
 git clone https://github.com/AprilOneDay/docker.git
@@ -136,6 +146,10 @@ docker-compose up
 docker exec -it php /bin/bash
 chmod -R 777 /var/www/html/dati/data
 chmod -R 777 /var/www/html/dati/public
+
+
+# 清理当前未运行的所有Docker容器
+docker system prune
 
 # 删除正在进行的容器
 docker ps | awk  '{print $1}' | xargs docker stop
@@ -154,7 +168,7 @@ chmod -R 777 /var/www/html/moershi/moershi/appliaction/tools/vendor/captcha
 
 exit
 
-# 修改mysql密码
+# 修改mysql密码 mysql5.7
 docker exec -it mysql /bin/bash
 mysql -uroot -p1qq2ww3ee4rr
 use  mysql;
@@ -177,9 +191,6 @@ docker-compose up
 docker run --name mysqlsrv -v ~/docker/mysqlsrv/data:/var/lib/mysql -v ~/docker/mysqlsrv/conf/conf.d:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=123456 -p 3316:3306 mysql:5.7
 
 CHANGE MASTER TO MASTER_HOST='74.121.150.93',MASTER_USER='siyue',MASTER_PASSWORD='siyue1q2w3e4r',MASTER_LOG_FILE='mysql-bin.000004',MASTER_LOG_POS=2552;
-
-俺的centos vps上面不知道添加了多少个账户，今天想清理一下，但是以前还未查看过linux用户列表，google了一下，找到方便的放：
-一般情况下是
 
 # 容器互连
 docker run -it --rm --network mynetwork svn
@@ -209,17 +220,41 @@ composer config -g repo.packagistcomposerhttps://packagist.phpcomposer.com
 # 本地Curl
 D:\phpStudy\php\php-7.0.12-nts\php-cgi.exe -b 127.0.0.1:9001 -c D:\phpStudy\php\php-7.0.12-nts\php.ini
 
-
-curl -O https://launchpadlibrarian.net/165454254/libmemcached-1.0.18.tar.gz 
-tar zxvf libmemcached-1.0.18.tar.gz
-mv libmemcached-1.0.18 memcached
-cd memcached
-./configure --with-memcached --disable-memcached-sasl
-make  &&  make install
-
-# 运行容器安装宝塔
-docker run  --name yyxt  -p 8080:443 -p 8889:8888  -v /docker/src:/var/www  -d -it centos  
-yum install -y wget && wget -O install.sh http://download.bt.cn/install/install.sh && sh install.sh -y
-
 # 阿里云远程链接数据库 需要在控制面板开启3306端口号
+# 安装ftp容器
+docker run -d -p 21:21 -p 20:20 -p 21100-21110:21100-21110 -v /docker/src:/home/vsftpd -e FTP_USER=myftp -e FTP_PASS=@1q2w3e4r -e PASV_ADDRESS=119.28.77.247 -e PASV_MIN_PORT=21100 -e PASV_MAX_PORT=21110 --name vsftpd --restart=always fauria/vsftpd
+FTP_USER 会在vsftpd下创建一个文件夹
 
+# 阿里云linux磁盘挂载
+fdisk -l
+fdisk /dev/vdb
+mkfs.ext4 /dev/vdb
+## 挂载
+mount /dev/vdb /docker
+## 卸载磁盘
+fuser -km /dev/xvdb1
+umount /dev/xvdb1
+## 写入自动挂载 否则重启后挂载会掉
+vi /etc/fstab
+/dev/vdb /docker ext4 defaults 0 0
+
+#xtrabackup MYSQL备份
+
+
+# dokcer升级
+rpm -qa | grep docker – – 列出包含docker字段的软件的信息
+
+docker-client-1.13.1-103.git7f2769b.el7.centos.x86_64
+docker-1.13.1-103.git7f2769b.el7.centos.x86_64
+docker-common-1.13.1-103.git7f2769b.el7.centos.x86_64
+
+## 使用yum remove卸载软件
+yum remove docker-client-1.13.1-103.git7f2769b.el7.centos.x86_64
+yum remove docker-1.13.1-103.git7f2769b.el7.centos.x86_64
+yum remove docker-common-1.13.1-103.git7f2769b.el7.centos.x86_64
+
+## 升级资源包
+curl -fsSL https://get.docker.com/ | sh
+
+yum list docker-ce --showduplicates | sort -r
+yum install docker-ce-17.03.2.ce-19.03.5-3.el7

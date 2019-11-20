@@ -12,7 +12,7 @@ yum -y update nss
 curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
-## 如果太慢使用国内镜像
+### 如果太慢使用国内镜像
 curl -L https://get.daocloud.io/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
@@ -37,10 +37,6 @@ vi /etc/docker/daemon.json
 {
   "registry-mirrors": ["https://he7u0ka4.mirror.aliyuncs.com"]
 }
-
-# 如果需要安装jenkins 需修改文件夹的归属者和组
-chown -R 1000:1000 jenkins/src
-
 
 # 进入文件路径 启动docker-compose
 docker-compose up
@@ -97,3 +93,9 @@ cat /etc/passwd
 
 # 查看用户组
 cat /etc/group 
+
+
+# 上传镜像
+docker login
+docker tag <image> <username>/<repository>:<tag>
+docker push <username>/<repository>:<tag>

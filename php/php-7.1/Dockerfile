@@ -1,8 +1,8 @@
-ap# name:docker_php
+# name:docker_php
 # use:store  
 # date:2017-09-04  
   
-FROM php:5.6-fpm
+FROM php:7.1-fpm
 
 MAINTAINER siyue 350375092@qq.com  
 
@@ -14,7 +14,7 @@ MAINTAINER siyue 350375092@qq.com
 COPY ./source.list /etc/apk/repositories
 
 # 保证时间一致
-COPY /etc/localtime /etc/localtime
+COPY ./etc/localtime /etc/localtime
 
 # Update ubuntu
 RUN apt-get update
@@ -25,11 +25,11 @@ RUN apt-get upgrade -y
 # RUN apt-get install -y cron
 
 # mcrypt
-RUN apt-get install -y libmcrypt-dev
-RUN docker-php-ext-install mcrypt
+# RUN apt-get install -y libmcrypt-dev
+# RUN docker-php-ext-install mcrypt
 
 # GD
-RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev # libpng12-dev
+RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev  #libpng12-dev
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
 RUN docker-php-ext-install -j$(nproc) gd
 
@@ -43,11 +43,10 @@ RUN docker-php-ext-install pcntl
 RUN docker-php-ext-install opcache 
 RUN docker-php-ext-install pdo_mysql 
 RUN docker-php-ext-install mysqli 
-RUN docker-php-ext-install mysql
 
 # SOAP Client
-# RUN apt-get install -y libxml2-dev
-# RUN docker-php-ext-install soap
+RUN apt-get install -y libxml2-dev
+RUN docker-php-ext-install soap
 
 # General extensions that may had be installed default
 # If not, install them with following command
@@ -71,12 +70,13 @@ RUN docker-php-ext-install pdo
 
 # CURL, may had be installed default
 RUN apt-get install -y curl
-RUN apt-get install -y libcurl3
+# RUN apt-get install -y libcurl3
 RUN apt-get install -y libcurl4-openssl-dev
 RUN docker-php-ext-install curl
 
+
 # redis
-ENV PHPREDIS_VERSION 3.1.3
+ENV PHPREDIS_VERSION 4.1.1
 RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.gz \
     && tar xfz /tmp/redis.tar.gz \
     && rm -r /tmp/redis.tar.gz \
@@ -86,7 +86,7 @@ RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/$P
     && rm -rf /usr/src/php
 
 # memcached
-# ENV PHPMEMCACHED_VERSION 2.2.0
+# ENV PHPMEMCACHED_VERSION 3.0.4
 # RUN apt-get install -y libmemcached-dev
 # RUN pecl install memcached-$PHPMEMCACHED_VERSION
 # RUN docker-php-ext-enable memcached

@@ -32,3 +32,5 @@ server {
     proxy_next_upstream_tries 2;
   }
 }
+
+# docker run -d  --name=nginx -p 80:80 -p 443:443 -p 81:81 --privileged -v /home/src/:/var/www/html/ -v /home/nginx/conf/nginx.conf:/etc/nginx/nginx.conf  -v /home/nginx/conf/conf.d/:/etc/nginx/conf.d/ -v /home/nginx/conf/ssl/:/etc/nginx/ssl/  -v /home//nginx/log/:/var/log/nginx/  --link=php:php --link=php7.1:php7.1 --restart=always home_nginx:latest
