@@ -9,11 +9,9 @@ if [ ! -e $DIR ]
 then
 /bin/mkdir -p $DIR
 fi
+
 #将所有数据库导出并按日期命名保存成sql文件并压缩
-/usr/bin/mysqldump --all-databases -usiyue -psiyue1q2w3e4r  | gzip > "$DIR/data_`date +%Y%m%d`.sql.gz"
-#查找更改时间在90日以前的sql备份文件并删除
-/usr/bin/find $DIR -mtime +90  -name "data_[1-9]*.sql.gz" -exec rm -rf {} \;
+/usr/bin/xtrabackup --defaults-file=/etc/mysql/conf.d/mysql.cnf --user=siyue --password=siyue1q2w3e4r --backup --parallel=3 --target-dir=$DIR/data_`date +%Y%m%d
 
-
-
-/usr/bin/mysqldump –defaults-extra-file=/etc/mysql/conf.d/mysql.cnf --all-databases -usiyue -psiyue1q2w3e4r  | gzip > /var/lib/mysql/back.sql.gz
+#查找更改时间在30日以前的sql备份文件并删除
+/usr/bin/find $DIR -mtime +30  -name "data_[1-9]*" -exec rm -rf {} \;

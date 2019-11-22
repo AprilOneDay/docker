@@ -20,5 +20,9 @@ docker build -t mysql:8.0 .
 docker run -d -t -v /var/cowrie:/data/ -p 22:2222 --restart=always  --name cowrie_auto xxxxx /xx.sh
 --name cowrie_auto 启动容器自动运行脚本
 
-	
-docker run -itd  --name mysql-8.0.18 -p 3308:3306 -e MYSQL_ROOT_PASSWORD=123456 mysql:8.0.18
+
+docker run -itd  --name mysql-3 --privileged=true --restart=always -p 3309:3306  -e MYSQL_ROOT_PASSWORD=123456 mysql:test-3  /bin/bash -c -c 'sh /cron-shell/init.sh'
+
+xtrabackup --defaults-file=/etc/mysql/conf.d/mysql.cnf --user=siyue --password=siyue1q2w3e4r --backup --parallel=3 --target-dir=/home/backup
+
+/usr/bin/mysqldump –defaults-extra-file=/etc/mysql/conf.d/mysql.cnf --all-databases -usiyue -psiyue1q2w3e4r  | gzip > /var/lib/mysql/back.sql.gz

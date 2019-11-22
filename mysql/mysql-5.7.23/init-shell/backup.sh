@@ -15,14 +15,14 @@
 # 需要注意的是,使用sudo后cron是在root用户下运行的,root用户下使用`service cron status`会出现` [ ok ] cron is running. `
 # 而mysql执行`service cron status`则会出现` [FAIL] cron is not running ... failed! `
 # 虽然如此,mysql用户身份制定的定时任务还是会执行的
-sudo /usr/sbin/service cron start &>> /var/lib/mysql/cron-start.log
+/usr/sbin/service cron start &>> /var/lib/mysql/cron-start.log
 
 #授予权限
-sudo chmod 777 -R /cron-shell
+chmod 777 -R /cron-shell
 
 #修正文件格式,这里dos2unix的执行也需要sudo,否则会报错`Failed to change the owner and group of temporary output file /cron-shell/d2utmpKfjPMF: Operation not permitted`
 for f in /cron-shell/*; do
-	sudo dos2unix "$f"
+	dos2unix "$f"
 done
 
 # 确保结尾换行,避免出现错误:`new crontab file is missing newline before EOF, can't install.`
