@@ -1,28 +1,76 @@
-# 创建用户
-INSERT INTO mysql.user(HOST,USER,authentication_string) VALUES("%","beta",PASSWORD("lvgVcNFvEk"));
-# 为用户授权
-GRANT ALL PRIVILEGES ON kljgj_beta.* TO "beta"@"%" IDENTIFIED BY 'lvgVcNFvEk';
-# 删除用户
-DROP USER beta@localhost;
-# 刷新权限
-FLUSH PRIVILEGES;
-# 查询用户表
-SELECT HOST,USER,authentication_string FROM mysql.user
-# 查询当前用户
-SELECT USER();
-# 容器内检查cron 是否执行
-/etc/init.d/crond status 或者 /etc/init.d/cron status
-# 启动cron
-/etc/init.d/cron restart
+# 创建容器
+docker run -itd  --name=<mysql8.0> --privileged=true --restart=always -p 3306:3306 <mysql-images>
+# 启动全量备份
+docker exec -it <mysql8.0> sh /cron-shell/backup.sh
+## 备份文件地址 
+/mysql_backup 
+# 获取mysql密码
+docker exec -it <mysql8.0> cat /tmp/mysql_tmp_password.log
+# 当无法获取mysql密码的时候尝试手动执行
+docker exec -d <mysql8.0> sh /docker-entrypoint-initdb.d/install.sh
+# 直接进入mysql
+docker exec -it mysql-4 mysql -usiyue -p获取密码
+# 当一直无法获取密码时尝试使用初始密码用户登录
+docker exec -it mysql-4 mysql -uroot -p123456
+# 服务器响应的最大连接数	
+show global status like 'Max_used_connections'
+
+# 创建网络组
+docker network create --subnet=172.19.0.0/26 es-network
+# 主MYSQL
+docker run -itd --name=mysql8.0 --restart=always --privileged=true --network es-network --ip 172.19.0.3 \
+	-p 3309:3306 \
+	-v /docker/mysql/mysql-8.0.18/conf.d/mysql.cnf:/etc/mysql/conf.d/mysql.cnf \
+	-v /docker/mysql/mysql-8.0.18/data/:/var/lib/mysql/ \
+	-v /docker/mysql/mysql-8.0.18/backup/:/mysql_backup/ \
+	-v /docker/mysql/mysql-8.0.18/log/:/var/log/mysql/  \
+	siyuedays/mysql-xtrabackup:8.0.18
+# 从MYSQL
+docker run -itd --name=mysql8.0-slave-1 --restart=always --privileged=true --network es-network --ip 172.19.0.4 \
+	-p 3310:3306 \
+	-v /docker/mysql/mysql-8.0.18-slave-1/conf.d/mysql.cnf:/etc/mysql/conf.d/mysql.cnf \
+	-v /docker/mysql/mysql-8.0.18-slave-1/data/:/var/lib/mysql/ \
+	-v /docker/mysql/mysql-8.0.18-slave-1/backup/:/mysql_backup/ \
+	-v /docker/mysql/mysql-8.0.18-slave-1/log/:/var/log/mysql/  \
+	siyuedays/mysql-xtrabackup:8.0.18
+
+主从复制
+SHOW MASTER STATUS;
+
+CHANGE MASTER TO
+MASTER_HOST='172.19.0.3',
+MASTER_USER='siyue',
+MASTER_PASSWORD='ZDgzZjMyMGNiMWJiMDA3MWYxZjQzODJi',
+MASTER_LOG_FILE='mysql-bin.000007',
+MASTER_LOG_POS=1414;
+
+START SLAVE;
+SHOW SLAVE STATUS;
 
 
-docker build -t mysql:8.0 .
-docker run -d -t -v /var/cowrie:/data/ -p 22:2222 --restart=always  --name cowrie_auto xxxxx /xx.sh
---name cowrie_auto 启动容器自动运行脚本
+
+docker run -itd --name=mysql8.0 --restart=always --privileged=true --network es-network --ip 172.19.0.3 \
+	-p 3309:3306 \
+	-v /docker/mysql/mysql-8.0.18/conf.d/mysql.cnf:/etc/mysql/conf.d/mysql.cnf \
+	-v /docker/mysql/mysql-8.0.18/data/:/var/lib/mysql/ \
+	-v /docker/mysql/mysql-8.0.18/backup/:/mysql_backup/ \
+	-v /docker/mysql/mysql-8.0.18/log/:/var/log/mysql/  \
+	mysql:test-2
 
 
-docker run -itd  --name mysql-3 --privileged=true --restart=always -p 3309:3306  -e MYSQL_ROOT_PASSWORD=123456 mysql:test-3  /bin/bash -c -c 'sh /cron-shell/init.sh'
+#错误 Slave failed to initialize relay log info structure from the repository
+RESET SLAVE;
+START SLAVE IO_THREAD;
+STOP SLAVE IO_THREAD;
+RESET SLAVE;
+START SLAVE;
 
-xtrabackup --defaults-file=/etc/mysql/conf.d/mysql.cnf --user=siyue --password=siyue1q2w3e4r --backup --parallel=3 --target-dir=/home/backup
+START SLAVE;
+SHOW SLAVE STATUS;
 
-/usr/bin/mysqldump –defaults-extra-file=/etc/mysql/conf.d/mysql.cnf --all-databases -usiyue -psiyue1q2w3e4r  | gzip > /var/lib/mysql/back.sql.gz
+#错误 Slave_SQL_Running：no
+STOP SLAVE; 
+SET GLOBAL SQL_SLAVE_SKIP_COUNTER=1; 
+START SLAVE;     
+
+

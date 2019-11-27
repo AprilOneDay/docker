@@ -1,0 +1,14 @@
+# version: '2'
+# services:
+  mysql8.0:
+    image: siyuedays/mysql-xtrabackup:8.0.18
+    container_name: mysql8.0
+    restart: always
+    privileged: true
+    ports:
+        - "3306:3306"
+    volumes:
+        - ./conf.d/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+        - ./data/:/var/lib/mysql/:rw
+        - ./log/:/var/log/mysql/:rw
+        - ./backup/:/mysql_backup:rw

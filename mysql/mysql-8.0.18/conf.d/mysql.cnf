@@ -19,19 +19,13 @@
 # For explanations see
 # http://dev.mysql.com/doc/mysql/en/server-system-variables.html
 
-[mysqldump]
-user=siyue
-password=siyue1q2w3e4r
-
 [mysql]
-default_authentication_plugin=mysql_native_password
-default-character-set=utf8
 
 [mysqld]
-sql-mode="NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
-
+# sql-mode="NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
 # skip-name-resolve
 explicit_defaults_for_timestamp=true
+default_authentication_plugin=mysql_native_password
 
 log-bin= mysql-bin
 server-id=1
@@ -39,4 +33,4 @@ server-id=1
 max_allowed_packet=8M
 lower_case_table_names=1
 max_connections=300
-max_connect_errors=200
+max_connect_errors=20

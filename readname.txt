@@ -82,7 +82,7 @@ docker rm $(docker ps -a -q)
 docker rmi docker_nginx
 
 查询容器ip
-docker inspect  容器名称orid
+docker inspect <容器名称>or<id>
 
 docker stop test_apache-php
 docker rm test_apache-php
@@ -258,3 +258,13 @@ curl -fsSL https://get.docker.com/ | sh
 
 yum list docker-ce --showduplicates | sort -r
 yum install docker-ce-17.03.2.ce-19.03.5-3.el7
+
+
+# 网络
+# 查询网络
+docker network ls
+# 查询详情
+docker network inspect <NETWORK ID> OR <NAME>
+# 创建网络
+docker network create --subnet=172.19.0.0/26 es-network
+

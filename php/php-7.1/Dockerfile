@@ -10,8 +10,8 @@ MAINTAINER siyue 350375092@qq.com
 # RUN export http_proxy=192.168.1.10:1080
 # RUN export https_proxy=192.168.1.10:1080
 
-# 替换国内镜像
-COPY ./source.list /etc/apk/repositories
+# 替换成阿里云地址
+COPY ./source.list /etc/apt/sources.list
 
 # 保证时间一致
 COPY ./etc/localtime /etc/localtime

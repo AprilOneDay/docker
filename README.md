@@ -97,5 +97,5 @@ cat /etc/group
 
 # 上传镜像
 docker login
-docker tag <image> <username>/<repository>:<tag>
+docker tag <image>:<tag> <username>/<repository>:<tag>
 docker push <username>/<repository>:<tag>
