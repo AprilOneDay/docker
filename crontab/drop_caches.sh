@@ -40,7 +40,7 @@ echo "---> start auto clear memery is OK ! $DATA , warn is $mem_warn ,小于(即
 fi
 
 #取当前空闲cpu百份比值（只取整数部分） 
-cpu_idle=`top -b -n 1 | grep Cpu | awk '{print $4}' | cut -f 1 -d "."`
+cpu_idle=`top -b -n 1 | grep Cpu | awk '{print $8}' | cut -f 1 -d "."`
 echo "cpu_idle percent is $cpu_idle，cpu 剩余量充足，警告值是当剩余不足30%时，自动清理内" >>/tmp/clear_free_$(date +%Y%m%d).log
 echo "================================================================" >>/tmp/clear_free_$(date +%Y%m%d).log
 #设置空闲cpu的告警值为30%，如果当前cpu使用超过70%（即剩余小于30%），立即发邮件告警,自动清理内存 
@@ -51,6 +51,5 @@ echo 1 > /proc/sys/vm/drop_caches
 echo 2 > /proc/sys/vm/drop_caches
 echo 3 > /proc/sys/vm/drop_caches
 echo "--->cpu used more than 70% ,so start auto clear memery is OK ! $DATA , warn is $mem_warn " >>/tmp/memstat_cpu_auto_$(date +%Y%m%d_%H).log
-
 fi
 fi

@@ -32,9 +32,17 @@ explicit_defaults_for_timestamp=true
 default_authentication_plugin=mysql_native_password
 
 log-bin= mysql-bin
-server-id=1
+server-id=2
 
 max_allowed_packet=100M
 lower_case_table_names=1
-max_connections=300
-max_connect_errors=20
+max_connections=300 # 最大连接数
+max_connect_errors=20 # 最大链接错误次数
+
+# 开启并行复制防止延迟
+slave-parallel-type=LOGICAL_CLOCK  # 基于组提交的并行复制方式
+slave-parallel-workers=16  # 并行复制测试 开启16个线程 效果最佳
+slave_preserve_commit_order=1 # slave的并行复制和master的事务执行的顺序一致
+master_info_repository=TABLE # 开启MTS功能后，务必将参数master_info_repostitory设置为TABLE
+relay_log_info_repository=TABLE
+relay_log_recovery=ON

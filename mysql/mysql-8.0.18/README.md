@@ -1,7 +1,7 @@
 # 创建容器
 docker run -itd  --name=<mysql8.0> --privileged=true --restart=always -p 3306:3306 <mysql-images>
 # 启动全量备份
-docker exec -it <mysql8.0> sh /cron-shell/backup.sh
+docker exec -d <mysql8.0> sh /cron-shell/backup.sh
 ## 备份文件地址 
 /mysql_backup 
 # 获取mysql密码
@@ -14,6 +14,8 @@ docker exec -it mysql-4 mysql -usiyue -p获取密码
 docker exec -it mysql-4 mysql -uroot -p123456
 # 服务器响应的最大连接数	
 show global status like 'Max_used_connections'
+# 定时任务每天凌晨3点执行
+* * 3 * * ? docker exec -d <mysql8.0> sh /cron-shell/backup.sh
 
 # 创建网络组
 docker network create --subnet=172.19.0.0/26 es-network
@@ -47,6 +49,15 @@ MASTER_LOG_POS=1414;
 START SLAVE;
 SHOW SLAVE STATUS;
 
+# MTS 并行复制方式
+slave-parallel-type=LOGICAL_CLOCK  # 基于组提交的并行复制方式
+slave-parallel-workers=16  # 并行复制测试 开启16个线程 效果最佳
+slave_preserve_commit_order=1 # slave的并行复制和master的事务执行的顺序一致
+master_info_repository=TABLE # 开启MTS功能后，务必将参数master_info_repostitory设置为TABLE
+relay_log_info_repository=TABLE
+relay_log_recovery=ON
+
+SHOW VARIABLES LIKE '%slave_para%'
 
 
 docker run -itd --name=mysql8.0 --restart=always --privileged=true --network es-network --ip 172.19.0.3 \
