@@ -1,8 +1,8 @@
-ap# name:docker_php
+# name:docker_php
 # use:store  
 # date:2017-09-04  
   
-FROM php:5.6-fpm
+FROM php:7.4.0-fpm
 
 MAINTAINER siyue 350375092@qq.com  
 
@@ -10,44 +10,46 @@ MAINTAINER siyue 350375092@qq.com
 # RUN export http_proxy=192.168.1.10:1080
 # RUN export https_proxy=192.168.1.10:1080
 
-# 替换国内镜像
-COPY ./source.list /etc/apt/repositories
+# 替换成阿里云地址
+COPY ./source.list /etc/apt/sources.list
 
 # 保证时间一致
 COPY ./etc/localtime /etc/localtime
-
 # Update ubuntu
-RUN apt-get update
-RUN apt-get upgrade -y
+RUN apt-get update -y && apt-get install -y wget
 
 # 安装定时任务模块
 # RUN apt-get install -y curl
 # RUN apt-get install -y cron
 
-# mcrypt
-RUN apt-get install -y libmcrypt-dev
-RUN docker-php-ext-install mcrypt
-
-# GD
-RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev # libpng12-dev
-RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
-RUN docker-php-ext-install -j$(nproc) gd
-
 # Intl
 # RUN apt-get install -y libicu-dev
 # RUN docker-php-ext-install -j$(nproc) intl
 
+# zip
+# ENV PHPZIP_VERSION 1.13.5
+# RUN curl -L -o /tmp/zip.tar.gz http://pecl.php.net/get/zip-$PHPZIP_VERSION.tgz \
+#	&& tar xfz /tmp/zip.tar.gz \
+#    && rm -r /tmp/zip.tar.gz \
+#    && mkdir -p /usr/src/php/ext \
+#    && mv zip-$PHPZIP_VERSION /usr/src/php/ext/zip \
+#    && docker-php-ext-install zip \
+#    && rm -rf /usr/src/php
+
 # General
-RUN docker-php-ext-install zip 
 RUN docker-php-ext-install pcntl 
 RUN docker-php-ext-install opcache 
 RUN docker-php-ext-install pdo_mysql 
 RUN docker-php-ext-install mysqli 
-RUN docker-php-ext-install mysql
+
+# GD
+RUN apt-get install -y libwebp-dev libjpeg-dev libpng-dev libfreetype6-dev
+RUN docker-php-ext-configure gd --with-webp-dir=/usr/include/webp --with-jpeg-dir=/usr/include --with-png-dir=/usr/include --with-freetype-dir=/usr/include/freetype2
+RUN docker-php-ext-install -j$(nproc) gd
 
 # SOAP Client
-# RUN apt-get install -y libxml2-dev
-# RUN docker-php-ext-install soap
+#RUN apt-get install -y libxml2-dev
+#RUN docker-php-ext-install soap
 
 # General extensions that may had be installed default
 # If not, install them with following command
@@ -75,8 +77,10 @@ RUN apt-get install -y libcurl3
 RUN apt-get install -y libcurl4-openssl-dev
 RUN docker-php-ext-install curl
 
+
+
 # redis
-ENV PHPREDIS_VERSION 3.1.3
+ENV PHPREDIS_VERSION 5.1.1
 RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.gz \
     && tar xfz /tmp/redis.tar.gz \
     && rm -r /tmp/redis.tar.gz \
@@ -86,7 +90,7 @@ RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/$P
     && rm -rf /usr/src/php
 
 # memcached
-# ENV PHPMEMCACHED_VERSION 2.2.0
+# ENV PHPMEMCACHED_VERSION 3.0.4
 # RUN apt-get install -y libmemcached-dev
 # RUN pecl install memcached-$PHPMEMCACHED_VERSION
 # RUN docker-php-ext-enable memcached
@@ -147,10 +151,6 @@ RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/$P
 # GMP
 # RUN apt-get install -y libgmp-dev
 # RUN docker-php-ext-install gmp
-
-# Client
-# RUN apt-get install -y postgresql-client
-# RUN apt-get install -y mysql-client
 
 # IMAP
 # RUN apt-get install -y libc-client-dev

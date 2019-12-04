@@ -22,16 +22,20 @@
 [client]
 default-character-set=utf8
 
-[mysql]
-default-character-set=utf8
 
 [mysqld]
 collation-server = utf8_unicode_ci
+
 character-set-server = utf8
+
 explicit_defaults_for_timestamp=true
+
 default_authentication_plugin=mysql_native_password
 
-log-bin= mysql-bin
+log-error=/var/log/mysql/error.log
+
+log-bin=mysql-bin
+
 server-id=2
 
 max_allowed_packet=100M
