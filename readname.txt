@@ -264,7 +264,9 @@ yum install docker-ce-17.03.2.ce-19.03.5-3.el7
 # 查询网络
 docker network ls
 # 查询详情
-docker network inspect <NETWORK ID> OR <NAME>
+docker network inspect [<NETWORK ID> OR <NAME>]
 # 创建网络
 docker network create --subnet=172.19.0.0/26 es-network
+# 容器加入自定义网络
+docker network connect [<NETWORK ID> OR <NAME>] <CONTAINER_NAME> 
 

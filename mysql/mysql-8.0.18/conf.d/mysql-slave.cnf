@@ -43,6 +43,25 @@ lower_case_table_names=1
 max_connections=300 # 最大连接数
 max_connect_errors=20 # 最大链接错误次数
 
+
+# 禁用DNS解析 只允许远程IP链接
+skip-name-resolve
+
+# mysql慢日志记录
+slow_query_log = 1
+slow_query_log_file = /var/log/mysql/slow_query.log
+long_query_time = 5
+
+# 读操作缓冲区大小
+read_buffer_size = 32M
+
+# 缓冲池实例个数，推荐设置4个或8个
+innodb_buffer_pool_instances = 4
+
+# 空闲断开时间(秒)
+wait_timeout = 60
+interactive_timeout = 60
+
 # 开启并行复制防止延迟
 slave-parallel-type=LOGICAL_CLOCK  # 基于组提交的并行复制方式
 slave-parallel-workers=16  # 并行复制测试 开启16个线程 效果最佳

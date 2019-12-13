@@ -6,81 +6,57 @@ FROM php:7.4.0-fpm
 
 MAINTAINER siyue 350375092@qq.com  
 
-# You may need proxy
-# RUN export http_proxy=192.168.1.10:1080
-# RUN export https_proxy=192.168.1.10:1080
+# redis 扩展
+ENV PHPREDIS_VERSION 5.1.1
+# msgpack扩展
+ENV MSGPACK_VERSION 2.0.3
+# memcached扩展
+ENV MEMCACHED_VERSION 3.1.3
+# mongodb扩展
+ENV MONGODB_VERSION 1.5.3
+# xhprof扩展 https://github.com/longxinH/xhprof/releases
+ENV XHPROF_VERSION 2.1.1
+# swoole安装 如果以后用到的话，不用再安装了，4.0之后性能更好
+ENV SWOOLE_VERSION 4.4.8
+# swoole依赖hiredis
+ENV HIREDIS_VERSION 0.13.3
+# Xdebug 版本
+ENV XDEBUG_VERSION 2.8.1
+# PHPunit 安装
+ENV PHPUNIT_VERSION 8.5
 
-# 替换成阿里云地址
-COPY ./source.list /etc/apt/sources.list
+# 设置时间
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+    && echo 'Asia/Shanghai' > /etc/timezone
 
-# 保证时间一致
-COPY ./etc/localtime /etc/localtime
-# Update ubuntu
-RUN apt-get update -y && apt-get install -y wget
+# 扩展依赖
+RUN apt-get update \
+    && apt-get install -y wget 
 
-# 安装定时任务模块
-# RUN apt-get install -y curl
-# RUN apt-get install -y cron
+# Composer安装
+RUN curl -sS https://getcomposer.org/installer | php \
+    && mv composer.phar /usr/local/bin/composer \
+    && composer self-update --clean-backups
 
-# Intl
-# RUN apt-get install -y libicu-dev
-# RUN docker-php-ext-install -j$(nproc) intl
-
-# zip
-# ENV PHPZIP_VERSION 1.13.5
-# RUN curl -L -o /tmp/zip.tar.gz http://pecl.php.net/get/zip-$PHPZIP_VERSION.tgz \
-#	&& tar xfz /tmp/zip.tar.gz \
-#    && rm -r /tmp/zip.tar.gz \
-#    && mkdir -p /usr/src/php/ext \
-#    && mv zip-$PHPZIP_VERSION /usr/src/php/ext/zip \
-#    && docker-php-ext-install zip \
-#    && rm -rf /usr/src/php
-
-# General
+# 自带扩展 直接安装即可
+# phar扩展 phpunit依赖它
+RUN docker-php-ext-install phar 
 RUN docker-php-ext-install pcntl 
 RUN docker-php-ext-install opcache 
-RUN docker-php-ext-install pdo_mysql 
+RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-install mysqli 
 
-# GD
-RUN apt-get install -y libwebp-dev libjpeg-dev libpng-dev libfreetype6-dev
-RUN docker-php-ext-configure gd --with-webp-dir=/usr/include/webp --with-jpeg-dir=/usr/include --with-png-dir=/usr/include --with-freetype-dir=/usr/include/freetype2
-RUN docker-php-ext-install -j$(nproc) gd
+# 安装 ZIP 扩展
+RUN apt-get install -y zip libzip-dev \
+    && docker-php-ext-configure zip --with-libzip \
+  	&& docker-php-ext-install zip
 
-# SOAP Client
-#RUN apt-get install -y libxml2-dev
-#RUN docker-php-ext-install soap
+# GD库安装
+RUN apt-get install -y libwebp-dev libjpeg-dev libpng-dev libfreetype6-dev \
+    && docker-php-ext-configure gd --with-webp-dir=/usr/include/webp --with-jpeg-dir=/usr/include --with-png-dir=/usr/include --with-freetype-dir=/usr/include/freetype2 \
+    && docker-php-ext-install -j$(nproc) gd
 
-# General extensions that may had be installed default
-# If not, install them with following command
-# RUN docker-php-ext-install ctype
-# RUN docker-php-ext-install dom
-# RUN docker-php-ext-install fileinfo
-# RUN docker-php-ext-install ftp
-# RUN docker-php-ext-install hash
-RUN docker-php-ext-install iconv
-RUN docker-php-ext-install json
-RUN docker-php-ext-install mbstring
-RUN docker-php-ext-install session
-RUN docker-php-ext-install pdo
-# RUN docker-php-ext-install pdo_sqlite
-# RUN docker-php-ext-install posix
-# RUN docker-php-ext-install tokenizer
-# RUN docker-php-ext-install simplexml
-# RUN docker-php-ext-install xml
-# RUN docker-php-ext-install xmlreader
-# RUN docker-php-ext-install xmlwriter
-
-# CURL, may had be installed default
-RUN apt-get install -y curl
-RUN apt-get install -y libcurl3
-RUN apt-get install -y libcurl4-openssl-dev
-RUN docker-php-ext-install curl
-
-
-
-# redis
-ENV PHPREDIS_VERSION 5.1.1
+# Redis 扩展下载
 RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.gz \
     && tar xfz /tmp/redis.tar.gz \
     && rm -r /tmp/redis.tar.gz \
@@ -89,89 +65,83 @@ RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/$P
     && docker-php-ext-install redis \
     && rm -rf /usr/src/php
 
-# memcached
-# ENV PHPMEMCACHED_VERSION 3.0.4
-# RUN apt-get install -y libmemcached-dev
-# RUN pecl install memcached-$PHPMEMCACHED_VERSION
-# RUN docker-php-ext-enable memcached
-	
-# More extensions
-# RUN docker-php-ext-install exif
-# RUN docker-php-ext-install bcmath
-# RUN docker-php-ext-install calendar
-# RUN docker-php-ext-install sockets
-# RUN docker-php-ext-install gettext
-# RUN docker-php-ext-install phar
-# RUN docker-php-ext-install shmop
-# RUN docker-php-ext-install sysvmsg
-# RUN docker-php-ext-install sysvsem
-# RUN docker-php-ext-install sysvshm
+# memcached 扩展下载 pecl本地安装 开启扩展
+RUN apt-get install -y libmemcached-dev \
+	&& wget http://pecl.php.net/get/memcached-${MEMCACHED_VERSION}.tgz -O /tmp/memcached.tgz \
+    && pecl install /tmp/memcached.tgz \
+    && rm -rf /tmp/memcached.tgz \
+    && docker-php-ext-enable memcached
 
-# More extensions handle database
-# RUN docker-php-ext-install pdo_firebird
-# RUN docker-php-ext-install pdo_dblib
-# RUN docker-php-ext-install pdo_oci
-# RUN docker-php-ext-install pdo_odbc
-# RUN docker-php-ext-install pdo_pgsql
-# RUN docker-php-ext-install pgsql
-# RUN docker-php-ext-install oci8
-# RUN docker-php-ext-install odbc
-# RUN docker-php-ext-install dba
-# RUN docker-php-ext-install interbase
+# mongodb 扩展下载 pecl本地安装 开启扩展  
+RUN wget http://pecl.php.net/get/mongodb-${MONGODB_VERSION}.tgz -O /tmp/mongodb.tgz \
+    && pecl install /tmp/mongodb.tgz \
+    && rm -rf /tmp/mongodb.tgz \
+    && docker-php-ext-enable mongodb
 
-# execute `RUN apt-get install -y libxml2-dev` before using following command
-# RUN apt-get install -y libxslt-dev
-# RUN docker-php-ext-install xsl
-# RUN docker-php-ext-install xmlrpc
-# RUN docker-php-ext-install wddx
+# msgpack 扩展下载 pecl本地安装 (延迟队列使用减少源数据占用空间)
+RUN wget http://pecl.php.net/get/msgpack-${MSGPACK_VERSION}.tgz -O /tmp/msgpack.tgz \
+    && pecl install /tmp/msgpack.tgz \
+    && rm -rf /tmp/msgpack.tgz \
+    && docker-php-ext-enable msgpack
 
-# Readline
-# RUN apt-get install -y libreadline-dev
-# RUN docker-php-ext-install readline
+# XDEBUG 扩展
+RUN wget http://pecl.php.net/get/xdebug-${XDEBUG_VERSION}.tgz -O /tmp/xdebug.tgz \
+   && pecl install /tmp/xdebug.tgz \
+   && rm -rf /tmp/xdebug.tgz \
+   && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
+   && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
+   && echo "xdebug.remote_handler=dbgp" >> /usr/local/etc/php/conf.d/xdebug.ini \
+   && echo "xdebug.xdebug.remote_host=127.0.0.1" >> /usr/local/etc/php/conf.d/xdebug.ini \
+   && echo "xdebug.xdebug.remote_port=9000" >> /usr/local/etc/php/conf.d/xdebug.ini
 
-# SNMP
-# RUN apt-get install -y libsnmp-dev
-# RUN apt-get install -y snmp
-# RUN docker-php-ext-install snmp
+# phpunit 安装
+RUN wget http://phar.phpunit.cn/phpunit-${PHPUNIT_VERSION}.phar \
+	&& chmod +x phpunit-${PHPUNIT_VERSION}.phar \
+	&& mv phpunit-${PHPUNIT_VERSION}.phar /usr/local/bin/phpunit
 
-# pspell
-# RUN apt-get install -y libpspell-dev
-# RUN apt-get install -y aspell-en
-# RUN docker-php-ext-install pspell
+# xhprof PHP7.4暂不支持
+RUN wget https://github.com/longxinH/xhprof/archive/v${XHPROF_VERSION}.tar.gz -O /tmp/xhprof.tar.gz \
+    && mkdir -p /tmp/xhprof \
+    && tar -xf /tmp/xhprof.tar.gz -C /tmp/xhprof --strip-components=1 \
+    && rm /tmp/xhprof.tar.gz \
+    && ( \
+        cd /tmp/xhprof/extension \
+        && phpize \
+        && ./configure  \
+        && make -j$(nproc) \
+        && make install \
+    ) \
+    && rm -r /tmp/xhprof \
+    && docker-php-ext-enable xhprof
 
-# recode
-# RUN apt-get install -y librecode0
-# RUN apt-get install -y librecode-dev
-# RUN docker-php-ext-install recode
+# Hiredis扩展安装 swoole依赖
+RUN wget https://github.com/redis/hiredis/archive/v${HIREDIS_VERSION}.tar.gz -O /tmp/hiredis.tar.gz \
+  && mkdir -p /tmp/hiredis \
+    && tar -xf /tmp/hiredis.tar.gz -C /tmp/hiredis --strip-components=1 \
+    && rm /tmp/hiredis.tar.gz \
+    && ( \
+        cd /tmp/hiredis \
+        && make -j$(nproc) \
+        && make install \
+        && ldconfig \
+    ) \
+    && rm -r /tmp/hiredis
 
-# Tidy
-# RUN apt-get install -y libtidy-dev
-# RUN docker-php-ext-install tidy
+# Swoole 扩展安装 开启扩展
+RUN apt-get install -y libz-dev libssl-dev libnghttp2-dev libpcre3-dev zlib1g-dev \
+    && wget https://github.com/swoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz -O /tmp/swoole.tar.gz \
+    && mkdir -p /tmp/swoole \
+    && tar -xf /tmp/swoole.tar.gz -C /tmp/swoole --strip-components=1 \
+    && rm /tmp/swoole.tar.gz \
+    && ( \
+        cd /tmp/swoole \
+        && phpize \
+        && ./configure --enable-async-redis --enable-mysqlnd --enable-openssl --enable-http2 \
+        && make -j$(nproc) \
+        && make install \
+    ) \
+    && rm -r /tmp/swoole \
+    && docker-php-ext-enable swoole
 
-# GMP
-# RUN apt-get install -y libgmp-dev
-# RUN docker-php-ext-install gmp
-
-# IMAP
-# RUN apt-get install -y libc-client-dev
-# RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl
-# RUN docker-php-ext-install imap
-
-# LDAP
-# RUN apt-get install -y libldb-dev
-# RUN apt-get install -y libldap2-dev
-# RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu
-# RUN docker-php-ext-install ldap
-
-# Composer
-# RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer
-
-# XDEBUG
-# RUN yes | pecl channel-update pecl.php.net && pecl install xdebug \
-#    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
-#    && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
-#    && echo "xdebug.remote_handler=dbgp" >> /usr/local/etc/php/conf.d/xdebug.ini
-#    && echo "xdebug.xdebug.remote_host=127.0.0.1" >> /usr/local/etc/php/conf.d/xdebug.ini
-#    && echo "xdebug.xdebug.remote_port=9000" >> /usr/local/etc/php/conf.d/xdebug.ini
-
-
+# 清理空间
+RUN apt-get clean -y && apt-get autoremove -y
