@@ -2,7 +2,7 @@
 # use:store  
 # date:2017-09-04  
   
-FROM php:7.4.0-fpm
+FROM siyuedays/php:7.4-fpm
 
 MAINTAINER siyue 350375092@qq.com  
 
@@ -14,8 +14,8 @@ ENV MSGPACK_VERSION 2.0.3
 ENV MEMCACHED_VERSION 3.1.3
 # mongodb扩展
 ENV MONGODB_VERSION 1.5.3
-# xhprof扩展 https://github.com/longxinH/xhprof/releases
-ENV XHPROF_VERSION 2.1.1
+# xhprof扩展
+ENV XHPROF_VERSION 2.1.3
 # swoole安装 如果以后用到的话，不用再安装了，4.0之后性能更好
 ENV SWOOLE_VERSION 4.4.8
 # swoole依赖hiredis
@@ -53,7 +53,7 @@ RUN apt-get install -y zip libzip-dev \
 
 # GD库安装
 RUN apt-get install -y libwebp-dev libjpeg-dev libpng-dev libfreetype6-dev \
-    && docker-php-ext-configure gd --with-webp-dir=/usr/include/webp --with-jpeg-dir=/usr/include --with-png-dir=/usr/include --with-freetype-dir=/usr/include/freetype2 \
+    && docker-php-ext-configure gd --with-webp=/usr/include --with-jpeg=/usr/include  --with-freetype=/usr/include \
     && docker-php-ext-install -j$(nproc) gd
 
 # Redis 扩展下载
@@ -99,11 +99,11 @@ RUN wget http://phar.phpunit.cn/phpunit-${PHPUNIT_VERSION}.phar \
 	&& chmod +x phpunit-${PHPUNIT_VERSION}.phar \
 	&& mv phpunit-${PHPUNIT_VERSION}.phar /usr/local/bin/phpunit
 
-# xhprof PHP7.4暂不支持
+# xhprof
 RUN wget https://github.com/longxinH/xhprof/archive/v${XHPROF_VERSION}.tar.gz -O /tmp/xhprof.tar.gz \
     && mkdir -p /tmp/xhprof \
     && tar -xf /tmp/xhprof.tar.gz -C /tmp/xhprof --strip-components=1 \
-    && rm /tmp/xhprof.tar.gz \
+    && rm -rf /tmp/xhprof.tar.gz \
     && ( \
         cd /tmp/xhprof/extension \
         && phpize \
@@ -111,28 +111,28 @@ RUN wget https://github.com/longxinH/xhprof/archive/v${XHPROF_VERSION}.tar.gz -O
         && make -j$(nproc) \
         && make install \
     ) \
-    && rm -r /tmp/xhprof \
+    && rm -rf /tmp/xhprof \
     && docker-php-ext-enable xhprof
 
 # Hiredis扩展安装 swoole依赖
 RUN wget https://github.com/redis/hiredis/archive/v${HIREDIS_VERSION}.tar.gz -O /tmp/hiredis.tar.gz \
   && mkdir -p /tmp/hiredis \
     && tar -xf /tmp/hiredis.tar.gz -C /tmp/hiredis --strip-components=1 \
-    && rm /tmp/hiredis.tar.gz \
+    && rm -rf /tmp/hiredis.tar.gz \
     && ( \
         cd /tmp/hiredis \
         && make -j$(nproc) \
         && make install \
         && ldconfig \
     ) \
-    && rm -r /tmp/hiredis
+    && rm -rf /tmp/hiredis
 
 # Swoole 扩展安装 开启扩展
 RUN apt-get install -y libz-dev libssl-dev libnghttp2-dev libpcre3-dev zlib1g-dev \
     && wget https://github.com/swoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz -O /tmp/swoole.tar.gz \
     && mkdir -p /tmp/swoole \
     && tar -xf /tmp/swoole.tar.gz -C /tmp/swoole --strip-components=1 \
-    && rm /tmp/swoole.tar.gz \
+    && rm -rf /tmp/swoole.tar.gz \
     && ( \
         cd /tmp/swoole \
         && phpize \
