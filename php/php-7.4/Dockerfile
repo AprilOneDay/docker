@@ -2,7 +2,7 @@
 # use:store  
 # date:2017-09-04  
   
-FROM siyuedays/php:7.4-fpm
+FROM php:7.4.0-fpm
 
 MAINTAINER siyue 350375092@qq.com  
 
